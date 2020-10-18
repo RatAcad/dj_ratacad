@@ -1,0 +1,1 @@
+# dj_ratacad: Datajoint for the Scott Lab Ratacademy
