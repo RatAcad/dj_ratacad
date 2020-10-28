@@ -1,0 +1,59 @@
+"""
+dj-ratacad command line interface
+"""
+
+
+def daily_update():
+
+    """ setup """
+
+    from loguru import logger
+    import sys
+    from pathlib import Path
+    from dj_ratacad import bpod, flashes
+
+    """ configure logger """
+
+    LOG_FILE = Path.home() / "dj_ratacad.log"
+    log_format = "{time:YYYY:MM:DD HH:mm:ss} {level} -- line = {line} -- {message}"
+    logger.add(LOG_FILE, format=log_format)
+
+    class StreamToLogger:
+        def __init__(self, level="INFO"):
+            self._level = level
+
+        def write(self, buffer):
+            for line in buffer.rstrip().splitlines():
+                logger.opt(depth=1).log(self._level, line.rstrip())
+
+        def flush(self):
+            pass
+
+    sys.stdout = StreamToLogger()
+
+    """ populate metadata for new files """
+
+    bpod.BpodMetadata.populate()
+
+    """ populate trial data """
+
+    bpod.BpodTrialData.populate()
+    flashes.FlashesTrial.populate()
+    flashes.DailySummary.populate()
+
+
+if __name__ == "__main__":
+
+    import argparse
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("command", type=str)
+    args = parser.parse_args()
+
+    if args.command == "update":
+
+        daily_update()
+
+    else:
+
+        raise Exception(f"command = {args.command} not implemented.")

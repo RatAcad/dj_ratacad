@@ -92,7 +92,7 @@ class BpodMetadata(dj.Manual):
 
         files_on_disk = list(BpodMetadata.DATA_DIR.glob(f"{key['name']}/*/Session Data/*.mat"))
         files_on_disk = [f.relative_to(BpodMetadata.DATA_DIR) for f in files_on_disk]
-        files_on_dj = (BpodMetadata() & key).fetch("file_path")
+        files_on_dj = [Path(p) for p in (BpodMetadata() & key).fetch("file_path")]
         
         new_files = list(set(files_on_disk).difference(files_on_dj))
         protocols = Protocol.fetch("protocol")
@@ -101,21 +101,22 @@ class BpodMetadata(dj.Manual):
 
             try:
 
-                name, protocol, date, time = nf.stem.split("_")
+                _, protocol, date, time = nf.stem.split("_")
 
                 if protocol in protocols:
 
                     bpod_data = load_bpod_data(BpodMetadata.DATA_DIR / nf)
                     bpod_info = bpod_data["Info"]
 
+                    sess_date = bpod_info["FileDate"] if "FileDate" in bpod_info else bpod_info["SessionDate"]
                     date = datetime.strftime(
-                        datetime.strptime(bpod_info["SessionDate"], "%d-%b-%Y"),
+                        datetime.strptime(sess_date, "%d-%b-%Y"),
                         "%Y-%m-%d",
                     )
-                    time = bpod_info["SessionStartTime_UTC"]
-                    bpod_id = f"RATACAD_1_{BpodMetadata.BPOD_LOOKUP_NAMES.index(key['name']) + 1}"
+                    time = bpod_info['FileStartTime_UTC'] if "FileStartTime_UTC" in bpod_info else bpod_info["SessionStartTime_UTC"]
+                    bpod_id = bpod_info["BpodName"] if "BpodName" in bpod_info else f"RATACAD_1_{BpodMetadata.BPOD_LOOKUP_NAMES.index(key['name']) + 1}"
 
-                    box_design = bpod_info["BpodName"] if "BpodName" in bpod_info else (Bpod() & f"bpod_id='{bpod_id}'").fetch("design")[0]
+                    box_design = (Bpod() & f"bpod_id='{bpod_id}'").fetch("design")[0]
 
                     metadata = {
                         "name": key["name"],
@@ -131,7 +132,7 @@ class BpodMetadata(dj.Manual):
                         else None,
                     }
 
-                    bpod.BpodMetadata.insert1(metadata)
+                    self.insert1(metadata)
 
                     print(f"Added Metadata for {key['name']}, {metadata['session_datetime']}")
 
@@ -139,8 +140,6 @@ class BpodMetadata(dj.Manual):
 
                 print(f"Error adding file = {nf}:\n{e}")
                 traceback.print_exc()
-
-        pass
 
     def populate(self):
 
