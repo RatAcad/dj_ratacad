@@ -33,13 +33,13 @@ def daily_update():
 
     """ populate metadata for new files """
 
-    bpod.BpodMetadata.populate()
+    #bpod.BpodMetadata.populate()
 
     """ populate trial data """
 
-    bpod.BpodTrialData.populate()
+    #bpod.BpodTrialData.populate()
     flashes.FlashesTrial.populate()
-    flashes.DailySummary.populate()
+    # flashes.DailySummary.populate()
 
 
 if __name__ == "__main__":

@@ -5,9 +5,10 @@ Schema for generic Bpod Data
 from pathlib import Path
 from datetime import datetime, timedelta
 import numpy as np
+import re
 
 import datajoint as dj
-from dj_ratacad import rat, bpod
+from dj_ratacad import animal, bpod
 
 schema = dj.schema("scott_flashes")
 
@@ -55,12 +56,14 @@ class FlashesTrial(dj.Computed):
             if "Init" in bpod_data["states"]
             else bpod_data["states"]["DecisionCue"][1]
         )
+
         if (trial_data["stage"] > 1) and (
             not np.isnan(bpod_data["states"]["Correct"][0])
         ):
             dec_time = bpod_data["states"]["Correct"][0]
         elif (trial_data["stage"] > 1) and (
-            not np.isnan(bpod_data["states"]["Error"][0])
+            ("Error" in bpod_data["states"].keys())
+            and (not np.isnan(bpod_data["states"]["Error"][0]))
         ):
             dec_time = bpod_data["states"]["Error"][0]
         else:
@@ -126,11 +129,23 @@ class FlashesTrial(dj.Computed):
                 bpod_data["trial_settings"]["TrialStimuli"][0].astype(str)
             )
 
-        trial_data["flash_bins"] = (
-            len(trial_data["flashes_left"])
-            if len(trial_data["flashes_left"]) > 1
-            else 0
-        )
+        max_flashes = len(trial_data["flashes_left"])
+        if max_flashes > 1:
+            all_states = np.fromiter(bpod_data["states"].keys(), "U25")
+            flash_states = all_states[
+                [bool(re.match(r"Flash", bdk)) for bdk in all_states]
+            ]
+            trial_data["flash_bins"] = np.flatnonzero(
+                ~np.isnan([bpod_data["states"][fs][0] for fs in flash_states])
+            ).size
+            trial_data["flashes_left"] = trial_data["flashes_left"][
+                0 : trial_data["flash_bins"]
+            ]
+            trial_data["flashes_right"] = trial_data["flashes_right"][
+                0 : trial_data["flash_bins"]
+            ]
+        else:
+            trial_data["flash_bins"] = 0
 
         trial_data["reward"] = bpod_data["trial_settings"]["Reward"]
         trial_data["training_criterion"] = bpod_data["additional_fields"][
@@ -154,10 +169,12 @@ class DailySummary(dj.Computed):
     definition = """
     # Create daily summary
 
-    -> rat.Rat
+    -> animal.Animal
     summary_date : date         # date of summary
     ---
-    message : varchar(2048)     # message to be sent over email
+    trials : int                # number of trials completed
+    reward_rate : float         # percentage of rewarded trials
+    omission_rate : float       # percentage of incomplete trials
     """
 
     CUTOFF_TIME = 28800
@@ -165,9 +182,12 @@ class DailySummary(dj.Computed):
     @property
     def key_source(self):
 
-        return rat.Rat() & (bpod.BpodMetadata() - bpod.FileClosed())
+        return animal.Animal() & (bpod.BpodMetadata() - bpod.FileClosed()) & FlashesTrial()
 
     def make(self, key):
+
+        flashes_data = (FlashesTrial() & key).fetch(format="frame")
+
 
         ### get all data from the last day ###
         today = datetime.strftime(datetime.today(), "%Y-%m-%d")
