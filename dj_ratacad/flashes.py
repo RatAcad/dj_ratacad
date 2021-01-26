@@ -165,7 +165,7 @@ class FlashesTrial(dj.Computed):
 
 
 @schema
-class DailySummary(dj.Computed):
+class DailySummary(dj.Manual):
     definition = """
     # Create daily summary
 
@@ -179,16 +179,12 @@ class DailySummary(dj.Computed):
     training_criterion : float      # training criterion at end of day
     """
 
-    CUTOFF_TIME = 28800
-
     @property
     def key_source(self):
 
-        return (
-            animal.Animal() & (bpod.BpodMetadata() - bpod.FileClosed()) & FlashesTrial()
-        )
+        return (animal.Animal() & (bpod.BpodMetadata - bpod.FileClosed()) & FlashesTrial()).fetch("KEY")
 
-    def make(self, key):
+    def _make_tuples(self, key):
 
         summary_dates = (self & key).fetch("summary_date")
         latest_summary = (
@@ -233,4 +229,9 @@ class DailySummary(dj.Computed):
                 print(
                     f"Added Flashes Summary for {summary_data['name']}, {summary_data['summary_date']}"
                 )
+
+    def populate(self):
+
+        for k in self.key_source:
+            self._make_tuples(k)
 
