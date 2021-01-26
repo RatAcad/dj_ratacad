@@ -23,7 +23,7 @@ class Details(dj.Lookup):
     """
 
     contents = [
-        ["Rat", "Long-Evans", "Charles River", "WT",  "006"],
+        ["Rat", "Long-Evans", "Charles River", "WT", "006"],
         ["Rat", "Thy1-GCaMP", "RRRC", "LE-Tg(Thy1-GCaMP6f)7", "830"],
     ]
 

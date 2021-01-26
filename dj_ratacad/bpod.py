@@ -137,9 +137,7 @@ class BpodMetadata(dj.Manual):
                         else bpod_info["SessionStartTime_UTC"]
                     )
                     bpod_id = (
-                        bpod_info["BpodName"]
-                        if "BpodName" in bpod_info
-                        else "Unknown"
+                        bpod_info["BpodName"] if "BpodName" in bpod_info else "Unknown"
                     )
 
                     box_designs = (Bpod() & f"bpod_id='{bpod_id}'").fetch()
@@ -321,6 +319,12 @@ class BpodTrialData(dj.Manual):
             print(
                 f"Added Trial data for {trial_data['name']}, {trial_data['session_datetime']}, trial = {trial_data['trial']}"
             )
+
+        else:
+
+            FileClosed.insert1(key)
+
+            print(f"Closed Bpod File for {key['name']}, {key['session_datetime']}")
 
     def populate(self):
 
