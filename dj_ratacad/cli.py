@@ -58,11 +58,13 @@ def summary(protocol, date=None):
     """
 
     import importlib
-    from datetime import datetime
+    from datetime import datetime, timedelta
 
     if date is None:
-        date = datetime.today().strftime("%Y-%m-%d")
+        date = (datetime.today() - timedelta(days=1)).strftime("%Y-%m-%d")
 
     dj_schema = importlib.import_module(f"dj_ratacad.{protocol}")
-    tbl = dj_schema.DailySummary() & f"summary_date='{date}'"
+    tbl = (dj_schema.DailySummary() & f"summary_date='{date}'").fetch(format="frame")
+    tbl.reset_index(inplace=True)
+
     print(tbl)
