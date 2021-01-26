@@ -170,11 +170,13 @@ class DailySummary(dj.Computed):
     # Create daily summary
 
     -> animal.Animal
-    summary_date : date         # date of summary
+    summary_date : date             # date of summary
     ---
-    trials : int                # number of trials completed
-    reward_rate : float         # percentage of rewarded trials
-    omission_rate : float       # percentage of incomplete trials
+    trials : int                    # number of trials completed
+    reward_rate : float             # percentage of rewarded trials
+    omission_rate : float           # percentage of incomplete trials
+    training_stage : tinyint        # stage at end of day
+    training_criterion : float      # training criterion at end of day
     """
 
     CUTOFF_TIME = 28800
@@ -182,51 +184,53 @@ class DailySummary(dj.Computed):
     @property
     def key_source(self):
 
-        return animal.Animal() & (bpod.BpodMetadata() - bpod.FileClosed()) & FlashesTrial()
+        return (
+            animal.Animal() & (bpod.BpodMetadata() - bpod.FileClosed()) & FlashesTrial()
+        )
 
     def make(self, key):
 
-        flashes_data = (FlashesTrial() & key).fetch(format="frame")
+        summary_dates = (self & key).fetch("summary_date")
+        latest_summary = (
+            summary_dates[-1] if len(summary_dates) > 0 else datetime(2020, 7, 1)
+        )
+        latest_summary_str = latest_summary.strftime("%Y-%m-%d")
+        today_str = datetime.today().strftime("%Y-%m-%d")
 
-
-        ### get all data from the last day ###
-        today = datetime.strftime(datetime.today(), "%Y-%m-%d")
-        yesterday = datetime.strftime(datetime.today() - timedelta(days=1), "%Y-%m-%d")
-
-        current_day = (
+        trial_datetime, outcome, stage, training_criterion = (
             FlashesTrial()
-            & (
-                bpod.BpodTrialData()
-                & f"trial_date='{today}'"
-                & f"trial_time<'08:00:00'"
-            )
             & key
-        ).fetch(as_dict=True)
-        last_day = (
-            FlashesTrial()
-            & (
-                bpod.BpodTrialData()
-                & f"trial_date='{yesterday}'"
-                & f"trial_time>'08:00:00'"
-            )
-            & key
-        ).fetch(as_dict=True)
-        last_24hr = last_day + current_day
+            & f"trial_datetime>'{latest_summary_str}'"
+            & f"trial_datetime<'{today_str}'"
+        ).fetch("trial_datetime", "outcome", "stage", "training_criterion")
 
-        if len(last_24hr) > 0:
-            n_trials = len(last_24hr)
-            rewards = sum([t["outcome"] == "correct" for t in last_24hr])
-            stage = last_24hr[-1]["stage"]
-            training_criterion = last_24hr[-1]["training_criterion"]
+        if len(trial_datetime) > 0:
 
-            msg = (
-                f"{key['name']}\n"
-                f"trials = {n_trials}\n"
-                f"rewards = {rewards}\n"
-                f"stage = {stage}\n"
-                f"training criterion = {training_criterion}"
-            )
+            all_dates = [t.date() for t in trial_datetime]
+            unique_dates = np.unique(all_dates)
 
-            summary = {"name": key["name"], "summary_date": today, "message": msg}
+            for d in unique_dates:
 
-            self.insert1(summary)
+                these_trials = np.flatnonzero([a == d for a in all_dates])
+                these_outcomes = outcome[these_trials]
+                these_stages = stage[these_trials]
+                these_criterion = training_criterion[these_trials]
+
+                summary_data = key.copy()
+                summary_data["summary_date"] = d
+                summary_data["trials"] = len(these_trials)
+                summary_data["reward_rate"] = sum(
+                    (these_stages < 3) | (these_outcomes == "correct")
+                ) / len(these_trials)
+                summary_data["omission_rate"] = sum(
+                    (these_stages > 3) & (these_outcomes == "omission")
+                ) / len(these_trials)
+                summary_data["training_stage"] = these_stages[-1]
+                summary_data["training_criterion"] = these_criterion[-1]
+
+                self.insert1(summary_data)
+
+                print(
+                    f"Added Flashes Summary for {summary_data['name']}, {summary_data['summary_date']}"
+                )
+
