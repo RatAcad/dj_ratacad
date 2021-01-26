@@ -66,4 +66,5 @@ def summary(protocol, date=None):
     dj_schema = importlib.import_module(f"dj_ratacad.{protocol}")
     tbl = (dj_schema.DailySummary() & f"summary_date='{date}'").fetch(format="frame")
     tbl.reset_index(inplace=True)
+
     print(tbl)

@@ -234,4 +234,3 @@ class DailySummary(dj.Manual):
 
         for k in self.key_source:
             self._make_tuples(k)
-
