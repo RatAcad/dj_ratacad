@@ -2,10 +2,18 @@
 dj-ratacad command line interface
 """
 
+import click
 
-def daily_update():
 
-    """ setup """
+@click.group()
+def cli():
+    pass
+
+
+@cli.command()
+def update():
+    """ update database
+    """
 
     from loguru import logger
     import sys
@@ -33,27 +41,28 @@ def daily_update():
 
     """ populate metadata for new files """
 
-    #bpod.BpodMetadata.populate()
+    bpod.BpodMetadata.populate()
 
     """ populate trial data """
 
-    #bpod.BpodTrialData.populate()
+    bpod.BpodTrialData.populate()
     flashes.FlashesTrial.populate()
-    # flashes.DailySummary.populate()
+    flashes.DailySummary.populate()
 
 
-if __name__ == "__main__":
+@cli.command()
+@click.argument("protocol")
+@click.option("-d", "--date", type=str, help="date of summary to return")
+def summary(protocol, date=None):
+    """ print daily summary
+    """
 
-    import argparse
+    import importlib
+    from datetime import datetime
 
-    parser = argparse.ArgumentParser()
-    parser.add_argument("command", type=str)
-    args = parser.parse_args()
+    if date is None:
+        date = datetime.today().strftime("%Y-%m-%d")
 
-    if args.command == "update":
-
-        daily_update()
-
-    else:
-
-        raise Exception(f"command = {args.command} not implemented.")
+    dj_schema = importlib.import_module(f"dj_ratacad.{protocol}")
+    tbl = dj_schema.DailySummary() & f"summary_date='{date}'"
+    print(tbl)

@@ -1,6 +1,5 @@
 from setuptools import setup, find_packages
 
-
 setup(
     name="dj_ratacad",
     version="0.0.0b0",
@@ -11,9 +10,10 @@ setup(
         "numpy",
         "scipy",
         "mat73",
-        "loguru"
+        "loguru",
+        "click",
     ],
-    scripts=['scripts/dj-ratacad'],
+    entry_points={"console_scripts": ["dj-ratacad=dj_ratacad.cli:cli"]},
     author="Gary Kane",
     author_email="gakane@bu.edu",
     description="Datajoint pipeline for the Scott Lab Rat Academy",
