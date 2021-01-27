@@ -190,7 +190,7 @@ class DailySummary(dj.Manual):
         latest_summary = (
             summary_dates[-1] if len(summary_dates) > 0 else datetime(2020, 7, 1)
         )
-        latest_summary_str = latest_summary.strftime("%Y-%m-%d")
+        latest_summary_str = (latest_summary + timedelta(days=1)).strftime("%Y-%m-%d")
         today_str = datetime.today().strftime("%Y-%m-%d")
 
         trial_datetime, outcome, stage, training_criterion = (
