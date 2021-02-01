@@ -116,26 +116,45 @@ class BpodMetadata(dj.Manual):
 
             try:
 
-                _, protocol, date, time = nf.stem.split("_")
+                _, protocol, _, _ = nf.stem.split("_")
 
                 if protocol in protocols:
 
                     bpod_data = load_bpod_data(BpodMetadata.DATA_DIR / nf)
                     bpod_info = bpod_data["Info"]
+                    bpod_data["TrialStartTimestamp"] = (
+                        [bpod_data["TrialStartTimestamp"]]
+                        if type(bpod_data["TrialStartTimestamp"]) is float
+                        else bpod_data["TrialStartTimestamp"]
+                    )
+                    bpod_data["TrialEndTimestamp"] = (
+                        [bpod_data["TrialEndTimestamp"]]
+                        if type(bpod_data["TrialEndTimestamp"]) is float
+                        else bpod_data["TrialEndTimestamp"]
+                    )
 
                     sess_date = (
                         bpod_info["FileDate"]
                         if "FileDate" in bpod_info
                         else bpod_info["SessionDate"]
                     )
-                    date = datetime.strftime(
-                        datetime.strptime(sess_date, "%d-%b-%Y"), "%Y-%m-%d",
-                    )
-                    time = (
+                    sess_time = (
                         bpod_info["FileStartTime_UTC"]
                         if "FileStartTime_UTC" in bpod_info
                         else bpod_info["SessionStartTime_UTC"]
                     )
+                    sess_datetime = datetime.strptime(
+                        f"{sess_date} {sess_time}", "%d-%b-%Y %H:%M:%S"
+                    )
+                    time_offset = (
+                        bpod_data["TrialEndTimestamp"][0]
+                        - bpod_data["TrialStartTimestamp"][0]
+                    )
+
+                    sess_datetime_str = (
+                        sess_datetime - timedelta(seconds=time_offset)
+                    ).strftime("%Y-%m-%d %H:%M:%S")
+
                     bpod_id = (
                         bpod_info["BpodName"] if "BpodName" in bpod_info else "Unknown"
                     )
@@ -159,7 +178,7 @@ class BpodMetadata(dj.Manual):
 
                     metadata = {
                         "name": key["name"],
-                        "session_datetime": f"{date} {time}",
+                        "session_datetime": sess_datetime_str,
                         "bpod_id": bpod_id,
                         "design": box_design,
                         "mod_date": mod_date,
@@ -180,10 +199,10 @@ class BpodMetadata(dj.Manual):
                         f"Added Metadata for {key['name']}, {metadata['session_datetime']}"
                     )
 
-            except Exception as e:
+            except TypeError as e:
 
-                print(f"Error adding file = {nf}:\n{e}")
-                traceback.print_exc()
+                print(f"Bpod Data file {nf.stem} is empty. Deleting file...")
+                (BpodMetadata.DATA_DIR / nf).unlink()
 
     def populate(self):
 
