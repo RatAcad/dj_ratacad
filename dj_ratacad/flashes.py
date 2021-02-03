@@ -182,7 +182,9 @@ class DailySummary(dj.Manual):
     @property
     def key_source(self):
 
-        return (animal.Animal() & (bpod.BpodMetadata - bpod.FileClosed()) & FlashesTrial()).fetch("KEY")
+        return (
+            animal.Animal() & (bpod.BpodMetadata - bpod.FileClosed()) & FlashesTrial()
+        ).fetch("KEY")
 
     def _make_tuples(self, key):
 
@@ -216,10 +218,12 @@ class DailySummary(dj.Manual):
                 summary_data["summary_date"] = d
                 summary_data["trials"] = len(these_trials)
                 summary_data["reward_rate"] = sum(
-                    (these_stages < 3) | (these_outcomes == "correct")
+                    ((these_stages > 0) & (these_stages < 3))
+                    | (these_outcomes == "correct")
                 ) / len(these_trials)
                 summary_data["omission_rate"] = sum(
-                    (these_stages > 3) & (these_outcomes == "omission")
+                    ((these_stages < 1) & (these_stages > 3))
+                    & (these_outcomes == "omission")
                 ) / len(these_trials)
                 summary_data["training_stage"] = these_stages[-1]
                 summary_data["training_criterion"] = these_criterion[-1]
