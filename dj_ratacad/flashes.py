@@ -57,11 +57,11 @@ class FlashesTrial(dj.Computed):
             else bpod_data["states"]["DecisionCue"][1]
         )
 
-        if (trial_data["stage"] > 1) and (
+        if (trial_data["stage"] != 1) and (
             not np.isnan(bpod_data["states"]["Correct"][0])
         ):
             dec_time = bpod_data["states"]["Correct"][0]
-        elif (trial_data["stage"] > 1) and (
+        elif (trial_data["stage"] != 1) and (
             ("Error" in bpod_data["states"].keys())
             and (not np.isnan(bpod_data["states"]["Error"][0]))
         ):
@@ -222,7 +222,7 @@ class DailySummary(dj.Manual):
                     | (these_outcomes == "correct")
                 ) / len(these_trials)
                 summary_data["omission_rate"] = sum(
-                    ((these_stages < 1) & (these_stages > 3))
+                    ((these_stages < 1) | (these_stages > 3))
                     & (these_outcomes == "omission")
                 ) / len(these_trials)
                 summary_data["training_stage"] = these_stages[-1]
