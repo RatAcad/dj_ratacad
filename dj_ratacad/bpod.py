@@ -4,7 +4,7 @@ Schema for generic Bpod Data
 
 import os
 from pathlib import Path
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 import numpy as np
 import traceback
 
@@ -95,7 +95,7 @@ class BpodMetadata(dj.Manual):
     settings_file = NULL : longblob         # SettingsFile from bpod data file 'Info'
     """
 
-    DATA_DIR = Path(os.getenv("RATACAD_DATA_DIR"))
+    DATA_DIR = Path(os.getenv("RATACAD_DATA_DIR", default=""))
 
     def key_source(self):
 
@@ -199,12 +199,19 @@ class BpodMetadata(dj.Manual):
                         f"Added Metadata for {key['name']}, {metadata['session_datetime']}"
                     )
 
-            except TypeError as e:
+            except TypeError:
 
                 print(f"Bpod Data file {nf.stem} is empty. Deleting file...")
                 (BpodMetadata.DATA_DIR / nf).unlink()
 
     def populate(self):
+
+        if BpodMetadata.DATA_DIR == Path(""):
+            raise Exception(
+                "The path to the Scott Lab ENG drive is not set. "
+                "To populate new data, please set the environmental variable 'RATACAD_DATA_DIR' "
+                "to the location of 'eng_research_scottlab/RATACAD_DATA'."
+            )
 
         for k in self.key_source():
             self._make_tuples(k)
@@ -263,7 +270,7 @@ class BpodTrialData(dj.Manual):
         already_populated = (BpodTrialData() & key).fetch("trial")
         current_trial = 0 if len(already_populated) == 0 else max(already_populated)
 
-        if bpod_data["nTrials"] - current_trial > 1:
+        if bpod_data["nTrials"] - current_trial > 0:
 
             for t in range(current_trial, bpod_data["nTrials"]):
 
@@ -341,9 +348,10 @@ class BpodTrialData(dj.Manual):
 
         else:
 
-            FileClosed.insert1(key)
-
-            print(f"Closed Bpod File for {key['name']}, {key['session_datetime']}")
+            last_trial_date = (BpodTrialData & key).fetch("trial_date")[-1]
+            if date.today() - last_trial_date >= timedelta(days=3):
+                FileClosed.insert1(key)
+                print(f"Closed Bpod File for {key['name']}, {key['session_datetime']}")
 
     def populate(self):
 
