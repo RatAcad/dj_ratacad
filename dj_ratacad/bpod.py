@@ -272,6 +272,29 @@ class BpodTrialData(dj.Manual):
 
         if bpod_data["nTrials"] - current_trial > 0:
 
+            if bpod_data["nTrials"] == 1:
+                bpod_data["TrialStartTimestamp"] = [bpod_data["TrialStartTimestamp"]]
+                bpod_data["TrialEndTimestamp"] = [bpod_data["TrialEndTimestamp"]]
+                bpod_data["DataTimestamp"] = [bpod_data["DataTimestamp"]]
+                bpod_data["RawData"]["OriginalStateNamesByNumber"] = [
+                    bpod_data["RawData"]["OriginalStateNamesByNumber"]
+                ]
+                bpod_data["RawData"]["OriginalStateData"] = [
+                    bpod_data["RawData"]["OriginalStateData"]
+                ]
+                bpod_data["RawData"]["OriginalEventData"] = [
+                    bpod_data["RawData"]["OriginalEventData"]
+                ]
+                bpod_data["RawData"]["OriginalStateTimestamps"] = [
+                    bpod_data["RawData"]["OriginalStateTimestamps"]
+                ]
+                bpod_data["RawData"]["OriginalEventTimestamps"] = [
+                    bpod_data["RawData"]["OriginalEventTimestamps"]
+                ]
+                bpod_data["RawData"]["StateMachineErrorCodes"] = [
+                    bpod_data["RawData"]["StateMachineErrorCodes"]
+                ]
+
             for t in range(current_trial, bpod_data["nTrials"]):
 
                 trial_data = key.copy()
@@ -290,7 +313,11 @@ class BpodTrialData(dj.Manual):
                 trial_data["trial_date"] = datetime.strftime(trial_datetime, "%Y-%m-%d")
                 trial_data["trial_time"] = datetime.strftime(trial_datetime, "%H:%M:%S")
 
-                raw_events = recarray_to_dict(bpod_data["RawEvents"]["Trial"][t])
+                raw_events = (
+                    recarray_to_dict(bpod_data["RawEvents"]["Trial"][t])
+                    if bpod_data["nTrials"] > 1
+                    else bpod_data["RawEvents"]["Trial"]
+                )
                 trial_data["states"] = raw_events["States"]
                 trial_data["events"] = raw_events["Events"]
 
@@ -324,9 +351,11 @@ class BpodTrialData(dj.Manual):
                 if "TrialSettings" in bpod_data:
                     trial_data["trial_settings"] = {}
                     for ts in bpod_data["TrialSettings"].keys():
-                        trial_data["trial_settings"][ts] = bpod_data["TrialSettings"][
-                            ts
-                        ][t]
+                        trial_data["trial_settings"][ts] = (
+                            bpod_data["TrialSettings"][ts][t]
+                            if bpod_data["nTrials"] > 1
+                            else bpod_data["TrialSettings"][ts]
+                        )
 
                 add_fields = [
                     k for k in bpod_data.keys() if k not in BpodTrialData.DEFAULT_FIELDS
@@ -335,7 +364,6 @@ class BpodTrialData(dj.Manual):
                     trial_data["additional_fields"] = {}
                     for af in add_fields:
                         if type(bpod_data[af]) == np.ndarray:
-                            # print(bpod_data[af].dtype)
                             trial_data["additional_fields"][af] = bpod_data[af][t]
                         else:
                             trial_data["additional_fields"][af] = bpod_data[af]
