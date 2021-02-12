@@ -25,7 +25,7 @@ class FlashesTrial(dj.Computed):
     choice=NULL : enum("left", "right", "center", "omission")   # which side did rat choose
     outcome=NULL : enum("correct", "error", "omission")         # was decision correct (i.e. rewarded)
     rt=NULL: float                                              # response time in s
-    init_time : float                                           # time from the start of the trial to initiation
+    init_time=NULL : float                                      # time from the start of the trial to initiation
     correct_side : enum("left", "right", "center")              # correct side
     lambda_left : float                                         # the probability of a left flash
     lambda_right : float                                        # the probability of a right flash
@@ -51,19 +51,22 @@ class FlashesTrial(dj.Computed):
         )
         trial_data["stage"] = bpod_data["trial_settings"]["Stage"]
 
-        trial_data["init_time"] = (
-            bpod_data["states"]["Init"][1]
-            if "Init" in bpod_data["states"]
-            else bpod_data["states"]["DecisionCue"][1]
-        )
+        if "Init" in bpod_data["states"]:
+            trial_data["init_time"] = bpod_data["states"]["Init"][1]
+        elif "DecisionCue" in bpod_data["states"]:
+            trial_data["init_time"] = bpod_data["states"]["DecisionCue"][1]
+        elif not np.isnan(bpod_data["states"]["Correct"][0]):
+            trial_data["init_time"] = bpod_data["states"]["Correct"][0]
+        elif not np.isnan(bpod_data["states"]["Correct"][0]):
+            trial_data["init_time"] = bpod_data["states"]["Error"][0]
+        else:
+            trial_data["init_time"] = -100
 
-        if (trial_data["stage"] != 1) and (
-            not np.isnan(bpod_data["states"]["Correct"][0])
-        ):
+
+        if not np.isnan(bpod_data["states"]["Correct"][0]):
             dec_time = bpod_data["states"]["Correct"][0]
-        elif (trial_data["stage"] != 1) and (
-            ("Error" in bpod_data["states"].keys())
-            and (not np.isnan(bpod_data["states"]["Error"][0]))
+        elif ("Error" in bpod_data["states"].keys()) and (
+            not np.isnan(bpod_data["states"]["Error"][0])
         ):
             dec_time = bpod_data["states"]["Error"][0]
         else:
