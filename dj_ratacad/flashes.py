@@ -105,6 +105,8 @@ class FlashesTrial(dj.Computed):
             dec_time - trial_data["init_time"] if dec_time is not None else None
         )
 
+        bpod_data["trial_settings"]["TrialFlashRates"] = [-100 if np.isnan(x) else x for x in bpod_data["trial_settings"]["TrialFlashRates"]]
+
         if trial_data["correct_side"] == "left":
             trial_data["lambda_left"] = bpod_data["trial_settings"]["TrialFlashRates"][
                 0
