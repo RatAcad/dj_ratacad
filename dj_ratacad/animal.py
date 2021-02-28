@@ -36,7 +36,7 @@ class Animal(dj.Manual):
     name : varchar(128)         # name of the animal (must be unique)
     ---
     -> Details
-    id : int                    # animal identifier number
+    id  : int                    # animal identifier number
     dob : date                  # date of birth
     pob : varchar(24)           # place of birth (BU if bred in house, otherwise where it was purchased)
     sex : enum('M', 'F', 'U')   # sex of the rat (male, female, unknown)
@@ -49,9 +49,11 @@ class Weight(dj.Manual):
     # Weights of rats
 
     -> Animal
+    weight_date          : date              # Date animal was weighed
     ---
-    weight_time : datetime      # Date animal was weighed
-    weight : decimal(5, 1)      # weight of the animal in grams (one decimal point)
+    weight               : decimal(5, 1)     # weight of the animal in grams (one decimal point)
+    baseline             : tinyint           # boolean flag for baseline or ad-lib
+    percent_adlib=NULL   : decimal(3, 2)     # percent of baseline ad-lib feeding weight (NULL if baseline weight)     
     """
 
 

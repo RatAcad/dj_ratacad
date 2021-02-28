@@ -68,3 +68,29 @@ def summary(protocol, date=None):
     tbl.reset_index(inplace=True)
 
     print(tbl)
+
+
+@cli.command()
+@click.argument("name")
+@click.argument("weight", type=float)
+@click.option("-d", "--date", type=str, help="date that animal was weighed")
+@click.option("-b", "--baseline", is_flag=True)
+def weight(name, weight, date=None, baseline=False):
+    """ log animal weights to database
+    """
+
+    from dj_ratacad import animal
+    from datetime import datetime
+
+    weight_info = {'name' : name,
+    'weight_date' : date if date is not None else datetime.today().date().strftime("%Y-%m-%d"),
+    'weight' : weight,
+    'baseline' : int(baseline)}
+
+    if not baseline:
+        baseline_weights = (animal.Weight() & f"name='{name}'" & 'baseline=1').fetch("weight")
+        mean_baseline = sum([float(w) for w in baseline_weights]) / len(baseline_weights)
+        weight_info.update({'percent_adlib' : weight / mean_baseline})
+
+    animal.Weight.insert1(weight_info)
+
