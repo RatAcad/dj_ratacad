@@ -140,6 +140,9 @@ class FlashesTrial(dj.Computed):
             flash_states = all_states[
                 [bool(re.match(r"Flash", bdk)) for bdk in all_states]
             ]
+            if "Flash0" in all_states:
+                flash_states = flash_states[1:]
+
             trial_data["flash_bins"] = np.flatnonzero(
                 ~np.isnan([bpod_data["states"][fs][0] for fs in flash_states])
             ).size
