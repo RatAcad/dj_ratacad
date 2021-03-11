@@ -2,56 +2,36 @@
 
 Python package for the Scott Lab Rat Academy datajoint pipeline. This package contains datajoint schema/table definitions, some utility functions, and command-line scripts.
 
-### Requirements
+## Requirements
 
-- Python 3: Perferably using [Anaconda](https://www.anaconda.com/products/individual) or a virtual environment
+- Python 3: Preferably using [Anaconda](https://www.anaconda.com/products/individual) or a virtual environment
+- Personal account on the Scott Lab MySQL database (managed by IS&T). See instructions [here](dj_ratacad/docs/mysql.md).
 
-### Installation (terminal commands)
+## Getting Started
 
-1. (Recommended) Set up a new conda environment and activate it:
+Once you have installed anaconda and you have a MySQL database account, please follow the instructions [here](dj_ratacad/docs/setup.md).
 
-```
-conda create -n dj python=3.7
-conda activate dj
-```
+## Pushing Data From Rat Academy Control Computers
 
-2. Install the dj_ratacad package (will install all dependencies, including datajoint):
-
-```
-pip install git+https://github.com/RatAcad/dj_ratacad
-```
-
-Or for development:
-
-```
-git clone https://github.com/RatAcad/dj_ratacad
-cd dj_ratacad
-pip install -e .
-```
-
-3. Create your datajoint configuration. Please see datajoint documentation on [setting the datajoint config object](https://docs.datajoint.io/python/setup/01-Install-and-Connect.html)
-
-### Pushing Data From Rat Academy Control Computers
-
-Stay tuned...
+All data is currently pushed to the database from the daily training computer (RKC-SOM-LD-0003, 128.197.48.15). Instructions for setting up Rat Academy Control computers can be found on the [Scott Lab google drive](https://docs.google.com/document/d/1cAN6Vq61HbuDMiVo3U-vJHP5LDsBs5Y7RIQP8cbfAQg).
 
 ### Querying Data
 
 For general information on querying data from python-datajoint databases, please see [datajoint's documentation](https://docs.datajoint.io/python/queries/Queries.html).
 
-This pipeline is designed around Bpod Trials (in the bpod.BpodTrialData table). All important information about an Bpod Trial is connected to the bpod.BpodTrialData table, including the rat, the box this rat was in and the box configuration, the protocol used, the time of the trial, etc. For more details, please see the [bpod schema definition](dj_ratacad/bpod.py), and the datajoint ERD diagram below. Further analyses that are specific to a particular task can be found in additional task-specific schema (e.g. see the [flashes task schema](dj_ratacad/flashes), which consolidates important information for each flashes task trial from the bpod.BpodTrialData table).
+For detailed information about the Scott Lab datajoint pipeline, see [here](dj_ratacad/docs/query.md).
 
-![ratacad_erd](images/dj_ratacad_erd.png)
+### Daily Summaries
 
-#### Example Queries
+Every task should have a `DailySummary` summary table, with a summary of rat performance that is populated daily. There is a command line interface to quickly access this table: `dj-ratacad summary task_name -d yyyy-mm-dd`.
 
-To query all trial data from the flashes task as a list of dictionaries (a dictionary for each trial):
+Replace `task_name` with the name of the task (e.g. `flashes`). The default date is yesterday, so if you want the summary of yesterday's behavior for the flashes task: `dj-ratacad summary flashes`.
 
-```
-from dj_ratacad import flashes
-flashes.FlashesTrial().fetch(as_dict=True)
-```
+### Logging Weights
 
-To query only data from the rat "Ron": `(flashes.FlashesTrial() & 'name="Ron"').fetch(as_dict=True)`
+There is a command line interface to log rat weights.
+- To enter a new weight: `dj-ratacad weight rat_name -d yyyy-mm-dd -w rat_weight`
+- To remove a weight from the database: `dj-ratacad weight rat_name -d yyyy-mm-dd -r`
+- To view all weights for a rat: `dj-ratacad weight rat_name -v`
 
-To query only data from the final stage of training (stage 5):`(flashes.FlashesTrial() & 'stage=5').fetch(as_dict=True)`
+Replace `rat_name` with the name of the rat and `yyyy-mm-dd` with the date the weight was recorded.

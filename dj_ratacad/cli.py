@@ -71,26 +71,79 @@ def summary(protocol, date=None):
 
 
 @cli.command()
-@click.argument("name")
-@click.argument("weight", type=float)
+@click.argument("name", type=str)
+@click.option("-w", "--weight", type=float, help="weight of animal")
 @click.option("-d", "--date", type=str, help="date that animal was weighed")
 @click.option("-b", "--baseline", is_flag=True)
-def weight(name, weight, date=None, baseline=False):
+@click.option("-r", "--remove", is_flag=True)
+@click.option("-v", "--view", is_flag=True)
+def weight(name, weight=None, date=None, baseline=False, remove=False, view=False):
     """ log animal weights to database
     """
 
     from dj_ratacad import animal
     from datetime import datetime
 
-    weight_info = {'name' : name,
-    'weight_date' : date if date is not None else datetime.today().date().strftime("%Y-%m-%d"),
-    'weight' : weight,
-    'baseline' : int(baseline)}
+    if view:
 
-    if not baseline:
-        baseline_weights = (animal.Weight() & f"name='{name}'" & 'baseline=1').fetch("weight")
-        mean_baseline = sum([float(w) for w in baseline_weights]) / len(baseline_weights)
-        weight_info.update({'percent_adlib' : weight / mean_baseline})
+        weight_df = (animal.Weight() & f"name='{name}'").fetch(format="frame")
+        print(weight_df)
 
-    animal.Weight.insert1(weight_info)
+    elif weight is None:
+
+        if not remove:
+
+            raise Exception(
+                "No action has been specified! "
+                "Must specify weight (-w) to add a weight, remove (-r) to remove a weight, or view (-v) to view weights. "
+                "Please only specify only one of weight, remove, or view."
+            )
+
+        else:
+
+            (animal.Weight() & f"name='{name}'" & f"weight_date='{date}'").delete()
+            print(f"Weight for {name} on {date} has been deleted.")
+
+    else:
+
+        if remove:
+
+            raise Exception(
+                "Both weight and remove were specified. "
+                "Not sure if it was intended to add the weight to the database or "
+                "remove the entry from the database. "
+                "Please only specify one of weight or remove."
+            )
+
+        else:
+
+            weight_info = {
+                "name": name,
+                "weight_date": date
+                if date is not None
+                else datetime.today().date().strftime("%Y-%m-%d"),
+                "weight": weight,
+                "baseline": int(baseline),
+            }
+
+            if not baseline:
+
+                baseline_dates, baseline_weights = (
+                    animal.Weight() & f"name='{name}'" & "baseline=1"
+                ).fetch("weight_date", "weight")
+
+                if datetime.strptime(date, "%Y-%m-%d") < baseline_dates[-1]:
+
+                    raise Exception(
+                        "Tried to enter a non-baseline weight that occurred before the baseline dates, "
+                        "please double-check dates the specified date."
+                    )
+
+                mean_baseline = sum([float(w) for w in baseline_weights]) / len(
+                    baseline_weights
+                )
+                weight_info.update({"percent_adlib": weight / mean_baseline})
+
+            animal.Weight.insert1(weight_info)
+            print(f"Weight for {name} on {date} = {weight} has been recorded.")
 

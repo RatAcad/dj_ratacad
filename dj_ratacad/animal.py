@@ -36,7 +36,7 @@ class Animal(dj.Manual):
     name : varchar(128)         # name of the animal (must be unique)
     ---
     -> Details
-    id  : int                    # animal identifier number
+    id  : int                   # animal identifier number
     dob : date                  # date of birth
     pob : varchar(24)           # place of birth (BU if bred in house, otherwise where it was purchased)
     sex : enum('M', 'F', 'U')   # sex of the rat (male, female, unknown)
@@ -66,6 +66,7 @@ class EuthanasiaMethod(dj.Lookup):
     """
     contents = [
         ["Transcardial Perfusion"],
+        ["Other"],
     ]
 
 
