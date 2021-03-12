@@ -132,7 +132,7 @@ def weight(name, weight=None, date=None, baseline=False, remove=False, view=Fals
                     animal.Weight() & f"name='{name}'" & "baseline=1"
                 ).fetch("weight_date", "weight")
 
-                if datetime.strptime(date, "%Y-%m-%d") < baseline_dates[-1]:
+                if datetime.strptime(date, "%Y-%m-%d").date() < baseline_dates[-1]:
 
                     raise Exception(
                         "Tried to enter a non-baseline weight that occurred before the baseline dates, "
