@@ -5,11 +5,11 @@ Python package for the Scott Lab Rat Academy datajoint pipeline. This package co
 ## Requirements
 
 - Python 3: Preferably using [Anaconda](https://www.anaconda.com/products/individual) or a virtual environment
-- Personal account on the Scott Lab MySQL database (managed by IS&T). See instructions [here](dj_ratacad/docs/mysql.md).
+- Personal account on the Scott Lab MySQL database (managed by IS&T). See instructions [here](docs/mysql.md).
 
 ## Getting Started
 
-Once you have installed anaconda and you have a MySQL database account, please follow the instructions [here](dj_ratacad/docs/setup.md).
+Once you have installed anaconda and you have a MySQL database account, please follow the instructions [here](docs/setup.md).
 
 ## Pushing Data From Rat Academy Control Computers
 
@@ -19,7 +19,7 @@ All data is currently pushed to the database from the daily training computer (R
 
 For general information on querying data from python-datajoint databases, please see [datajoint's documentation](https://docs.datajoint.io/python/queries/Queries.html).
 
-For detailed information about the Scott Lab datajoint pipeline, see [here](dj_ratacad/docs/query.md).
+For detailed information about the Scott Lab datajoint pipeline, see [here](docs/query.md).
 
 ### Daily Summaries
 

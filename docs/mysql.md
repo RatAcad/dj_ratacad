@@ -19,5 +19,5 @@ The RatAcad MySQL database is managed by IS&T. Please follow the instructions be
     - Change your password to `MyNewPass`
       - run: `ALTER USER '<your_user_name>'@'168.122.%' IDENTIFIED BY 'MyNewPass'`
 
-3. See further instructions [here](../README.md)
+3. Continue setting up Rat Academy Datajoint: see [Getting Started](setup.md)
 
