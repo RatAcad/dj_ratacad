@@ -191,7 +191,7 @@ class DailySummary(dj.Manual):
     def key_source(self):
 
         return (
-            animal.Animal() & (bpod.BpodMetadata - bpod.FileClosed()) & FlashesTrial()
+            animal.Animal() & (bpod.BpodMetadata - bpod.FileClosed()) & FlashCount()
         ).fetch("KEY")
 
     def _make_tuples(self, key):
@@ -204,7 +204,7 @@ class DailySummary(dj.Manual):
         today_str = datetime.today().strftime("%Y-%m-%d")
 
         trial_datetime, outcome, stage, training_criterion = (
-            FlashesTrial()
+            FlashCount()
             & key
             & f"trial_datetime>'{latest_summary_str}'"
             & f"trial_datetime<'{today_str}'"
