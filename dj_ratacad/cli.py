@@ -18,7 +18,7 @@ def update():
     from loguru import logger
     import sys
     from pathlib import Path
-    from dj_ratacad import bpod, flashes
+    from dj_ratacad import bpod, flashes, flashcount
 
     """ configure logger """
 
@@ -48,7 +48,8 @@ def update():
     bpod.BpodTrialData.populate()
     flashes.FlashesTrial.populate()
     flashes.DailySummary.populate()
-
+    flashcount.FlashCountTrial.populate()
+    flashcount.DailySummary.populate()
 
 @cli.command()
 @click.argument("protocol")
