@@ -39,7 +39,7 @@ class FlashCountTrial(dj.Computed):
 
     @property
     def key_source(self):
-        return bpod.BpodTrialData() & (bpod.BpodMetadata() & 'protocol="Flashes"')
+        return bpod.BpodTrialData() & (bpod.BpodMetadata() & 'protocol="FlashCount"')
 
     def make(self, key):
 
@@ -191,7 +191,7 @@ class DailySummary(dj.Manual):
     def key_source(self):
 
         return (
-            animal.Animal() & (bpod.BpodMetadata - bpod.FileClosed()) & FlashCount()
+            animal.Animal() & (bpod.BpodMetadata - bpod.FileClosed()) & FlashCountTrial()
         ).fetch("KEY")
 
     def _make_tuples(self, key):
@@ -204,7 +204,7 @@ class DailySummary(dj.Manual):
         today_str = datetime.today().strftime("%Y-%m-%d")
 
         trial_datetime, outcome, stage, training_criterion = (
-            FlashCount()
+            FlashCountTrial()
             & key
             & f"trial_datetime>'{latest_summary_str}'"
             & f"trial_datetime<'{today_str}'"
