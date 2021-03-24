@@ -51,119 +51,119 @@ class FlashCountTrial(dj.Computed):
         )
         trial_data["stage"] = bpod_data["trial_settings"]["Stage"]
 
-        if "Init" in bpod_data["states"]:
-            trial_data["init_time"] = bpod_data["states"]["Init"][1]
-        elif "DecisionCue" in bpod_data["states"]:
-            trial_data["init_time"] = bpod_data["states"]["DecisionCue"][1]
-        elif not np.isnan(bpod_data["states"]["Correct"][0]):
-            trial_data["init_time"] = bpod_data["states"]["Correct"][0]
-        elif not np.isnan(bpod_data["states"]["Correct"][0]):
-            trial_data["init_time"] = bpod_data["states"]["Error"][0]
-        else:
-            trial_data["init_time"] = -100
+#        if "Init" in bpod_data["states"]:
+#            trial_data["init_time"] = bpod_data["states"]["Init"][1]
+#        elif "DecisionCue" in bpod_data["states"]:
+#            trial_data["init_time"] = bpod_data["states"]["DecisionCue"][1]
+#        elif not np.isnan(bpod_data["states"]["Correct"][0]):
+#            trial_data["init_time"] = bpod_data["states"]["Correct"][0]
+#        elif not np.isnan(bpod_data["states"]["Correct"][0]):
+#            trial_data["init_time"] = bpod_data["states"]["Error"][0]
+#        else:
+#            trial_data["init_time"] = -100
 
 
-        if not np.isnan(bpod_data["states"]["Correct"][0]):
-            dec_time = bpod_data["states"]["Correct"][0]
-        elif ("Error" in bpod_data["states"].keys()) and (
-            not np.isnan(bpod_data["states"]["Error"][0])
-        ):
-            dec_time = bpod_data["states"]["Error"][0]
-        else:
-            dec_time = None
+#        if not np.isnan(bpod_data["states"]["Correct"][0]):
+#            dec_time = bpod_data["states"]["Correct"][0]
+#        elif ("Error" in bpod_data["states"].keys()) and (
+#            not np.isnan(bpod_data["states"]["Error"][0])
+#        ):
+#            dec_time = bpod_data["states"]["Error"][0]
+#        else:
+#            dec_time = None
 
-        if ("Port1In" in bpod_data["events"]) and (
-            dec_time in np.atleast_1d(bpod_data["events"]["Port1In"])
-        ):
-            trial_data["choice"] = "left"
-        elif ("Port3In" in bpod_data["events"]) and (
-            dec_time in np.atleast_1d(bpod_data["events"]["Port3In"])
-        ):
-            trial_data["choice"] = "right"
-        elif ("Port2In" in bpod_data["events"]) and (
-            dec_time in np.atleast_1d(bpod_data["events"]["Port2In"])
-        ):
-            trial_data["choice"] = "center"
-        else:
-            trial_data["choice"] = "omission"
+#        if ("Port1In" in bpod_data["events"]) and (
+#            dec_time in np.atleast_1d(bpod_data["events"]["Port1In"])
+#        ):
+#            trial_data["choice"] = "left"
+#        elif ("Port3In" in bpod_data["events"]) and (
+#            dec_time in np.atleast_1d(bpod_data["events"]["Port3In"])
+#        ):
+#            trial_data["choice"] = "right"
+#        elif ("Port2In" in bpod_data["events"]) and (
+#            dec_time in np.atleast_1d(bpod_data["events"]["Port2In"])
+#        ):
+#            trial_data["choice"] = "center"
+#        else:
+#            trial_data["choice"] = "omission"
 
-        if bpod_data["trial_settings"]["CorrectSide"] == 1:
-            trial_data["correct_side"] = "left"
-        elif bpod_data["trial_settings"]["CorrectSide"] == 3:
-            trial_data["correct_side"] = "right"
-        elif bpod_data["trial_settings"]["CorrectSide"] == 2:
-            trial_data["correct_side"] = "center"
+#        if bpod_data["trial_settings"]["CorrectSide"] == 1:
+#            trial_data["correct_side"] = "left"
+#        elif bpod_data["trial_settings"]["CorrectSide"] == 3:
+#            trial_data["correct_side"] = "right"
+#        elif bpod_data["trial_settings"]["CorrectSide"] == 2:
+#            trial_data["correct_side"] = "center"
 
-        if trial_data["choice"] == "omission":
-            trial_data["outcome"] = "omission"
-        elif trial_data["choice"] == trial_data["correct_side"]:
-            trial_data["outcome"] = "correct"
-        else:
-            trial_data["outcome"] = "error"
+#        if trial_data["choice"] == "omission":
+#            trial_data["outcome"] = "omission"
+#        elif trial_data["choice"] == trial_data["correct_side"]:
+#            trial_data["outcome"] = "correct"
+#        else:
+#            trial_data["outcome"] = "error"
 
-        trial_data["rt"] = (
-            dec_time - trial_data["init_time"] if dec_time is not None else None
-        )
+ #       trial_data["rt"] = (
+ #           dec_time - trial_data["init_time"] if dec_time is not None else None
+ #       )
 
-        bpod_data["trial_settings"]["TrialFlashRates"] = [-100 if np.isnan(x) else x for x in bpod_data["trial_settings"]["TrialFlashRates"]]
+ #       bpod_data["trial_settings"]["TrialFlashRates"] = [-100 if np.isnan(x) else x for x in bpod_data["trial_settings"]["TrialFlashRates"]]
 
-        if trial_data["correct_side"] == "left":
-            trial_data["lambda_left"] = bpod_data["trial_settings"]["TrialFlashRates"][
-                0
-            ]
-            trial_data["lambda_right"] = bpod_data["trial_settings"]["TrialFlashRates"][
-                1
-            ]
-            trial_data["flashes_left"] = "".join(
-                bpod_data["trial_settings"]["TrialStimuli"][0].astype(str)
-            )
-            trial_data["flashes_right"] = "".join(
-                bpod_data["trial_settings"]["TrialStimuli"][1].astype(str)
-            )
-        else:
-            trial_data["lambda_left"] = bpod_data["trial_settings"]["TrialFlashRates"][
-                1
-            ]
-            trial_data["lambda_right"] = bpod_data["trial_settings"]["TrialFlashRates"][
-                0
-            ]
-            trial_data["flashes_left"] = "".join(
-                bpod_data["trial_settings"]["TrialStimuli"][1].astype(str)
-            )
-            trial_data["flashes_right"] = "".join(
-                bpod_data["trial_settings"]["TrialStimuli"][0].astype(str)
-            )
+#        if trial_data["correct_side"] == "left":
+#            trial_data["lambda_left"] = bpod_data["trial_settings"]["TrialFlashRates"][
+#                0
+#            ]
+#            trial_data["lambda_right"] = bpod_data["trial_settings"]["TrialFlashRates"][
+#                1
+#            ]
+#            trial_data["flashes_left"] = "".join(
+#                bpod_data["trial_settings"]["TrialStimuli"][0].astype(str)
+#            )
+#            trial_data["flashes_right"] = "".join(
+#                bpod_data["trial_settings"]["TrialStimuli"][1].astype(str)
+#            )
+#       else:
+#            trial_data["lambda_left"] = bpod_data["trial_settings"]["TrialFlashRates"][
+#                1
+#            ]
+#            trial_data["lambda_right"] = bpod_data["trial_settings"]["TrialFlashRates"][
+#                0
+#            ]
+#            trial_data["flashes_left"] = "".join(
+#                bpod_data["trial_settings"]["TrialStimuli"][1].astype(str)
+#            )
+#            trial_data["flashes_right"] = "".join(
+#                bpod_data["trial_settings"]["TrialStimuli"][0].astype(str)
+#            )
 
-        max_flashes = len(trial_data["flashes_left"])
-        if max_flashes > 1:
-            all_states = np.fromiter(bpod_data["states"].keys(), "U25")
-            flash_states = all_states[
-                [bool(re.match(r"Flash", bdk)) for bdk in all_states]
-            ]
-            if "Flash0" in all_states:
-                flash_states = flash_states[1:]
+#        max_flashes = len(trial_data["flashes_left"])
+#        if max_flashes > 1:
+#            all_states = np.fromiter(bpod_data["states"].keys(), "U25")
+#            flash_states = all_states[
+#                [bool(re.match(r"Flash", bdk)) for bdk in all_states]
+#            ]
+#            if "Flash0" in all_states:
+#                flash_states = flash_states[1:]
 
-            trial_data["flash_bins"] = np.flatnonzero(
-                ~np.isnan([bpod_data["states"][fs][0] for fs in flash_states])
-            ).size
-            trial_data["flashes_left"] = trial_data["flashes_left"][
-                0 : trial_data["flash_bins"]
-            ]
-            trial_data["flashes_right"] = trial_data["flashes_right"][
-                0 : trial_data["flash_bins"]
-            ]
-        else:
-            trial_data["flash_bins"] = 0
+#            trial_data["flash_bins"] = np.flatnonzero(
+#                ~np.isnan([bpod_data["states"][fs][0] for fs in flash_states])
+#            ).size
+ #           trial_data["flashes_left"] = trial_data["flashes_left"][
+ #               0 : trial_data["flash_bins"]
+ #           ]
+ #           trial_data["flashes_right"] = trial_data["flashes_right"][
+ #               0 : trial_data["flash_bins"]
+ #           ]
+ #       else:
+ #           trial_data["flash_bins"] = 0
 
         trial_data["reward"] = bpod_data["trial_settings"]["Reward"]
         trial_data["training_criterion"] = bpod_data["additional_fields"][
             "TrainingCriterion"
         ]
-        trial_data["label"] = (
-            bpod_data["trial_settings"]["Label"]
-            if "Label" in bpod_data["trial_settings"]
-            else None
-        )
+#        trial_data["label"] = (
+#            bpod_data["trial_settings"]["Label"]
+#            if "Label" in bpod_data["trial_settings"]
+#            else None
+#        )
 
         self.insert1(trial_data)
 
