@@ -72,67 +72,59 @@ class FlashCountTrial(dj.Computed):
 #        else:
 #            dec_time = None
 
-#        if ("Port1In" in bpod_data["events"]) and (
-#            dec_time in np.atleast_1d(bpod_data["events"]["Port1In"])
-#        ):
-#            trial_data["choice"] = "left"
-#        elif ("Port3In" in bpod_data["events"]) and (
-#            dec_time in np.atleast_1d(bpod_data["events"]["Port3In"])
-#        ):
-#            trial_data["choice"] = "right"
-#        elif ("Port2In" in bpod_data["events"]) and (
-#            dec_time in np.atleast_1d(bpod_data["events"]["Port2In"])
-#        ):
-#            trial_data["choice"] = "center"
-#        else:
-#            trial_data["choice"] = "omission"
+        if ("Port1In" in bpod_data["events"]) and (
+            dec_time in np.atleast_1d(bpod_data["events"]["Port1In"])
+        ):
+            trial_data["choice"] = "left"
+        elif ("Port3In" in bpod_data["events"]) and (
+            dec_time in np.atleast_1d(bpod_data["events"]["Port3In"])
+        ):
+            trial_data["choice"] = "right"
+        elif ("Port2In" in bpod_data["events"]) and (
+            dec_time in np.atleast_1d(bpod_data["events"]["Port2In"])
+        ):
+            trial_data["choice"] = "center"
+        else:
+            trial_data["choice"] = "omission"
 
-#        if bpod_data["trial_settings"]["CorrectSide"] == 1:
-#            trial_data["correct_side"] = "left"
-#        elif bpod_data["trial_settings"]["CorrectSide"] == 3:
-#            trial_data["correct_side"] = "right"
-#        elif bpod_data["trial_settings"]["CorrectSide"] == 2:
-#            trial_data["correct_side"] = "center"
+        if bpod_data["trial_settings"]["CorrectSide"] == 1:
+            trial_data["correct_side"] = "left"
+        elif bpod_data["trial_settings"]["CorrectSide"] == 3:
+            trial_data["correct_side"] = "right"
+        elif bpod_data["trial_settings"]["CorrectSide"] == 2:
+            trial_data["correct_side"] = "center"
 
-#        if trial_data["choice"] == "omission":
-#            trial_data["outcome"] = "omission"
-#        elif trial_data["choice"] == trial_data["correct_side"]:
-#            trial_data["outcome"] = "correct"
-#        else:
-#            trial_data["outcome"] = "error"
+        if trial_data["choice"] == "omission":
+            trial_data["outcome"] = "omission"
+        elif trial_data["choice"] == trial_data["correct_side"]:
+            trial_data["outcome"] = "correct"
+        else:
+            trial_data["outcome"] = "error"
 
  #       trial_data["rt"] = (
  #           dec_time - trial_data["init_time"] if dec_time is not None else None
  #       )
 
- #       bpod_data["trial_settings"]["TrialFlashRates"] = [-100 if np.isnan(x) else x for x in bpod_data["trial_settings"]["TrialFlashRates"]]
+        bpod_data["trial_settings"]["TrialFlashRates"] = [-100 if np.isnan(x) else x for x in bpod_data["trial_settings"]["TrialFlashRates"]]
 
-#        if trial_data["correct_side"] == "left":
-#            trial_data["lambda_left"] = bpod_data["trial_settings"]["TrialFlashRates"][
-#                0
-#            ]
-#            trial_data["lambda_right"] = bpod_data["trial_settings"]["TrialFlashRates"][
-#                1
-#            ]
-#            trial_data["flashes_left"] = "".join(
-#                bpod_data["trial_settings"]["TrialStimuli"][0].astype(str)
-#            )
-#            trial_data["flashes_right"] = "".join(
-#                bpod_data["trial_settings"]["TrialStimuli"][1].astype(str)
-#            )
-#       else:
-#            trial_data["lambda_left"] = bpod_data["trial_settings"]["TrialFlashRates"][
-#                1
-#            ]
-#            trial_data["lambda_right"] = bpod_data["trial_settings"]["TrialFlashRates"][
-#                0
-#            ]
-#            trial_data["flashes_left"] = "".join(
-#                bpod_data["trial_settings"]["TrialStimuli"][1].astype(str)
-#            )
-#            trial_data["flashes_right"] = "".join(
-#                bpod_data["trial_settings"]["TrialStimuli"][0].astype(str)
-#            )
+        if trial_data["correct_side"] == "left":
+            trial_data["lambda_left"] = bpod_data["trial_settings"]["TrialFlashRates"][0]
+            trial_data["lambda_right"] = bpod_data["trial_settings"]["TrialFlashRates"][1]
+            trial_data["flashes_left"] = "".join(
+                bpod_data["trial_settings"]["TrialStimuli"][0].astype(str)
+            )
+            trial_data["flashes_right"] = "".join(
+                bpod_data["trial_settings"]["TrialStimuli"][1].astype(str)
+            )
+       else:
+            trial_data["lambda_left"] = bpod_data["trial_settings"]["TrialFlashRates"][1]
+            trial_data["lambda_right"] = bpod_data["trial_settings"]["TrialFlashRates"][0]
+            trial_data["flashes_left"] = "".join(
+                bpod_data["trial_settings"]["TrialStimuli"][1].astype(str)
+            )
+            trial_data["flashes_right"] = "".join(
+                bpod_data["trial_settings"]["TrialStimuli"][0].astype(str)
+            )
 
 #        max_flashes = len(trial_data["flashes_left"])
 #        if max_flashes > 1:
@@ -154,7 +146,7 @@ class FlashCountTrial(dj.Computed):
  #           ]
  #       else:
  #           trial_data["flash_bins"] = 0
-
+        trial_data["flash_bins"] = 0
         trial_data["reward"] = bpod_data["trial_settings"]["Reward"]
         trial_data["training_criterion"] = bpod_data["additional_fields"][
             "TrainingCriterion"
