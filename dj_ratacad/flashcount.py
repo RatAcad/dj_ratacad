@@ -116,7 +116,7 @@ class FlashCountTrial(dj.Computed):
             trial_data["flashes_right"] = "".join(
                 bpod_data["trial_settings"]["TrialStimuli"][1].astype(str)
             )
-       else:
+        else:
             trial_data["lambda_left"] = bpod_data["trial_settings"]["TrialFlashRates"][1]
             trial_data["lambda_right"] = bpod_data["trial_settings"]["TrialFlashRates"][0]
             trial_data["flashes_left"] = "".join(
