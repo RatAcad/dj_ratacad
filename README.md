@@ -11,27 +11,14 @@ Python package for the Scott Lab Rat Academy datajoint pipeline. This package co
 
 Once you have installed anaconda and you have a MySQL database account, please follow the instructions [here](docs/setup.md).
 
-## Pushing Data From Rat Academy Control Computers
+## Pushing Data to datajoint From Rat Academy Control Computers
 
-All data is currently pushed to the database from the daily training computer (RKC-SOM-LD-0003, 128.197.48.15). Instructions for setting up Rat Academy Control computers can be found on the [Scott Lab google drive](https://docs.google.com/document/d/1cAN6Vq61HbuDMiVo3U-vJHP5LDsBs5Y7RIQP8cbfAQg).
+All data is currently pushed to the database everyday at 2 AM from the daily training computer (`RKC-SOM-LD-0003`, ip = `128.197.48.15`). If there are any issues with transferring data to datajoint, please refer to log files on this machine (located at `/home/ratacad1/dj_ratacad.log`). Instructions for setting up Rat Academy Control computers, including instructions for setting up this automated data transfer, can be found on the [Scott Lab google drive](https://docs.google.com/document/d/1cAN6Vq61HbuDMiVo3U-vJHP5LDsBs5Y7RIQP8cbfAQg).
 
-### Querying Data
+## Using dj_ratacad
 
-For general information on querying data from python-datajoint databases, please see [datajoint's documentation](https://docs.datajoint.io/python/queries/Queries.html).
-
-For detailed information about the Scott Lab datajoint pipeline, see [here](docs/query.md).
-
-### Daily Summaries
-
-Every task should have a `DailySummary` summary table, with a summary of rat performance that is populated daily. There is a command line interface to quickly access this table: `dj-ratacad summary task_name -d yyyy-mm-dd`.
-
-Replace `task_name` with the name of the task (e.g. `flashes`). The default date is yesterday, so if you want the summary of yesterday's behavior for the flashes task: `dj-ratacad summary flashes`.
-
-### Logging Weights
-
-There is a command line interface to log rat weights.
-- To enter a new weight: `dj-ratacad weight rat_name -d yyyy-mm-dd -w rat_weight`
-- To remove a weight from the database: `dj-ratacad weight rat_name -d yyyy-mm-dd -r`
-- To view all weights for a rat: `dj-ratacad weight rat_name -v`
-
-Replace `rat_name` with the name of the rat and `yyyy-mm-dd` with the date the weight was recorded.
+Documentation for using dj_ratacad can be found below:
+- [Adding new animals](docs/animal.md)
+- [Querying data](docs/query.md)
+- [Checking daily summaries](docs/summary.md)
+- [Logging animal weights](docs/weight.md)
