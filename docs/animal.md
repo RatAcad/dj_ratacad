@@ -1,6 +1,6 @@
 ## Adding new animals
 
-When you begin to test new animals, they must be manually added to the database. There are two tables that are important for tracking animals:
+When you begin to test new animals, they must be manually added to the database. There are two tables that are important for tracking animal details:
 - animal.Details: details for different strains of animals
 - animal.Animal: details for specific animal
 
