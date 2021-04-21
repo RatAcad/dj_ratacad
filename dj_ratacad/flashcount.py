@@ -76,6 +76,7 @@ class FlashCountTrial(dj.Computed):
 
    	    if not np.isnan(bpod_data["states"]["Correct"][0]):
             dec_time = bpod_data["states"]["Correct"][0]
+
         elif ("Error" in bpod_data["states"].keys()) and (
             not np.isnan(bpod_data["states"]["Error"][0])
         ):
