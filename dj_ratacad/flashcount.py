@@ -53,14 +53,14 @@ class FlashCountTrial(dj.Computed):
        	trial_data["stage"] = bpod_data["trial_settings"]["Stage"]
 
         if ("Probe" in bpod_data["trial_settings"].keys()):
-    		trial_data["probe"] = bpod_data["trial_settings"]["Probe"]
-    	else:
-    		trial_data["probe"] = 0
+            trial_data["probe"] = bpod_data["trial_settings"]["Probe"]
+        else:
+            trial_data["probe"] = 0
 
-    	if ("FreeS3" in bpod_data["trial_settings"].keys()):
-    		trial_data["freeS3"] = bpod_data["trial_settings"]["FreeS3"]
-    	else:
-    		trial_data["freeS3"] = 0
+        if ("FreeS3" in bpod_data["trial_settings"].keys()):
+    	    trial_data["freeS3"] = bpod_data["trial_settings"]["FreeS3"]
+        else:
+    	    trial_data["freeS3"] = 0
 
 #        if "Init" in bpod_data["states"]:
 #            trial_data["init_time"] = bpod_data["states"]["Init"][1]
