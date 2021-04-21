@@ -50,7 +50,8 @@ class FlashCountTrial(dj.Computed):
             "count" if bpod_data["trial_settings"]["Task"] == 1 else "rate"
         )
         trial_data["stage"] = bpod_data["trial_settings"]["Stage"]
-
+        trial_data["probe"] = bpod_data["trial_settings"]["Probe"]
+        trial_data["freeS3"] = bpod_data["trial_settings"]["FreeS3"]
 #        if "Init" in bpod_data["states"]:
 #            trial_data["init_time"] = bpod_data["states"]["Init"][1]
 #        elif "DecisionCue" in bpod_data["states"]:
@@ -69,6 +70,14 @@ class FlashCountTrial(dj.Computed):
             not np.isnan(bpod_data["states"]["Error"][0])
         ):
             dec_time = bpod_data["states"]["Error"][0]
+        elif ("ErrorProbe" in bpod_data["states"].keys()) and (
+            not np.isnan(bpod_data["states"]["ErrorProbe"][0])
+        ):
+            dec_time = bpod_data["states"]["ErrorProbe"][0]
+        elif ("CorrectProbe" in bpod_data["states"].keys()) and (
+            not np.isnan(bpod_data["states"]["CorrectProbe"][0])
+        ):
+            dec_time = bpod_data["states"]["CorrectProbe"][0]
         else:
             dec_time = None
 
