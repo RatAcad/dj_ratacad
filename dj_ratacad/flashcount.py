@@ -35,6 +35,9 @@ class FlashCountTrial(dj.Computed):
     reward : int                                                # reward size (in uL)
     training_criterion : float                                  # training criterion variable
     label=NULL : varchar(24)                                    # experiment label
+    probe : int                                                 # probe setting
+    freeS3 : int                                                # free reward setting in stage 3
+    isProbe : int                                               # whether trial is a probe trial 
     """
 
 	@property
