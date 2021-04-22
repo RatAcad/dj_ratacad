@@ -76,20 +76,29 @@ class FlashCountTrial(dj.Computed):
 
 		if not np.isnan(bpod_data["states"]["Correct"][0]):
 			dec_time = bpod_data["states"]["Correct"][0]
+			trial_data["isProbe"] = 0
+		
 		elif ("Error" in bpod_data["states"].keys()) and (
 			not np.isnan(bpod_data["states"]["Error"][0])
 		):
 			dec_time = bpod_data["states"]["Error"][0]
+			trial_data["isProbe"] = 0
+
 		elif ("ErrorProbe" in bpod_data["states"].keys()) and (
 			not np.isnan(bpod_data["states"]["ErrorProbe"][0])
 		):
 			dec_time = bpod_data["states"]["ErrorProbe"][0]
+			trial_data["isProbe"] = 1
+
 		elif ("CorrectProbe" in bpod_data["states"].keys()) and (
 			not np.isnan(bpod_data["states"]["CorrectProbe"][0])
 		):
 			dec_time = bpod_data["states"]["CorrectProbe"][0]
+			trial_data["isProbe"] = 1
+
 		else:
 			dec_time = None
+			trial_data["isProbe"] = 0
 
 		if ("Port1In" in bpod_data["events"]) and (
 			dec_time in np.atleast_1d(bpod_data["events"]["Port1In"])
