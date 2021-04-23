@@ -18,27 +18,27 @@ class FlashCountTrial(dj.Computed):
 	definition = """
     # Gather Flashes task specific data
 
-    -> bpod.BpodTrialData
-    task : enum("count", "rate")                                # which task -- the flash counting task or the free response flash rate task
-    stage : tinyint                                             # training stage
-    ---
-    choice=NULL : enum("left", "right", "center", "omission")   # which side did rat choose
-    outcome=NULL : enum("correct", "error", "omission")         # was decision correct (i.e. rewarded)
-    rt=NULL: float                                              # response time in s
-    init_time=NULL : float                                      # time from the start of the trial to initiation
-    correct_side : enum("left", "right", "center")              # correct side
-    lambda_left : float                                         # the probability of a left flash
-    lambda_right : float                                        # the probability of a right flash
-    flash_bins : int                                            # number of flash bins
-    flashes_left : varchar(100)                                 # flash sequence on the left side as a string (0 for no flash, 1 for flash)
-    flashes_right : varchar(100)                                # flash sequence on the right side as a string (0 for no flash, 1 for flash)
-    reward : int                                                # reward size (in uL)
-    training_criterion : float                                  # training criterion variable
-    label=NULL : varchar(24)                                    # experiment label
-    probe : int                                                 # probe setting
-    freeS3 : int                                                # free reward setting in stage 3
-    isProbe : int                                               # whether trial is a probe trial 
-    """
+	-> bpod.BpodTrialData
+	task : enum("count", "rate")                                # which task -- the flash counting task or the free response flash rate task
+	stage : tinyint                                             # training stage
+	---
+	choice=NULL : enum("left", "right", "center", "omission")   # which side did rat choose
+	outcome=NULL : enum("correct", "error", "omission")         # was decision correct (i.e. rewarded)
+	rt=NULL: float                                              # response time in s
+	init_time=NULL : float                                      # time from the start of the trial to initiation
+	correct_side : enum("left", "right", "center")              # correct side
+	lambda_left : float                                         # the probability of a left flash
+	lambda_right : float                                        # the probability of a right flash
+	flash_bins : int                                            # number of flash bins
+	flashes_left : varchar(100)                                 # flash sequence on the left side as a string (0 for no flash, 1 for flash)
+	flashes_right : varchar(100)                                # flash sequence on the right side as a string (0 for no flash, 1 for flash)
+	reward : int                                                # reward size (in uL)
+	training_criterion : float                                  # training criterion variable
+	label=NULL : varchar(24)                                    # experiment label
+	probe=0 : int                                               # probe setting
+	freerw=0 : int                                              # free reward setting in stage 3
+	isProbe=0 : int                                             # whether trial is a probe trial 
+	"""
 
 	@property
 	def key_source(self):
@@ -61,9 +61,9 @@ class FlashCountTrial(dj.Computed):
 			trial_data["probe"] = 0
 
 		if ("FreeS3" in bpod_data["trial_settings"].keys()):
-			trial_data["freeS3"] = bpod_data["trial_settings"]["FreeS3"]
+			trial_data["freerw"] = bpod_data["trial_settings"]["FreeS3"]
 		else:
-			trial_data["freeS3"] = 0
+			trial_data["freerw"] = 0
 
 #        if "Init" in bpod_data["states"]:
 #            trial_data["init_time"] = bpod_data["states"]["Init"][1]
