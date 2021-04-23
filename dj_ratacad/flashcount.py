@@ -35,9 +35,9 @@ class FlashCountTrial(dj.Computed):
 	reward : int                                                # reward size (in uL)
 	training_criterion : float                                  # training criterion variable
 	label=NULL : varchar(24)                                    # experiment label
-	probe=0 : int                                               # probe setting
-	freerw=0 : int                                              # free reward setting in stage 3
-	isProbe=0 : int                                             # whether trial is a probe trial 
+	probe  :  int                                                  # probe setting
+	freerw  : int                                                 # free reward setting in stage 3
+	isprobe  : int                                                # whether trial is a probe trial 
 	"""
 
 	@property
@@ -79,29 +79,29 @@ class FlashCountTrial(dj.Computed):
 
 		if not np.isnan(bpod_data["states"]["Correct"][0]):
 			dec_time = bpod_data["states"]["Correct"][0]
-			trial_data["isProbe"] = 0
+			trial_data["isprobe"] = 0
 		
 		elif ("Error" in bpod_data["states"].keys()) and (
 			not np.isnan(bpod_data["states"]["Error"][0])
 		):
 			dec_time = bpod_data["states"]["Error"][0]
-			trial_data["isProbe"] = 0
+			trial_data["isprobe"] = 0
 
 		elif ("ErrorProbe" in bpod_data["states"].keys()) and (
 			not np.isnan(bpod_data["states"]["ErrorProbe"][0])
 		):
 			dec_time = bpod_data["states"]["ErrorProbe"][0]
-			trial_data["isProbe"] = 1
+			trial_data["isprobe"] = 1
 
 		elif ("CorrectProbe" in bpod_data["states"].keys()) and (
 			not np.isnan(bpod_data["states"]["CorrectProbe"][0])
 		):
 			dec_time = bpod_data["states"]["CorrectProbe"][0]
-			trial_data["isProbe"] = 1
+			trial_data["isprobe"] = 1
 
 		else:
 			dec_time = None
-			trial_data["isProbe"] = 0
+			trial_data["isprobe"] = 0
 
 		if ("Port1In" in bpod_data["events"]) and (
 			dec_time in np.atleast_1d(bpod_data["events"]["Port1In"])
