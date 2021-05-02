@@ -44,6 +44,10 @@ class FlashesTrial(dj.Computed):
     def make(self, key):
 
         bpod_data = (bpod.BpodTrialData() & key).fetch(as_dict=True)[0]
+        all_states = np.fromiter(bpod_data["states"].keys(), "U25")
+        visited_states = [
+            state for state in all_states if not np.isnan(bpod_data["states"][state][0])
+        ]
 
         trial_data = key.copy()
         trial_data["task"] = (
@@ -57,14 +61,14 @@ class FlashesTrial(dj.Computed):
             trial_data["init_time"] = bpod_data["states"]["DecisionCue"][1]
         elif not np.isnan(bpod_data["states"]["Correct"][0]):
             trial_data["init_time"] = bpod_data["states"]["Correct"][0]
-        elif not np.isnan(bpod_data["states"]["Correct"][0]):
+        elif not np.isnan(bpod_data["states"]["Error"][0]):
             trial_data["init_time"] = bpod_data["states"]["Error"][0]
         else:
             trial_data["init_time"] = -100
 
-
-        if not np.isnan(bpod_data["states"]["Correct"][0]):
-            dec_time = bpod_data["states"]["Correct"][0]
+        if not np.isnan(bpod_data["states"]["Consume"][0]):
+            correct_state = [vs for vs in visited_states if "Correct" in vs][0]
+            dec_time = bpod_data["states"][correct_state][0]
         elif ("Error" in bpod_data["states"].keys()) and (
             not np.isnan(bpod_data["states"]["Error"][0])
         ):
@@ -105,7 +109,10 @@ class FlashesTrial(dj.Computed):
             dec_time - trial_data["init_time"] if dec_time is not None else None
         )
 
-        bpod_data["trial_settings"]["TrialFlashRates"] = [-100 if np.isnan(x) else x for x in bpod_data["trial_settings"]["TrialFlashRates"]]
+        bpod_data["trial_settings"]["TrialFlashRates"] = [
+            -100 if np.isnan(x) else x
+            for x in bpod_data["trial_settings"]["TrialFlashRates"]
+        ]
 
         if trial_data["correct_side"] == "left":
             trial_data["lambda_left"] = bpod_data["trial_settings"]["TrialFlashRates"][
@@ -136,10 +143,10 @@ class FlashesTrial(dj.Computed):
 
         max_flashes = len(trial_data["flashes_left"])
         if max_flashes > 1:
-            all_states = np.fromiter(bpod_data["states"].keys(), "U25")
             flash_states = all_states[
                 [bool(re.match(r"Flash", bdk)) for bdk in all_states]
             ]
+
             if "Flash0" in all_states:
                 flash_states = flash_states[1:]
 
@@ -155,7 +162,11 @@ class FlashesTrial(dj.Computed):
         else:
             trial_data["flash_bins"] = 0
 
-        trial_data["reward"] = bpod_data["trial_settings"]["Reward"]
+        trial_data["reward"] = (
+            bpod_data["trial_settings"]["Reward"]
+            if len(bpod_data["trial_settings"]["Reward"]) == 1
+            else bpod_data["trial_Settings"]["Reward"][trial_data["flash_bins"]]
+        )
         trial_data["training_criterion"] = bpod_data["additional_fields"][
             "TrainingCriterion"
         ]
