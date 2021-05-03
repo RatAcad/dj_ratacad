@@ -72,6 +72,7 @@ class Bpod(dj.Lookup):
         ["Unknown", "Unknown", "2020-07-01", 0],
     ]
 
+
 @schema
 class Protocol(dj.Lookup):
     definition = """
@@ -84,7 +85,7 @@ class Protocol(dj.Lookup):
 
     contents = [
         ["Flashes", "Light flashes 2AFC task"],
-        ["FlashCount","Flash counting 2AFC task"],
+        ["FlashCount", "Flash counting 2AFC task"],
     ]
 
 
@@ -369,11 +370,12 @@ class BpodTrialData(dj.Manual):
                 add_fields = [
                     k for k in bpod_data.keys() if k not in BpodTrialData.DEFAULT_FIELDS
                 ]
+
                 if len(add_fields) > 0:
                     trial_data["additional_fields"] = {}
                     for af in add_fields:
                         if type(bpod_data[af]) == np.ndarray:
-                            trial_data["additional_fields"][af] = bpod_data[af][t]
+                            trial_data["additional_fields"][af] = bpod_data[af][t] if len(bpod_data[af]) > t else None
                         else:
                             trial_data["additional_fields"][af] = bpod_data[af]
 
