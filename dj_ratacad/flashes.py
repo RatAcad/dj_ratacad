@@ -163,7 +163,7 @@ class FlashesTrial(dj.Computed):
             trial_data["flash_bins"] = 0
 
         trial_data["reward"] = (
-            bpod_data["trial_settings"]["Reward"][trial_data["flash_bins"]]
+            bpod_data["trial_settings"]["Reward"][trial_data["flash_bins"]-1]
             if type(bpod_data["trial_settings"]["Reward"]) == np.ndarray
             else bpod_data["trial_settings"]["Reward"]
         )
