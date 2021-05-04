@@ -131,83 +131,86 @@ class BpodMetadata(dj.Manual):
                 if protocol in protocols:
 
                     bpod_data = load_bpod_data(BpodMetadata.DATA_DIR / nf)
-                    bpod_info = bpod_data["Info"]
-                    bpod_data["TrialStartTimestamp"] = (
-                        [bpod_data["TrialStartTimestamp"]]
-                        if type(bpod_data["TrialStartTimestamp"]) is float
-                        else bpod_data["TrialStartTimestamp"]
-                    )
-                    bpod_data["TrialEndTimestamp"] = (
-                        [bpod_data["TrialEndTimestamp"]]
-                        if type(bpod_data["TrialEndTimestamp"]) is float
-                        else bpod_data["TrialEndTimestamp"]
-                    )
 
-                    sess_date = (
-                        bpod_info["FileDate"]
-                        if "FileDate" in bpod_info
-                        else bpod_info["SessionDate"]
-                    )
-                    sess_time = (
-                        bpod_info["FileStartTime_UTC"]
-                        if "FileStartTime_UTC" in bpod_info
-                        else bpod_info["SessionStartTime_UTC"]
-                    )
-                    sess_datetime = datetime.strptime(
-                        f"{sess_date} {sess_time}", "%d-%b-%Y %H:%M:%S"
-                    )
-                    time_offset = (
-                        bpod_data["TrialEndTimestamp"][0]
-                        - bpod_data["TrialStartTimestamp"][0]
-                    )
+                    if bpod_data is not None:
 
-                    sess_datetime_str = (
-                        sess_datetime - timedelta(seconds=time_offset)
-                    ).strftime("%Y-%m-%d %H:%M:%S")
+                        bpod_info = bpod_data["Info"]
+                        bpod_data["TrialStartTimestamp"] = (
+                            [bpod_data["TrialStartTimestamp"]]
+                            if type(bpod_data["TrialStartTimestamp"]) is float
+                            else bpod_data["TrialStartTimestamp"]
+                        )
+                        bpod_data["TrialEndTimestamp"] = (
+                            [bpod_data["TrialEndTimestamp"]]
+                            if type(bpod_data["TrialEndTimestamp"]) is float
+                            else bpod_data["TrialEndTimestamp"]
+                        )
 
-                    bpod_id = (
-                        bpod_info["BpodName"] if "BpodName" in bpod_info else "Unknown"
-                    )
+                        sess_date = (
+                            bpod_info["FileDate"]
+                            if "FileDate" in bpod_info
+                            else bpod_info["SessionDate"]
+                        )
+                        sess_time = (
+                            bpod_info["FileStartTime_UTC"]
+                            if "FileStartTime_UTC" in bpod_info
+                            else bpod_info["SessionStartTime_UTC"]
+                        )
+                        sess_datetime = datetime.strptime(
+                            f"{sess_date} {sess_time}", "%d-%b-%Y %H:%M:%S"
+                        )
+                        time_offset = (
+                            bpod_data["TrialEndTimestamp"][0]
+                            - bpod_data["TrialStartTimestamp"][0]
+                        )
 
-                    box_designs = (Bpod() & f"bpod_id='{bpod_id}'").fetch()
-                    sess_date_dt = datetime.strptime(sess_date, "%d-%b-%Y")
-                    recent_box_index = np.flatnonzero(
-                        [
-                            sess_date_dt.date() - bd["mod_date"] > timedelta(days=0)
-                            for bd in box_designs
-                        ]
-                    )
+                        sess_datetime_str = (
+                            sess_datetime - timedelta(seconds=time_offset)
+                        ).strftime("%Y-%m-%d %H:%M:%S")
 
-                    if len(recent_box_index) > 0:
-                        box_design = box_designs[recent_box_index[0]][1]
-                        mod_date = box_designs[recent_box_index[0]][2]
-                    else:
-                        bpod_id = "Unknown"
-                        box_design = "Unknown"
-                        mod_date = "2020-07-01"
+                        bpod_id = (
+                            bpod_info["BpodName"] if "BpodName" in bpod_info else "Unknown"
+                        )
 
-                    metadata = {
-                        "name": key["name"],
-                        "session_datetime": sess_datetime_str,
-                        "bpod_id": bpod_id,
-                        "design": box_design,
-                        "mod_date": mod_date,
-                        "protocol": protocol,
-                        "file_path": str(nf),
-                        "state_machine_version": bpod_info["StateMachineVersion"],
-                        "session_start_time_matlab": bpod_info[
-                            "SessionStartTime_MATLAB"
-                        ],
-                        "settings_file": bpod_info["SettingsFile"]
-                        if "SettingsFile" in bpod_info
-                        else None,
-                    }
+                        box_designs = (Bpod() & f"bpod_id='{bpod_id}'").fetch()
+                        sess_date_dt = datetime.strptime(sess_date, "%d-%b-%Y")
+                        recent_box_index = np.flatnonzero(
+                            [
+                                sess_date_dt.date() - bd["mod_date"] > timedelta(days=0)
+                                for bd in box_designs
+                            ]
+                        )
 
-                    self.insert1(metadata)
+                        if len(recent_box_index) > 0:
+                            box_design = box_designs[recent_box_index[0]][1]
+                            mod_date = box_designs[recent_box_index[0]][2]
+                        else:
+                            bpod_id = "Unknown"
+                            box_design = "Unknown"
+                            mod_date = "2020-07-01"
 
-                    print(
-                        f"Added Metadata for {key['name']}, {metadata['session_datetime']}"
-                    )
+                        metadata = {
+                            "name": key["name"],
+                            "session_datetime": sess_datetime_str,
+                            "bpod_id": bpod_id,
+                            "design": box_design,
+                            "mod_date": mod_date,
+                            "protocol": protocol,
+                            "file_path": str(nf),
+                            "state_machine_version": bpod_info["StateMachineVersion"],
+                            "session_start_time_matlab": bpod_info[
+                                "SessionStartTime_MATLAB"
+                            ],
+                            "settings_file": bpod_info["SettingsFile"]
+                            if "SettingsFile" in bpod_info
+                            else None,
+                        }
+
+                        self.insert1(metadata)
+
+                        print(
+                            f"Added Metadata for {key['name']}, {metadata['session_datetime']}"
+                        )
 
             except TypeError:
 
@@ -275,122 +278,124 @@ class BpodTrialData(dj.Manual):
         fp = (BpodMetadata() & key).fetch("file_path")[0]
         bpod_data = load_bpod_data(BpodMetadata.DATA_DIR / fp)
 
-        ### check what's already been populated ###
+        if bpod_data is not None:
 
-        already_populated = (BpodTrialData() & key).fetch("trial")
-        current_trial = 0 if len(already_populated) == 0 else max(already_populated)
+            ### check what's already been populated ###
 
-        if bpod_data["nTrials"] - current_trial > 0:
+            already_populated = (BpodTrialData() & key).fetch("trial")
+            current_trial = 0 if len(already_populated) == 0 else max(already_populated)
 
-            if bpod_data["nTrials"] == 1:
-                bpod_data["TrialStartTimestamp"] = [bpod_data["TrialStartTimestamp"]]
-                bpod_data["TrialEndTimestamp"] = [bpod_data["TrialEndTimestamp"]]
-                bpod_data["DataTimestamp"] = [bpod_data["DataTimestamp"]]
-                bpod_data["RawData"]["OriginalStateNamesByNumber"] = [
-                    bpod_data["RawData"]["OriginalStateNamesByNumber"]
-                ]
-                bpod_data["RawData"]["OriginalStateData"] = [
-                    bpod_data["RawData"]["OriginalStateData"]
-                ]
-                bpod_data["RawData"]["OriginalEventData"] = [
-                    bpod_data["RawData"]["OriginalEventData"]
-                ]
-                bpod_data["RawData"]["OriginalStateTimestamps"] = [
-                    bpod_data["RawData"]["OriginalStateTimestamps"]
-                ]
-                bpod_data["RawData"]["OriginalEventTimestamps"] = [
-                    bpod_data["RawData"]["OriginalEventTimestamps"]
-                ]
-                bpod_data["RawData"]["StateMachineErrorCodes"] = [
-                    bpod_data["RawData"]["StateMachineErrorCodes"]
-                ]
+            if bpod_data["nTrials"] - current_trial > 0:
 
-            for t in range(current_trial, bpod_data["nTrials"]):
+                if bpod_data["nTrials"] == 1:
+                    bpod_data["TrialStartTimestamp"] = [bpod_data["TrialStartTimestamp"]]
+                    bpod_data["TrialEndTimestamp"] = [bpod_data["TrialEndTimestamp"]]
+                    bpod_data["DataTimestamp"] = [bpod_data["DataTimestamp"]]
+                    bpod_data["RawData"]["OriginalStateNamesByNumber"] = [
+                        bpod_data["RawData"]["OriginalStateNamesByNumber"]
+                    ]
+                    bpod_data["RawData"]["OriginalStateData"] = [
+                        bpod_data["RawData"]["OriginalStateData"]
+                    ]
+                    bpod_data["RawData"]["OriginalEventData"] = [
+                        bpod_data["RawData"]["OriginalEventData"]
+                    ]
+                    bpod_data["RawData"]["OriginalStateTimestamps"] = [
+                        bpod_data["RawData"]["OriginalStateTimestamps"]
+                    ]
+                    bpod_data["RawData"]["OriginalEventTimestamps"] = [
+                        bpod_data["RawData"]["OriginalEventTimestamps"]
+                    ]
+                    bpod_data["RawData"]["StateMachineErrorCodes"] = [
+                        bpod_data["RawData"]["StateMachineErrorCodes"]
+                    ]
 
-                trial_data = key.copy()
-                trial_data["trial"] = t + 1
+                for t in range(current_trial, bpod_data["nTrials"]):
 
-                time_elapsed = (
-                    bpod_data["TrialStartTimestamp"][t]
-                    - bpod_data["TrialStartTimestamp"][0]
+                    trial_data = key.copy()
+                    trial_data["trial"] = t + 1
+
+                    time_elapsed = (
+                        bpod_data["TrialStartTimestamp"][t]
+                        - bpod_data["TrialStartTimestamp"][0]
+                    )
+                    trial_datetime = key["session_datetime"] + timedelta(
+                        seconds=time_elapsed
+                    )
+                    trial_data["trial_datetime"] = datetime.strftime(
+                        trial_datetime, "%Y-%m-%d %H:%M:%S"
+                    )
+                    trial_data["trial_date"] = datetime.strftime(trial_datetime, "%Y-%m-%d")
+                    trial_data["trial_time"] = datetime.strftime(trial_datetime, "%H:%M:%S")
+
+                    raw_events = (
+                        recarray_to_dict(bpod_data["RawEvents"]["Trial"][t])
+                        if bpod_data["nTrials"] > 1
+                        else bpod_data["RawEvents"]["Trial"]
+                    )
+                    trial_data["states"] = raw_events["States"]
+                    trial_data["events"] = raw_events["Events"]
+
+                    trial_data["original_state_names_by_number"] = bpod_data["RawData"][
+                        "OriginalStateNamesByNumber"
+                    ][t]
+                    trial_data["original_state_data"] = bpod_data["RawData"][
+                        "OriginalStateData"
+                    ][t]
+                    trial_data["original_event_data"] = bpod_data["RawData"][
+                        "OriginalEventData"
+                    ][t]
+                    trial_data["original_state_timestamps"] = bpod_data["RawData"][
+                        "OriginalStateTimestamps"
+                    ][t]
+                    trial_data["original_event_timestamps"] = bpod_data["RawData"][
+                        "OriginalEventTimestamps"
+                    ][t]
+                    trial_data["state_machine_error_codes"] = bpod_data["RawData"][
+                        "StateMachineErrorCodes"
+                    ][t]
+
+                    trial_data["trial_start_timestamp"] = bpod_data["TrialStartTimestamp"][
+                        t
+                    ]
+                    trial_data["trial_end_timestamp"] = bpod_data["TrialEndTimestamp"][t]
+
+                    if "DataTimestamp" in bpod_data:
+                        trial_data["data_timestamp"] = bpod_data["DataTimestamp"][t]
+
+                    if "TrialSettings" in bpod_data:
+                        trial_data["trial_settings"] = {}
+                        for ts in bpod_data["TrialSettings"].keys():
+                            trial_data["trial_settings"][ts] = (
+                                bpod_data["TrialSettings"][ts][t]
+                                if bpod_data["nTrials"] > 1
+                                else bpod_data["TrialSettings"][ts]
+                            )
+
+                    add_fields = [
+                        k for k in bpod_data.keys() if k not in BpodTrialData.DEFAULT_FIELDS
+                    ]
+
+                    if len(add_fields) > 0:
+                        trial_data["additional_fields"] = {}
+                        for af in add_fields:
+                            if type(bpod_data[af]) == np.ndarray:
+                                trial_data["additional_fields"][af] = bpod_data[af][t] if len(bpod_data[af]) > t else None
+                            else:
+                                trial_data["additional_fields"][af] = bpod_data[af]
+
+                    self.insert1(trial_data)
+
+                print(
+                    f"Added Trial data for {trial_data['name']}, {trial_data['session_datetime']}, trial = {trial_data['trial']}"
                 )
-                trial_datetime = key["session_datetime"] + timedelta(
-                    seconds=time_elapsed
-                )
-                trial_data["trial_datetime"] = datetime.strftime(
-                    trial_datetime, "%Y-%m-%d %H:%M:%S"
-                )
-                trial_data["trial_date"] = datetime.strftime(trial_datetime, "%Y-%m-%d")
-                trial_data["trial_time"] = datetime.strftime(trial_datetime, "%H:%M:%S")
 
-                raw_events = (
-                    recarray_to_dict(bpod_data["RawEvents"]["Trial"][t])
-                    if bpod_data["nTrials"] > 1
-                    else bpod_data["RawEvents"]["Trial"]
-                )
-                trial_data["states"] = raw_events["States"]
-                trial_data["events"] = raw_events["Events"]
+            else:
 
-                trial_data["original_state_names_by_number"] = bpod_data["RawData"][
-                    "OriginalStateNamesByNumber"
-                ][t]
-                trial_data["original_state_data"] = bpod_data["RawData"][
-                    "OriginalStateData"
-                ][t]
-                trial_data["original_event_data"] = bpod_data["RawData"][
-                    "OriginalEventData"
-                ][t]
-                trial_data["original_state_timestamps"] = bpod_data["RawData"][
-                    "OriginalStateTimestamps"
-                ][t]
-                trial_data["original_event_timestamps"] = bpod_data["RawData"][
-                    "OriginalEventTimestamps"
-                ][t]
-                trial_data["state_machine_error_codes"] = bpod_data["RawData"][
-                    "StateMachineErrorCodes"
-                ][t]
-
-                trial_data["trial_start_timestamp"] = bpod_data["TrialStartTimestamp"][
-                    t
-                ]
-                trial_data["trial_end_timestamp"] = bpod_data["TrialEndTimestamp"][t]
-
-                if "DataTimestamp" in bpod_data:
-                    trial_data["data_timestamp"] = bpod_data["DataTimestamp"][t]
-
-                if "TrialSettings" in bpod_data:
-                    trial_data["trial_settings"] = {}
-                    for ts in bpod_data["TrialSettings"].keys():
-                        trial_data["trial_settings"][ts] = (
-                            bpod_data["TrialSettings"][ts][t]
-                            if bpod_data["nTrials"] > 1
-                            else bpod_data["TrialSettings"][ts]
-                        )
-
-                add_fields = [
-                    k for k in bpod_data.keys() if k not in BpodTrialData.DEFAULT_FIELDS
-                ]
-
-                if len(add_fields) > 0:
-                    trial_data["additional_fields"] = {}
-                    for af in add_fields:
-                        if type(bpod_data[af]) == np.ndarray:
-                            trial_data["additional_fields"][af] = bpod_data[af][t] if len(bpod_data[af]) > t else None
-                        else:
-                            trial_data["additional_fields"][af] = bpod_data[af]
-
-                self.insert1(trial_data)
-
-            print(
-                f"Added Trial data for {trial_data['name']}, {trial_data['session_datetime']}, trial = {trial_data['trial']}"
-            )
-
-        else:
-
-            last_trial_date = (BpodTrialData & key).fetch("trial_date")[-1]
-            if date.today() - last_trial_date >= timedelta(days=3):
-                FileClosed.insert1(key)
-                print(f"Closed Bpod File for {key['name']}, {key['session_datetime']}")
+                last_trial_date = (BpodTrialData & key).fetch("trial_date")[-1]
+                if date.today() - last_trial_date >= timedelta(days=3):
+                    FileClosed.insert1(key)
+                    print(f"Closed Bpod File for {key['name']}, {key['session_datetime']}")
 
     def populate(self):
 

@@ -163,13 +163,15 @@ class FlashesTrial(dj.Computed):
             trial_data["flash_bins"] = 0
 
         trial_data["reward"] = (
-            bpod_data["trial_settings"]["Reward"]
-            if len(bpod_data["trial_settings"]["Reward"]) == 1
-            else bpod_data["trial_Settings"]["Reward"][trial_data["flash_bins"]]
+            bpod_data["trial_settings"]["Reward"][trial_data["flash_bins"]]
+            if type(bpod_data["trial_settings"]["Reward"]) == np.ndarray
+            else bpod_data["trial_settings"]["Reward"]
         )
-        trial_data["training_criterion"] = bpod_data["additional_fields"][
-            "TrainingCriterion"
-        ]
+        trial_data["training_criterion"] = (
+            bpod_data["additional_fields"]["TrainingCriterion"]
+            if bpod_data["additional_fields"]["TrainingCriterion"] is not None
+            else 0
+        )
         trial_data["label"] = (
             bpod_data["trial_settings"]["Label"]
             if "Label" in bpod_data["trial_settings"]
