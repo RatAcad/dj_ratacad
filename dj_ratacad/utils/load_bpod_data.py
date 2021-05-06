@@ -18,7 +18,7 @@ def load_bpod_data(filename):
         try:
             raw = scipy.io.loadmat(filename, squeeze_me=True, chars_as_strings=True)
             bpod_data = recarray_to_dict(raw["SessionData"])
-        except ValueError:
+        except:
             bpod_data = None
 
     return bpod_data
