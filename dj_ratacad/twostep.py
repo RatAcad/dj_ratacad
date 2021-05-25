@@ -19,22 +19,51 @@ class TwoStepTrial(dj.Computed):
     # Gather TwoStep task specific data
 
     -> bpod.BpodTrialData
-    task : enum("count", "rate")                                # which task -- the flash counting task or the free response flash rate task
+    task : enum("reward", "transition")                         # which task -- reward or transition revaluation
     stage : tinyint                                             # training stage
     ---
-    choice=NULL : enum("left", "right", "center", "omission")   # which side did rat choose
-    outcome=NULL : enum("correct", "error", "omission")         # was decision correct (i.e. rewarded)
-    rt=NULL: float                                              # response time in s
-    init_time=NULL : float                                      # time from the start of the trial to initiation
-    correct_side : enum("left", "right", "center")              # correct side
-    lambda_left : float                                         # the probability of a left flash
-    lambda_right : float                                        # the probability of a right flash
-    flash_bins : int                                            # number of flash bins
-    flashes_left : varchar(100)                                 # flash sequence on the left side as a string (0 for no flash, 1 for flash)
-    flashes_right : varchar(100)                                # flash sequence on the right side as a string (0 for no flash, 1 for flash)
-    reward : int                                                # reward size (in uL)
-    training_criterion : float                                  # training criterion variable
-    label=NULL : varchar(24)                                    # experiment label
+    free_choice=NULL : int                                      # whether rat given only one or both options on top row
+    violation=NULL : int                                        # whether rat poked non active option
+    choice=NULL : enum("left", "right")                         # which side on top row did rat choose
+    outcome=NULL : enum("left", "right")                        # which side on bottom row turned on
+    reward=NULL : enum("reward", "omission")                    # whether reward was administered or omitted
+    correct_choice=NULL : int                                   # whether rat chose the option with highest probability of reward
+    ---
+    top_cue=NULL : enum("left", "right","both")                 # which top row side port light turned on 
+    top_action=NULL : enum("left", "right")                     # which top row side port rat poked 
+    bottom_cue=NULL : enum("left", "right")                     # which bottom row side port light turned on 
+    bottom_action=NULL : enum("left", "right")                  # which bottom row side port rat poked
+    ---
+    transition_block=NULL : enum("congruent", "incongruent")    # which transition has higher probability
+    prob_con_transition=NULL : float                            # probability of congruent outcome given choice
+    prob_incon_transition=NULL : float                          # probability of incongruent outcome given choice
+    reward_block=NULL : enum("left", "right")                   # which outcome port has higher reward probability
+    left_reward_prob=NULL : float                               # probability of reward on left outcome port
+    right_reward_prob=NULL : float                              # probability of reward on left outcome port
+    transition_type=NULL : enum("common", "uncommon")           # whether outcome experienced was common or rare
+    reward_type=NULL : enum("common", "uncommon")               # whether reward/omission was common or rare
+    block_switch=NULL : int                                     # whether block changed this trial
+    trial_in_block=NULL : int                                   # number of trials in block so far
+    ---
+    CR=NULL : int                                               # whether rewarded following a common transition
+    UR=NULL : int                                               # whether rewarded following an uncommon transition
+    CO=NULL : int                                               # whether reward omitted following a common transition
+    UO=NULL : int                                               # whether reward omitted following an uncommon transition
+    ---
+    top_init_poke=NULL : float                                  # time stamp for top center poke trial initiation
+    top_left_cue=NULL : float                                   # time stamp for light in top left poke
+    top_right_cue=NULL : float                                  # time stamp for light in top right poke
+    top_left_poke=NULL : float                                  # time stamp for entering top left poke
+    top_right_poke=NULL : float                                 # time stamp for entering top right poke
+    bottom_init_cue=NULL : float                                # time stamp for light in bottom center poke
+    bottom_init_poke=NULL : float                               # time stamp for entering bottom center poke 
+    bottom_left_cue=NULL : float                                # time stamp for light in bottom left poke 
+    bottom_right_cue=NULL : float                               # time stamp for light in bottom right poke 
+    bottom_left_poke=NULL : float                               # time stamp for entering bottom left poke 
+    bottom_right_poke=NULL : float                              # time stamp for entering bottom right poke
+    ---
+    stepone_rt=NULL : float                                       # duration of time between top side cue and poke response
+    steptwo_rt=NULL : float                                       # duration of time between bottom side cue and poke response
     """
 
     @property
@@ -208,29 +237,37 @@ class TwoStepTrial(dj.Computed):
                     trial_data["top_right_cue"]  = bpod_data["states"]["Choice"][0]
                     trial_data["top_left_poke"]  = bpod_data["states"]["Choice"][1]
                     trial_data["top_right_poke"] = None
+                    trial_data["top_cue"]    = "right"
+                    trial_data["top_action"] = "left"
                 elif bpod_data["states"]["Violation"][0] == bpod_data["states"]["PA1_Port3In"][0]: 
                     trial_data["choice"] = "right"
                     trial_data["top_left_cue"]   = bpod_data["states"]["Choice"][0]
                     trial_data["top_right_cue"]  = None  
                     trial_data["top_left_poke"]  = None
                     trial_data["top_right_poke"] = bpod_data["states"]["Choice"][1] 
+                    trial_data["top_cue"]    = "left"
+                    trial_data["top_action"] = "right"
                 else:    
                     trial_data["top_left_cue"]  = None
                     trial_data["top_right_cue"] = None 
                     trial_data["top_left_poke"]  = None
                     trial_data["top_right_poke"]  = None
-
+                    
             elif trial_data["free_choice"] == 0 and trial_data["violation"] == 0:
                 if not np.isnan(bpod_data["states"]["ChoiceA_OFF"][0]):
                     trial_data["top_left_cue"]   = bpod_data["states"]["Choice"][0]
                     trial_data["top_right_cue"]  = None  
                     trial_data["top_left_poke"]  = bpod_data["states"]["Choice"][1]
                     trial_data["top_right_poke"] = None 
+                    trial_data["top_cue"]    = "left"
+                    trial_data["top_action"] = "left"
                 elif not np.isnan(bpod_data["states"]["ChoiceB_OFF"][0]):
                     trial_data["top_left_cue"]   = None
                     trial_data["top_right_cue"]  = bpod_data["states"]["Choice"][0]  
                     trial_data["top_left_poke"]  = None
                     trial_data["top_right_poke"] = bpod_data["states"]["Choice"][1]
+                    trial_data["top_cue"]    = "right"
+                    trial_data["top_action"] = "right"
                 else:    
                     trial_data["top_left_cue"]  = None
                     trial_data["top_right_cue"] = None 
@@ -240,18 +277,22 @@ class TwoStepTrial(dj.Computed):
                 trial_data["top_left_cue"]   = None
                 trial_data["top_right_cue"]  = bpod_data["states"]["Choice"][0]  
                 trial_data["top_left_poke"]  = None
-                trial_data["top_right_poke"] = bpod_data["states"]["Choice"][1]       
+                trial_data["top_right_poke"] = bpod_data["states"]["Choice"][1]
+                trial_data["top_cue"]    = "both"
+                trial_data["top_action"] = trial_data["choice"]       
             
             if not np.isnan(bpod_data["states"]["OutcomeA"][0]):
                 trial_data["bottom_init_cue"] = bpod_data["states"]["ChoiceA_Step2"][0] 
                 trial_data["bottom_init_poke"]  = bpod_data["states"]["ChoiceA_Step2"][1]
                 trial_data["bottom_left_cue"]  = bpod_data["states"]["OutcomeA"][0]
                 trial_data["bottom_right_cue"] = None
+                trial_data["bottom_cue"] = "left"
             elif not np.isnan(bpod_data["states"]["OutcomeB"][0]):
                 trial_data["bottom_init_cue"] = bpod_data["states"]["ChoiceB_Step2"][0] 
                 trial_data["bottom_init_poke"]  = bpod_data["states"]["ChoiceB_Step2"][1]
                 trial_data["bottom_left_cue"]  = None
                 trial_data["bottom_right_cue"] = bpod_data["states"]["OutcomeB"][0]
+                trial_data["bottom_cue"] = "right"
             else:
                 trial_data["bottom_init_cue"] = None
                 trial_data["bottom_init_poke"]  = None
@@ -262,27 +303,32 @@ class TwoStepTrial(dj.Computed):
                 if np.isnan(bpod_data["states"]["Violation"][0]):
                     trial_data["bottom_left_poke"]  = bpod_data["states"]["OutcomeA"][1]
                     trial_data["bottom_right_poke"] = None
+                    trial_data["bottom_action"] = "left"
                 else:
                     trial_data["bottom_left_poke"]  = None
                     trial_data["bottom_right_poke"] = bpod_data["states"]["OutcomeA"][1]
+                    trial_data["bottom_action"] = "right"
             elif not np.isnan(bpod_data["states"]["OutcomeB"][0]):
                 if np.isnan(bpod_data["states"]["Violation"][0]):
                     trial_data["bottom_left_poke"]  = None
                     trial_data["bottom_right_poke"] = bpod_data["states"]["OutcomeB"][1]
+                    trial_data["bottom_action"] = "right"
                 else:
                     trial_data["bottom_left_poke"]  = bpod_data["states"]["OutcomeB"][1]
                     trial_data["bottom_right_poke"] = None
+                    trial_data["bottom_action"] = "left"
             else:
                 trial_data["bottom_left_poke"]  = None
                 trial_data["bottom_right_poke"] = None
 
-            trial_data["step1_rt"] = bpod_data["states"]["Choice"][1] - bpod_data["states"]["Choice"][0]
+            trial_data["stepone_rt"] = bpod_data["states"]["Choice"][1] - bpod_data["states"]["Choice"][0]
+            
             if not np.isnan(bpod_data["states"]["OutcomeA"][0]):
-                trial_data["step2_rt"] = bpod_data["states"]["OutcomeA"][1] - bpod_data["states"]["OutcomeA"][0]
+                trial_data["steptwo_rt"] = bpod_data["states"]["OutcomeA"][1] - bpod_data["states"]["OutcomeA"][0]
             elif not np.isnan(bpod_data["states"]["OutcomeB"][0]):
-                trial_data["step2_rt"] = bpod_data["states"]["OutcomeB"][1] - bpod_data["states"]["OutcomeB"][0]
+                trial_data["steptwo_rt"] = bpod_data["states"]["OutcomeB"][1] - bpod_data["states"]["OutcomeB"][0]
             else:
-                trial_data["step2_rt"] = None 
+                trial_data["steptwo_rt"] = None 
         else:
             trial_data["top_init_poke"] = None
             trial_data["top_left_cue"]  = None
@@ -295,8 +341,8 @@ class TwoStepTrial(dj.Computed):
             trial_data["bottom_right_cue"] = None
             trial_data["bottom_left_poke"]  = None
             trial_data["bottom_right_poke"] = None 
-            trial_data["step1_rt"] = None          
-            trial_data["step2_rt"] = None 
+            trial_data["stepone_rt"] = None          
+            trial_data["steptwo_rt"] = None 
 
         ### Gary's code ###
         self.insert1(trial_data)
@@ -314,10 +360,10 @@ class DailySummary(dj.Manual):
     summary_date : date             # date of summary
     ---
     trials : int                    # number of trials completed
-    reward_rate : float             # percentage of rewarded trials
-    omission_rate : float           # percentage of incomplete trials
-    training_stage : tinyint        # stage at end of day
-    training_criterion : float      # training criterion at end of day
+    blocks : int                    # number of blocks completed
+    fraction_correct : float        # fraction of choices with highest probability of reward
+    violation_rate : float          # fraction of trials animals chose inactive options
+    training_stage : tinyint        # stage at end of day 
     """
 
     @property
