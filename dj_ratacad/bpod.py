@@ -86,6 +86,7 @@ class Protocol(dj.Lookup):
     contents = [
         ["Flashes", "Light flashes 2AFC task"],
         ["FlashCount", "Flash counting 2AFC task"],
+        ["TwoStep", "Two Step planning 2AFC task"],
     ]
 
 
