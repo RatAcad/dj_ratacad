@@ -45,10 +45,10 @@ class TwoStepTrial(dj.Computed):
     block_switch=NULL : int                                     # whether block changed this trial
     trial_in_block=NULL : int                                   # number of trials in block so far
     ---
-    CR=NULL : int                                               # whether rewarded following a common transition
-    UR=NULL : int                                               # whether rewarded following an uncommon transition
-    CO=NULL : int                                               # whether reward omitted following a common transition
-    UO=NULL : int                                               # whether reward omitted following an uncommon transition
+    cr=NULL : int                                               # whether rewarded following a common transition
+    ur=NULL : int                                               # whether rewarded following an uncommon transition
+    co=NULL : int                                               # whether reward omitted following a common transition
+    uo=NULL : int                                               # whether reward omitted following an uncommon transition
     ---
     top_init_poke=NULL : float                                  # time stamp for top center poke trial initiation
     top_left_cue=NULL : float                                   # time stamp for light in top left poke
@@ -205,23 +205,23 @@ class TwoStepTrial(dj.Computed):
 
         # Trial conditions 
         if trial_data["stage"] >= 3:
-            trial_data["CR"] = (
+            trial_data["cr"] = (
                 1 if (trial_data["transition_type"]=="common") and (trial_data["reward"]=="reward") else 0
             )
-            trial_data["UR"] = (
+            trial_data["ur"] = (
                 1 if (trial_data["transition_type"]=="uncommon") and (trial_data["reward"]=="reward") else 0
             )
-            trial_data["CO"] = (
+            trial_data["co"] = (
                 1 if (trial_data["transition_type"]=="common") and (trial_data["reward"]=="omission") else 0
             )
-            trial_data["UO"] = (
+            trial_data["uo"] = (
                 1 if (trial_data["transition_type"]=="uncommon") and (trial_data["reward"]=="omission") else 0
             )
         else:
-            trial_data["CR"] = None
-            trial_data["UR"] = None
-            trial_data["CO"] = None
-            trial_data["UO"] = None
+            trial_data["cr"] = None
+            trial_data["ur"] = None
+            trial_data["co"] = None
+            trial_data["uo"] = None
 
         # Bpod state timestamps
         if trial_data["stage"] != 1:
