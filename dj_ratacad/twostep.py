@@ -35,8 +35,8 @@ class TwoStepTrial(dj.Computed):
     bottom_action=NULL : enum("left", "right")                  # which bottom row side port rat poked
     ---
     transition_block=NULL : enum("congruent", "incongruent")    # which transition has higher probability
-    prob_con_transition=NULL : float                            # probability of congruent outcome given choice
-    prob_incon_transition=NULL : float                          # probability of incongruent outcome given choice
+    con_transition_prob=NULL : float                            # probability of congruent outcome given choice
+    incon_transition_prob=NULL : float                          # probability of incongruent outcome given choice
     reward_block=NULL : enum("left", "right")                   # which outcome port has higher reward probability
     left_reward_prob=NULL : float                               # probability of reward on left outcome port
     right_reward_prob=NULL : float                              # probability of reward on left outcome port
@@ -143,8 +143,8 @@ class TwoStepTrial(dj.Computed):
             trial_data["incon_transition_prob"] = 1 - bpod_data["trial_settings"]["UncommonProbTransition"] 
         else:
             trial_data["transition_block"] = None
-            trial_data["prob_con_transition"] = None  
-            trial_data["prob_incon_transition"] = None 
+            trial_data["con_transition_prob"] = None  
+            trial_data["incon_transition_prob"] = None 
 
         if (trial_data["stage"] >= 3) and (bpod_data["additional_fields"]["RewBlock"] == 1):
             trial_data["reward_block"] = "left"
@@ -224,7 +224,7 @@ class TwoStepTrial(dj.Computed):
             trial_data["uo"] = None
 
         # Bpod state timestamps
-        if trial_data["stage"] != 1:
+        if trial_data["stage"] > 2:
             if "Step1" in bpod_data["states"]:
                 trial_data["top_init_poke"] = bpod_data["states"]["Step1"][1]
             else:
