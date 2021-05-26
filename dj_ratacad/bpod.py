@@ -4,9 +4,11 @@ Schema for generic Bpod Data
 
 import os
 from pathlib import Path
+import pathlib
 from datetime import datetime, timedelta, date
 import numpy as np
 import traceback
+import platform
 
 import datajoint as dj
 from dj_ratacad import animal
@@ -28,6 +30,10 @@ class BoxDesign(dj.Lookup):
     contents = [
         ["Unknown", "unknown"],
         ["3-port", "three nosepokes on one wall (left, center, right)"],
+        [
+            "6-port",
+            "six nosepokes on one wall (top: left, center, right; bottom: left, center, right)",
+        ],
     ]
 
 
@@ -69,6 +75,9 @@ class Bpod(dj.Lookup):
         ["721G_1_7", "3-port", "2021-02-05", 6732930],
         ["721G_1_8", "3-port", "2021-02-05", 6730500],
         ["721G_1_9", "3-port", "2021-02-05", 6731870],
+        ["721G_1_1", "6-port", "2021-03-20", 6732940],
+        ["721G_1_2", "6-port", "2021-03-20", 6733060],
+        ["721G_1_3", "6-port", "2021-03-20", 6730220],
         ["Unknown", "Unknown", "2020-07-01", 0],
     ]
 
@@ -86,6 +95,7 @@ class Protocol(dj.Lookup):
     contents = [
         ["Flashes", "Light flashes 2AFC task"],
         ["FlashCount", "Flash counting 2AFC task"],
+        ["TwoStep", "Two Step planning task"],
     ]
 
 
@@ -116,6 +126,7 @@ class BpodMetadata(dj.Manual):
         files_on_disk = list(
             BpodMetadata.DATA_DIR.glob(f"{key['name']}/*/Session Data/*.mat")
         )
+
         files_on_disk = [f.relative_to(BpodMetadata.DATA_DIR) for f in files_on_disk]
         files_on_dj = [Path(p) for p in (BpodMetadata() & key).fetch("file_path")]
 
@@ -169,7 +180,9 @@ class BpodMetadata(dj.Manual):
                         ).strftime("%Y-%m-%d %H:%M:%S")
 
                         bpod_id = (
-                            bpod_info["BpodName"] if "BpodName" in bpod_info else "Unknown"
+                            bpod_info["BpodName"]
+                            if "BpodName" in bpod_info
+                            else "Unknown"
                         )
 
                         box_designs = (Bpod() & f"bpod_id='{bpod_id}'").fetch()
@@ -189,6 +202,12 @@ class BpodMetadata(dj.Manual):
                             box_design = "Unknown"
                             mod_date = "2020-07-01"
 
+                        fp = (
+                            pathlib.PureWindowsPath(nf).as_posix()
+                            if platform.system() == "Windows"
+                            else str(nf)
+                        )
+
                         metadata = {
                             "name": key["name"],
                             "session_datetime": sess_datetime_str,
@@ -196,7 +215,7 @@ class BpodMetadata(dj.Manual):
                             "design": box_design,
                             "mod_date": mod_date,
                             "protocol": protocol,
-                            "file_path": str(nf),
+                            "file_path": fp,
                             "state_machine_version": bpod_info["StateMachineVersion"],
                             "session_start_time_matlab": bpod_info[
                                 "SessionStartTime_MATLAB"
@@ -288,7 +307,9 @@ class BpodTrialData(dj.Manual):
             if bpod_data["nTrials"] - current_trial > 0:
 
                 if bpod_data["nTrials"] == 1:
-                    bpod_data["TrialStartTimestamp"] = [bpod_data["TrialStartTimestamp"]]
+                    bpod_data["TrialStartTimestamp"] = [
+                        bpod_data["TrialStartTimestamp"]
+                    ]
                     bpod_data["TrialEndTimestamp"] = [bpod_data["TrialEndTimestamp"]]
                     bpod_data["DataTimestamp"] = [bpod_data["DataTimestamp"]]
                     bpod_data["RawData"]["OriginalStateNamesByNumber"] = [
@@ -325,8 +346,12 @@ class BpodTrialData(dj.Manual):
                     trial_data["trial_datetime"] = datetime.strftime(
                         trial_datetime, "%Y-%m-%d %H:%M:%S"
                     )
-                    trial_data["trial_date"] = datetime.strftime(trial_datetime, "%Y-%m-%d")
-                    trial_data["trial_time"] = datetime.strftime(trial_datetime, "%H:%M:%S")
+                    trial_data["trial_date"] = datetime.strftime(
+                        trial_datetime, "%Y-%m-%d"
+                    )
+                    trial_data["trial_time"] = datetime.strftime(
+                        trial_datetime, "%H:%M:%S"
+                    )
 
                     raw_events = (
                         recarray_to_dict(bpod_data["RawEvents"]["Trial"][t])
@@ -355,10 +380,12 @@ class BpodTrialData(dj.Manual):
                         "StateMachineErrorCodes"
                     ][t]
 
-                    trial_data["trial_start_timestamp"] = bpod_data["TrialStartTimestamp"][
+                    trial_data["trial_start_timestamp"] = bpod_data[
+                        "TrialStartTimestamp"
+                    ][t]
+                    trial_data["trial_end_timestamp"] = bpod_data["TrialEndTimestamp"][
                         t
                     ]
-                    trial_data["trial_end_timestamp"] = bpod_data["TrialEndTimestamp"][t]
 
                     if "DataTimestamp" in bpod_data:
                         trial_data["data_timestamp"] = bpod_data["DataTimestamp"][t]
@@ -373,14 +400,18 @@ class BpodTrialData(dj.Manual):
                             )
 
                     add_fields = [
-                        k for k in bpod_data.keys() if k not in BpodTrialData.DEFAULT_FIELDS
+                        k
+                        for k in bpod_data.keys()
+                        if k not in BpodTrialData.DEFAULT_FIELDS
                     ]
 
                     if len(add_fields) > 0:
                         trial_data["additional_fields"] = {}
                         for af in add_fields:
                             if type(bpod_data[af]) == np.ndarray:
-                                trial_data["additional_fields"][af] = bpod_data[af][t] if len(bpod_data[af]) > t else None
+                                trial_data["additional_fields"][af] = (
+                                    bpod_data[af][t] if len(bpod_data[af]) > t else None
+                                )
                             else:
                                 trial_data["additional_fields"][af] = bpod_data[af]
 
@@ -395,7 +426,9 @@ class BpodTrialData(dj.Manual):
                 last_trial_date = (BpodTrialData & key).fetch("trial_date")[-1]
                 if date.today() - last_trial_date >= timedelta(days=3):
                     FileClosed.insert1(key)
-                    print(f"Closed Bpod File for {key['name']}, {key['session_datetime']}")
+                    print(
+                        f"Closed Bpod File for {key['name']}, {key['session_datetime']}"
+                    )
 
     def populate(self):
 
