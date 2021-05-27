@@ -224,14 +224,16 @@ class TwoStepTrial(dj.Computed):
             trial_data["uo"] = None
 
         # Bpod state timestamps
-        if trial_data["stage"] > 2:
-            if "Step1" in bpod_data["states"]:
+        if (trial_data["stage"] >= 2) and ("Step1" in bpod_data["states"]):
                 trial_data["top_init_poke"] = bpod_data["states"]["Step1"][1]
-            else:
-                trial_data["top_init_poke"] = None
-
+        else:
+            trial_data["top_init_poke"] = None
+        
+        if trial_data["stage"] >= 3:
             if trial_data["free_choice"] == 0 and trial_data["violation"] == 1:
-                if bpod_data["states"]["Violation"][0] == bpod_data["states"]["PA1_Port1In"][0]:
+                if ("PA1_Port1In" in bpod_data["events"]) and (
+                    bpod_data["states"]["Violation"][0] == bpod_data["events"]["PA1_Port1In"][0]
+                ):
                     trial_data["choice"] = "left"
                     trial_data["top_left_cue"]   = None
                     trial_data["top_right_cue"]  = bpod_data["states"]["Choice"][0]
@@ -239,7 +241,9 @@ class TwoStepTrial(dj.Computed):
                     trial_data["top_right_poke"] = None
                     trial_data["top_cue"]    = "right"
                     trial_data["top_action"] = "left"
-                elif bpod_data["states"]["Violation"][0] == bpod_data["states"]["PA1_Port3In"][0]: 
+                elif ("PA1_Port1In" in bpod_data["events"]) and (
+                    bpod_data["states"]["Violation"][0] == bpod_data["events"]["PA1_Port3In"][0]
+                ): 
                     trial_data["choice"] = "right"
                     trial_data["top_left_cue"]   = bpod_data["states"]["Choice"][0]
                     trial_data["top_right_cue"]  = None  
@@ -274,11 +278,15 @@ class TwoStepTrial(dj.Computed):
                     trial_data["top_left_poke"]  = None
                     trial_data["top_right_poke"]  = None
             else:
-                trial_data["top_left_cue"]   = None
-                trial_data["top_right_cue"]  = bpod_data["states"]["Choice"][0]  
-                trial_data["top_left_poke"]  = None
-                trial_data["top_right_poke"] = bpod_data["states"]["Choice"][1]
-                trial_data["top_cue"]    = "both"
+                trial_data["top_left_cue"]   = bpod_data["states"]["Choice"][0]
+                trial_data["top_right_cue"]  = bpod_data["states"]["Choice"][0] 
+                trial_data["top_cue"]        = "both"
+                if trial_data["choice"] == "left":
+                    trial_data["top_left_poke"]  = bpod_data["states"]["Choice"][1]
+                    trial_data["top_right_poke"] = None
+                elif trial_data["choice"] == "right":
+                    trial_data["top_left_poke"]  = None
+                    trial_data["top_right_poke"] = bpod_data["states"]["Choice"][1]                    
                 trial_data["top_action"] = trial_data["choice"]       
             
             if not np.isnan(bpod_data["states"]["OutcomeA"][0]):
@@ -328,7 +336,7 @@ class TwoStepTrial(dj.Computed):
             elif not np.isnan(bpod_data["states"]["OutcomeB"][0]):
                 trial_data["steptwo_rt"] = bpod_data["states"]["OutcomeB"][1] - bpod_data["states"]["OutcomeB"][0]
             else:
-                trial_data["steptwo_rt"] = None 
+                trial_data["steptwo_rt"] = None
         else:
             trial_data["top_init_poke"] = None
             trial_data["top_left_cue"]  = None
@@ -344,7 +352,6 @@ class TwoStepTrial(dj.Computed):
             trial_data["stepone_rt"] = None          
             trial_data["steptwo_rt"] = None 
 
-        ### Gary's code ###
         self.insert1(trial_data)
 
         print(
