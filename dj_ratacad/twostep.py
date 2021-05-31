@@ -224,8 +224,6 @@ class TwoStepTrial(dj.Computed):
             trial_data["top_init_time"] = None
             trial_data["choice_time"] = None
 
-            trial_data["bottom_init_time"]  = bpod_data["states"]["Choice"][0]
-
         if trial_data["stage"] >= 3:
             if trial_data["free_choice"] == 0 and trial_data["violation"] == 1:
                 if ("PA1_Port1In" in bpod_data["events"]) and (
