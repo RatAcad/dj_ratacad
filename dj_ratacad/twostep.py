@@ -281,19 +281,21 @@ class TwoStepTrial(dj.Computed):
                 trial_data["outcome_poke_time"]  = None
                 trial_data["bottom_cue"]   = None
                 trial_data["bottom_action"]  = None
+        
+            trial_data["stepone_rt"] = bpod_data["states"]["Choice"][1] - bpod_data["states"]["Choice"][0]
+            if not np.isnan(bpod_data["states"]["OutcomeA"][0]):
+                trial_data["steptwo_rt"] = bpod_data["states"]["OutcomeA"][1] - bpod_data["states"]["OutcomeA"][0]
+            elif not np.isnan(bpod_data["states"]["OutcomeB"][0]):
+                trial_data["steptwo_rt"] = bpod_data["states"]["OutcomeB"][1] - bpod_data["states"]["OutcomeB"][0]
+            else:
+                trial_data["steptwo_rt"] = None
 
         else:
             trial_data["top_init_time"] = None
-            trial_data["choice_time"]  = None
+            trial_data["choice_time"] = None
             trial_data["bottom_init_time"] = None
-            trial_data["outcome_poke_time"]  = None 
-        
-        trial_data["stepone_rt"] = bpod_data["states"]["Choice"][1] - bpod_data["states"]["Choice"][0]
-        if not np.isnan(bpod_data["states"]["OutcomeA"][0]):
-            trial_data["steptwo_rt"] = bpod_data["states"]["OutcomeA"][1] - bpod_data["states"]["OutcomeA"][0]
-        elif not np.isnan(bpod_data["states"]["OutcomeB"][0]):
-            trial_data["steptwo_rt"] = bpod_data["states"]["OutcomeB"][1] - bpod_data["states"]["OutcomeB"][0]
-        else:
+            trial_data["outcome_poke_time"] = None
+            trial_data["stepone_rt"] = None 
             trial_data["steptwo_rt"] = None
 
         self.insert1(trial_data)
