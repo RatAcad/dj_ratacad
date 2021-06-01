@@ -50,20 +50,13 @@ class TwoStepTrial(dj.Computed):
     co=NULL : int                                               # whether reward omitted following a common transition
     uo=NULL : int                                               # whether reward omitted following an uncommon transition
     ---
-    top_init_poke=NULL : float                                  # time stamp for top center poke trial initiation
-    top_left_cue=NULL : float                                   # time stamp for light in top left poke
-    top_right_cue=NULL : float                                  # time stamp for light in top right poke
-    top_left_poke=NULL : float                                  # time stamp for entering top left poke
-    top_right_poke=NULL : float                                 # time stamp for entering top right poke
-    bottom_init_cue=NULL : float                                # time stamp for light in bottom center poke
-    bottom_init_poke=NULL : float                               # time stamp for entering bottom center poke 
-    bottom_left_cue=NULL : float                                # time stamp for light in bottom left poke 
-    bottom_right_cue=NULL : float                               # time stamp for light in bottom right poke 
-    bottom_left_poke=NULL : float                               # time stamp for entering bottom left poke 
-    bottom_right_poke=NULL : float                              # time stamp for entering bottom right poke
+    top_init_time=NULL : float                                  # time stamp for top center poke trial initiation
+    choice_time=NULL : float                                    # time stamp for entering choice port
+    bottom_init_time=NULL : float                               # time stamp for light in bottom center poke
+    outcome_poke_time=NULL : float                              # time stamp for entering outcome port
     ---
-    stepone_rt=NULL : float                                       # duration of time between top side cue and poke response
-    steptwo_rt=NULL : float                                       # duration of time between bottom side cue and poke response
+    stepone_rt=NULL : float                                     # duration of time between top side cue and poke response
+    steptwo_rt=NULL : float                                     # duration of time between bottom side cue and poke response
     """
 
     @property
@@ -225,132 +218,88 @@ class TwoStepTrial(dj.Computed):
 
         # Bpod state timestamps
         if (trial_data["stage"] >= 2) and ("Step1" in bpod_data["states"]):
-                trial_data["top_init_poke"] = bpod_data["states"]["Step1"][1]
+                trial_data["top_init_time"] = bpod_data["states"]["Step1"][1]
+                trial_data["choice_time"] = bpod_data["states"]["Choice"][1]
         else:
-            trial_data["top_init_poke"] = None
-        
+            trial_data["top_init_time"] = None
+            trial_data["choice_time"] = None
+
         if trial_data["stage"] >= 3:
             if trial_data["free_choice"] == 0 and trial_data["violation"] == 1:
+                
+                violate_time = bpod_data["states"]["Violation"][0]
+
                 if ("PA1_Port1In" in bpod_data["events"]) and (
-                    bpod_data["states"]["Violation"][0] == bpod_data["events"]["PA1_Port1In"][0]
+                    violate_time in np.atleast_1d(bpod_data["events"]["PA1_Port1In"])
                 ):
-                    trial_data["choice"] = "left"
-                    trial_data["top_left_cue"]   = None
-                    trial_data["top_right_cue"]  = bpod_data["states"]["Choice"][0]
-                    trial_data["top_left_poke"]  = bpod_data["states"]["Choice"][1]
-                    trial_data["top_right_poke"] = None
                     trial_data["top_cue"]    = "right"
                     trial_data["top_action"] = "left"
-                elif ("PA1_Port1In" in bpod_data["events"]) and (
-                    bpod_data["states"]["Violation"][0] == bpod_data["events"]["PA1_Port3In"][0]
+                    trial_data["choice"]     = "left"
+                elif ("PA1_Port3In" in bpod_data["events"]) and (
+                    violate_time in np.atleast_1d(bpod_data["events"]["PA1_Port3In"])
                 ): 
-                    trial_data["choice"] = "right"
-                    trial_data["top_left_cue"]   = bpod_data["states"]["Choice"][0]
-                    trial_data["top_right_cue"]  = None  
-                    trial_data["top_left_poke"]  = None
-                    trial_data["top_right_poke"] = bpod_data["states"]["Choice"][1] 
                     trial_data["top_cue"]    = "left"
                     trial_data["top_action"] = "right"
+                    trial_data["choice"]     = "right"
                 else:    
-                    trial_data["top_left_cue"]  = None
-                    trial_data["top_right_cue"] = None 
-                    trial_data["top_left_poke"]  = None
-                    trial_data["top_right_poke"]  = None
-                    
+                    trial_data["top_cue"]    = None
+                    trial_data["top_action"] = None
+
             elif trial_data["free_choice"] == 0 and trial_data["violation"] == 0:
                 if not np.isnan(bpod_data["states"]["ChoiceA_OFF"][0]):
-                    trial_data["top_left_cue"]   = bpod_data["states"]["Choice"][0]
-                    trial_data["top_right_cue"]  = None  
-                    trial_data["top_left_poke"]  = bpod_data["states"]["Choice"][1]
-                    trial_data["top_right_poke"] = None 
+
                     trial_data["top_cue"]    = "left"
                     trial_data["top_action"] = "left"
                 elif not np.isnan(bpod_data["states"]["ChoiceB_OFF"][0]):
-                    trial_data["top_left_cue"]   = None
-                    trial_data["top_right_cue"]  = bpod_data["states"]["Choice"][0]  
-                    trial_data["top_left_poke"]  = None
-                    trial_data["top_right_poke"] = bpod_data["states"]["Choice"][1]
+
                     trial_data["top_cue"]    = "right"
                     trial_data["top_action"] = "right"
                 else:    
-                    trial_data["top_left_cue"]  = None
-                    trial_data["top_right_cue"] = None 
-                    trial_data["top_left_poke"]  = None
-                    trial_data["top_right_poke"]  = None
+                    trial_data["top_cue"]    = None
+                    trial_data["top_action"] = None
             else:
-                trial_data["top_left_cue"]   = bpod_data["states"]["Choice"][0]
-                trial_data["top_right_cue"]  = bpod_data["states"]["Choice"][0] 
-                trial_data["top_cue"]        = "both"
-                if trial_data["choice"] == "left":
-                    trial_data["top_left_poke"]  = bpod_data["states"]["Choice"][1]
-                    trial_data["top_right_poke"] = None
-                elif trial_data["choice"] == "right":
-                    trial_data["top_left_poke"]  = None
-                    trial_data["top_right_poke"] = bpod_data["states"]["Choice"][1]                    
+                trial_data["top_cue"]   = "both"
                 trial_data["top_action"] = trial_data["choice"]       
             
             if not np.isnan(bpod_data["states"]["OutcomeA"][0]):
-                trial_data["bottom_init_cue"] = bpod_data["states"]["ChoiceA_Step2"][0] 
-                trial_data["bottom_init_poke"]  = bpod_data["states"]["ChoiceA_Step2"][1]
-                trial_data["bottom_left_cue"]  = bpod_data["states"]["OutcomeA"][0]
-                trial_data["bottom_right_cue"] = None
+                trial_data["bottom_init_time"]  = bpod_data["states"]["OutcomeA"][0] 
+                trial_data["outcome_poke_time"] = bpod_data["states"]["OutcomeA"][1]
                 trial_data["bottom_cue"] = "left"
+                trial_data["bottom_action"] = (
+                    "left"
+                    if np.isnan(bpod_data["states"]["Violation"][0])
+                    else "right"
+                )
             elif not np.isnan(bpod_data["states"]["OutcomeB"][0]):
-                trial_data["bottom_init_cue"] = bpod_data["states"]["ChoiceB_Step2"][0] 
-                trial_data["bottom_init_poke"]  = bpod_data["states"]["ChoiceB_Step2"][1]
-                trial_data["bottom_left_cue"]  = None
-                trial_data["bottom_right_cue"] = bpod_data["states"]["OutcomeB"][0]
+                trial_data["bottom_init_time"] = bpod_data["states"]["OutcomeB"][0]
+                trial_data["outcome_poke_time"] = bpod_data["states"]["OutcomeB"][1]
                 trial_data["bottom_cue"] = "right"
+                trial_data["bottom_action"] = (
+                    "right"
+                    if np.isnan(bpod_data["states"]["Violation"][0])
+                    else "left"
+                )
             else:
-                trial_data["bottom_init_cue"] = None
-                trial_data["bottom_init_poke"]  = None
-                trial_data["bottom_left_cue"]  = None
-                trial_data["bottom_right_cue"] = None
-
-            if not np.isnan(bpod_data["states"]["OutcomeA"][0]):
-                if np.isnan(bpod_data["states"]["Violation"][0]):
-                    trial_data["bottom_left_poke"]  = bpod_data["states"]["OutcomeA"][1]
-                    trial_data["bottom_right_poke"] = None
-                    trial_data["bottom_action"] = "left"
-                else:
-                    trial_data["bottom_left_poke"]  = None
-                    trial_data["bottom_right_poke"] = bpod_data["states"]["OutcomeA"][1]
-                    trial_data["bottom_action"] = "right"
-            elif not np.isnan(bpod_data["states"]["OutcomeB"][0]):
-                if np.isnan(bpod_data["states"]["Violation"][0]):
-                    trial_data["bottom_left_poke"]  = None
-                    trial_data["bottom_right_poke"] = bpod_data["states"]["OutcomeB"][1]
-                    trial_data["bottom_action"] = "right"
-                else:
-                    trial_data["bottom_left_poke"]  = bpod_data["states"]["OutcomeB"][1]
-                    trial_data["bottom_right_poke"] = None
-                    trial_data["bottom_action"] = "left"
-            else:
-                trial_data["bottom_left_poke"]  = None
-                trial_data["bottom_right_poke"] = None
-
+                trial_data["bottom_init_time"] = None
+                trial_data["outcome_poke_time"]  = None
+                trial_data["bottom_cue"]   = None
+                trial_data["bottom_action"]  = None
+        
             trial_data["stepone_rt"] = bpod_data["states"]["Choice"][1] - bpod_data["states"]["Choice"][0]
-            
             if not np.isnan(bpod_data["states"]["OutcomeA"][0]):
                 trial_data["steptwo_rt"] = bpod_data["states"]["OutcomeA"][1] - bpod_data["states"]["OutcomeA"][0]
             elif not np.isnan(bpod_data["states"]["OutcomeB"][0]):
                 trial_data["steptwo_rt"] = bpod_data["states"]["OutcomeB"][1] - bpod_data["states"]["OutcomeB"][0]
             else:
                 trial_data["steptwo_rt"] = None
+
         else:
-            trial_data["top_init_poke"] = None
-            trial_data["top_left_cue"]  = None
-            trial_data["top_right_cue"] = None 
-            trial_data["top_left_poke"]  = None
-            trial_data["top_right_poke"]  = None
-            trial_data["bottom_init_cue"] = None
-            trial_data["bottom_init_poke"]  = None
-            trial_data["bottom_left_cue"]  = None
-            trial_data["bottom_right_cue"] = None
-            trial_data["bottom_left_poke"]  = None
-            trial_data["bottom_right_poke"] = None 
-            trial_data["stepone_rt"] = None          
-            trial_data["steptwo_rt"] = None 
+            trial_data["top_init_time"] = None
+            trial_data["choice_time"] = None
+            trial_data["bottom_init_time"] = None
+            trial_data["outcome_poke_time"] = None
+            trial_data["stepone_rt"] = None 
+            trial_data["steptwo_rt"] = None
 
         self.insert1(trial_data)
 
