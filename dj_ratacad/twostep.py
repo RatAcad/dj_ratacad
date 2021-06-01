@@ -226,14 +226,17 @@ class TwoStepTrial(dj.Computed):
 
         if trial_data["stage"] >= 3:
             if trial_data["free_choice"] == 0 and trial_data["violation"] == 1:
+                
+                violate_time = bpod_data["states"]["Violation"][0]
+
                 if ("PA1_Port1In" in bpod_data["events"]) and (
-                    bpod_data["states"]["Violation"][0] == bpod_data["events"]["PA1_Port1In"][0]
+                    violate_time in np.atleast_1d(bpod_data["events"]["PA1_Port1In"])
                 ):
                     trial_data["top_cue"]    = "right"
                     trial_data["top_action"] = "left"
                     trial_data["choice"]     = "left"
                 elif ("PA1_Port3In" in bpod_data["events"]) and (
-                    bpod_data["states"]["Violation"][0] == bpod_data["events"]["PA1_Port3In"][0]
+                    violate_time in np.atleast_1d(bpod_data["events"]["PA1_Port3In"])
                 ): 
                     trial_data["top_cue"]    = "left"
                     trial_data["top_action"] = "right"
