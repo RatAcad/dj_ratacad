@@ -18,7 +18,7 @@ def update():
     from loguru import logger
     import sys
     from pathlib import Path
-    from dj_ratacad import bpod, flashes, flashcount
+    from dj_ratacad import bpod, flashes, flashcount, twostep
 
     """ configure logger """
 
