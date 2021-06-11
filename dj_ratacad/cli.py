@@ -50,6 +50,8 @@ def update():
     flashes.DailySummary.populate()
     flashcount.FlashCountTrial.populate()
     flashcount.DailySummary.populate()
+    twostep.TwoStepTrial.populate()
+    twostep.DailySummary.populate()    
 
 @cli.command()
 @click.argument("protocol")
