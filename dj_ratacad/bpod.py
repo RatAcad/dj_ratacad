@@ -34,6 +34,7 @@ class BoxDesign(dj.Lookup):
             "6-port",
             "six nosepokes on one wall (top: left, center, right; bottom: left, center, right)",
         ],
+        ["lever-port", "one lever on the left and one nosepoke on the right"]
     ]
 
 
@@ -50,6 +51,7 @@ class Bpod(dj.Lookup):
     """
 
     contents = [
+        ["Unknown", "Unknown", "2020-07-01", 0],
         ["RATACAD_1_1", "3-port", "2021-01-21", 7156140],
         ["RATACAD_1_2", "3-port", "2021-01-21", 6734400],
         ["RATACAD_1_3", "3-port", "2021-01-21", 6732980],
@@ -78,7 +80,15 @@ class Bpod(dj.Lookup):
         ["721G_1_1", "6-port", "2021-03-20", 6732940],
         ["721G_1_2", "6-port", "2021-03-20", 6733060],
         ["721G_1_3", "6-port", "2021-03-20", 6730220],
-        ["Unknown", "Unknown", "2020-07-01", 0],
+        ["RATACAD_1_1", "3-port", "2021-07-28", 8529890],
+        ["RATACAD_1_2", "3-port", "2021-07-28", 6732980],
+        ["RATACAD_1_3", "3-port", "2021-07-28", 6730020],
+        ["RATACAD_1_4", "3-port", "2021-07-28", 7156140],
+        ["RATACAD_1_5", "3-port", "2021-07-28", 5817960],
+        ["RATACAD_1_6", "3-port", "2021-07-28", 6731020],
+        ["RATACAD_1_7", "3-port", "2021-07-28", 6734400],
+        ["RATACAD_1_8", "3-port", "2021-07-28", 6730280],
+        ["RATACAD_1_9", "3-port", "2021-07-28", 6731860],
     ]
 
 
