@@ -65,8 +65,10 @@ class FlashCountTrial(dj.Computed):
 		else:
 			trial_data["freerw"] = 0
 
-#        if "Init" in bpod_data["states"]:
-#            trial_data["init_time"] = bpod_data["states"]["Init"][1]
+        if "Init" in bpod_data["states"]:
+            trial_data["init_time"] = bpod_data["states"]["Init"][1]
+        else:
+        	trial_data["init_time"] = -100
 #        elif "DecisionCue" in bpod_data["states"]:
 #            trial_data["init_time"] = bpod_data["states"]["DecisionCue"][1]
 #        elif not np.isnan(bpod_data["states"]["Correct"][0]):
@@ -98,10 +100,16 @@ class FlashCountTrial(dj.Computed):
 		):
 			dec_time = bpod_data["states"]["CorrectProbe"][0]
 			trial_data["isprobe"] = 1
-
 		else:
 			dec_time = None
 			trial_data["isprobe"] = 0
+
+		if ("EarlyEnterTimeout" in bpod_data["states"].keys()) and (
+			not np.isnan(bpod_data["states"]["EarlyEnterTimeout"][0])	
+		):
+			early_time = bpod_data["states"]["EarlyEnterTimeout"][0]
+		else:
+			early_time = None
 
 		if ("Port1In" in bpod_data["events"]) and (
 			dec_time in np.atleast_1d(bpod_data["events"]["Port1In"])
@@ -111,10 +119,22 @@ class FlashCountTrial(dj.Computed):
 			dec_time in np.atleast_1d(bpod_data["events"]["Port3In"])
 		):
 			trial_data["choice"] = "right"
+		elif ("Port1In" in bpod_data["events"]) and (
+			early_time in np.atleast_1d(bpod_data["events"]["Port1In"])
+		):
+			trial_data["choice"] = "earlyleft"
+		elif ("Port3In" in bpod_data["events"]) and (
+			early_time in np.atleast_1d(bpod_data["events"]["Port3In"])
+		):
+			trial_data["choice"] = "earlyright"
 		elif ("Port2In" in bpod_data["events"]) and (
 			dec_time in np.atleast_1d(bpod_data["events"]["Port2In"])
 		):
 			trial_data["choice"] = "center"
+		elif ("Port2In" in bpod_data["events"]) and (
+			early_time in np.atleast_1d(bpod_data["events"]["Port2In"])
+		):
+			trial_data["choice"] = "earlycenter"
 		else:
 			trial_data["choice"] = "omission"
 
@@ -127,6 +147,14 @@ class FlashCountTrial(dj.Computed):
 
 		if trial_data["choice"] == "omission":
 			trial_data["outcome"] = "omission"
+		elif trial_data["choice"] == "earlycenter":
+			trial_data["outcome"] = "early"
+		elif trial_data["choice"] == "earlyleft":
+			trial_data["outcome"] = "early"
+		elif trial_data["choice"] == "earlyright":
+			trial_data["outcome"] = "early"
+		elif trial_data["choice"] == trial_data["correct_side"]:
+			trial_data["outcome"] = "correct"
 		elif trial_data["choice"] == trial_data["correct_side"]:
 			trial_data["outcome"] = "correct"
 		else:
@@ -204,6 +232,7 @@ class DailySummary(dj.Manual):
     trials : int                    # number of trials completed
     reward_rate : float             # percentage of rewarded trials
     omission_rate : float           # percentage of incomplete trials
+    early_rate : float 				# percentage of early trials
     training_stage : tinyint        # stage at end of day
     training_criterion : float      # training criterion at end of day
     """
@@ -247,12 +276,16 @@ class DailySummary(dj.Manual):
 				summary_data["summary_date"] = d
 				summary_data["trials"] = len(these_trials)
 				summary_data["reward_rate"] = sum(
-					((these_stages > 0) & (these_stages < 3))
+					((these_stages > 0) & (these_stages < 2))
 					| (these_outcomes == "correct")
 				) / len(these_trials)
 				summary_data["omission_rate"] = sum(
-					((these_stages < 1) | (these_stages > 3))
+					((these_stages > 1))
 					& (these_outcomes == "omission")
+				) / len(these_trials)
+				summary_data["early_rate"] = sum(
+					((these_stages > 1))
+					& (these_outcomes == "early")
 				) / len(these_trials)
 				summary_data["training_stage"] = these_stages[-1]
 				summary_data["training_criterion"] = these_criterion[-1]
