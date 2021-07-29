@@ -66,7 +66,7 @@ class FlashCountTrial(dj.Computed):
 			trial_data["freerw"] = 0
 
 		if ("Init" in bpod_data["states"]):
-    		trial_data["init_time"] = bpod_data["states"]["Init"][1]
+    			trial_data["init_time"] = bpod_data["states"]["Init"][1]
 		else:
 			trial_data["init_time"] = -100
 #        elif "DecisionCue" in bpod_data["states"]:
