@@ -65,10 +65,10 @@ class FlashCountTrial(dj.Computed):
 		else:
 			trial_data["freerw"] = 0
 
-        if "Init" in bpod_data["states"]:
-            trial_data["init_time"] = bpod_data["states"]["Init"][1]
-        else:
-        	trial_data["init_time"] = -100
+		if ("Init" in bpod_data["states"]):
+    		trial_data["init_time"] = bpod_data["states"]["Init"][1]
+		else:
+			trial_data["init_time"] = -100
 #        elif "DecisionCue" in bpod_data["states"]:
 #            trial_data["init_time"] = bpod_data["states"]["DecisionCue"][1]
 #        elif not np.isnan(bpod_data["states"]["Correct"][0]):
@@ -160,9 +160,14 @@ class FlashCountTrial(dj.Computed):
 		else:
 			trial_data["outcome"] = "error"
 
- #       trial_data["rt"] = (
- #           dec_time - trial_data["init_time"] if dec_time is not None else None
- #       )
+
+		if dec_time is not None:
+			trial_data["rt"] = 	dec_time - trial_data["init_time"]
+		elif early_time is not None:
+			trial_data["rt"] = 	early_time - trial_data["init_time"]
+		else:
+			trial_data["rt"] = None
+
 
 		bpod_data["trial_settings"]["TrialFlashRates"] = [-100 if np.isnan(x) else x for x in bpod_data["trial_settings"]["TrialFlashRates"]]
 
