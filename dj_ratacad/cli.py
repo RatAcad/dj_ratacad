@@ -12,13 +12,13 @@ def cli():
 
 @cli.command()
 def update():
-    """ update database
-    """
+    """update database"""
 
     from loguru import logger
     import sys
     from pathlib import Path
-    from dj_ratacad import bpod, flashes, flashcount, twostep
+    import multiprocessing as mp
+    from dj_ratacad import bpod
 
     """ configure logger """
 
@@ -46,19 +46,37 @@ def update():
     """ populate trial data """
 
     bpod.BpodTrialData.populate()
-    flashes.FlashesTrial.populate()
-    flashes.DailySummary.populate()
-    flashcount.FlashCountTrial.populate()
-    flashcount.DailySummary.populate()
-    twostep.TwoStepTrial.populate()
-    twostep.DailySummary.populate()    
+
+    """ task specific tables (run in parallel) """
+
+    def populate_flashes():
+        from dj_ratacad import flashes
+
+        flashes.FlashesTrial.populate()
+        flashes.DailySummary.populate()
+
+    def populate_flashcount():
+        from dj_ratacad import flashcount
+
+        flashcount.FlashCountTrial.populate()
+        flashcount.DailySummary.populate()
+
+    def populate_twostep():
+        from dj_ratacad import twostep
+
+        twostep.TwoStepTrial.populate()
+        twostep.DailySummary.populate()
+
+    mp.Process(target=populate_flashes).start()
+    mp.Process(target=populate_flashcount).start()
+    mp.Process(target=populate_twostep).start()
+
 
 @cli.command()
 @click.argument("protocol")
 @click.option("-d", "--date", type=str, help="date of summary to return")
 def summary(protocol, date=None):
-    """ print daily summary
-    """
+    """print daily summary"""
 
     import importlib
     from datetime import datetime, timedelta
@@ -81,8 +99,7 @@ def summary(protocol, date=None):
 @click.option("-r", "--remove", is_flag=True)
 @click.option("-v", "--view", is_flag=True)
 def weight(name, weight=None, date=None, baseline=False, remove=False, view=False):
-    """ log animal weights to database
-    """
+    """log animal weights to database"""
 
     from dj_ratacad import animal
     from datetime import datetime
@@ -149,4 +166,3 @@ def weight(name, weight=None, date=None, baseline=False, remove=False, view=Fals
 
             animal.Weight.insert1(weight_info)
             print(f"Weight for {name} on {date} = {weight} has been recorded.")
-
