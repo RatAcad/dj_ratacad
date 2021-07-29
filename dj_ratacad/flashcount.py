@@ -22,8 +22,8 @@ class FlashCountTrial(dj.Computed):
 	task : enum("count", "rate")                                # which task -- the flash counting task or the free response flash rate task
 	stage : tinyint                                             # training stage
 	---
-	choice=NULL : enum("left", "right", "center", "omission")   # which side did rat choose
-	outcome=NULL : enum("correct", "error", "omission")         # was decision correct (i.e. rewarded)
+	choice=NULL : enum("left", "right","earlyleft","earlyright","earlycenter", "center", "omission")   # which side did rat choose
+	outcome=NULL : enum("correct", "error", "omission","early")         # was decision correct (i.e. rewarded)
 	rt=NULL: float                                              # response time in s
 	init_time=NULL : float                                      # time from the start of the trial to initiation
 	correct_side : enum("left", "right", "center")              # correct side
@@ -222,7 +222,7 @@ class FlashCountTrial(dj.Computed):
 		self.insert1(trial_data)
 
 		print(
-			f"Added Flashes Trial data for {trial_data['name']}, {trial_data['session_datetime']}, trial = {trial_data['trial']}"
+			f"Added Flash count Trial data for {trial_data['name']}, {trial_data['session_datetime']}, trial = {trial_data['trial']}"
 		)
 
 
