@@ -317,6 +317,7 @@ class DailySummary(dj.Manual):
     ---
     trials : int                    # number of trials completed
     blocks : int                    # number of blocks completed
+    leftward_choices : float        # fraction of choices toward left
     fraction_correct : float        # fraction of choices with highest probability of reward
     violation_rate : float          # fraction of trials animals chose inactive options
     training_stage : tinyint        # stage at end of day 
@@ -338,12 +339,12 @@ class DailySummary(dj.Manual):
         latest_summary_str = (latest_summary + timedelta(days=1)).strftime("%Y-%m-%d")
         today_str = datetime.today().strftime("%Y-%m-%d")
 
-        trial_datetime, block_switch, correct_choice, violation, stage = (
+        trial_datetime, block_switch, choice, correct_choice, violation, stage = (
             TwoStepTrial()
             & key
             & f"trial_datetime>'{latest_summary_str}'"
             & f"trial_datetime<'{today_str}'"
-        ).fetch("trial_datetime", "block_switch", "correct_choice", "violation", "stage")
+        ).fetch("trial_datetime", "block_switch", "choice", "correct_choice", "violation", "stage")
 
         if len(trial_datetime) > 0:
 
@@ -354,6 +355,7 @@ class DailySummary(dj.Manual):
 
                 these_trials = np.flatnonzero([a == d for a in all_dates])
                 these_blocks = block_switch[these_trials]
+                these_choices = choice[these_trials]
                 these_correct = correct_choice[these_trials]
                 these_violation = violation[these_trials]
                 these_stages = stage[these_trials]
@@ -364,6 +366,7 @@ class DailySummary(dj.Manual):
                 summary_data["blocks"] = sum(
                     ((these_stages >= 3) & (these_blocks == 1))
                 )
+                summary_data["leftward_choices"] = sum(these_choices == "left") / len(these_trials)
                 summary_data["fraction_correct"] = sum(
                     ((these_stages >= 3) 
                     & (these_correct == 1))
