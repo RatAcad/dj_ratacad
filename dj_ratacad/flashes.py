@@ -117,8 +117,10 @@ class FlashesTrial(dj.Computed):
             for x in bpod_data["trial_settings"]["TrialFlashRates"]
         ]
 
-        if ((trial_data["task"] == 1) and (trial_data["stage"] > 4)) or (
-            (trial_data["task"] == 2) and (trial_data["stage"] > 2)
+        if (
+            (trial_data["stage"] <= 0)
+            or ((trial_data["task"] == 1) and (trial_data["stage"] > 4))
+            or ((trial_data["task"] == 2) and (trial_data["stage"] > 2))
         ):
             if trial_data["correct_side"] == "left":
                 trial_data["lambda_left"] = bpod_data["trial_settings"][
