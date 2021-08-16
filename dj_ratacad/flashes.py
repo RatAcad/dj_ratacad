@@ -45,8 +45,11 @@ class FlashesTrial(dj.Computed):
 
         bpod_data = (bpod.BpodTrialData() & key).fetch(as_dict=True)[0]
         all_states = np.fromiter(bpod_data["states"].keys(), "U25")
+
         visited_states = [
-            state for state in all_states if not np.isnan(bpod_data["states"][state][0])
+            state
+            for state in all_states
+            if not np.isnan(bpod_data["states"][state][0]).all()
         ]
 
         trial_data = key.copy()
@@ -114,32 +117,44 @@ class FlashesTrial(dj.Computed):
             for x in bpod_data["trial_settings"]["TrialFlashRates"]
         ]
 
-        if trial_data["correct_side"] == "left":
-            trial_data["lambda_left"] = bpod_data["trial_settings"]["TrialFlashRates"][
-                0
-            ]
-            trial_data["lambda_right"] = bpod_data["trial_settings"]["TrialFlashRates"][
-                1
-            ]
-            trial_data["flashes_left"] = "".join(
-                bpod_data["trial_settings"]["TrialStimuli"][0].astype(str)
-            )
-            trial_data["flashes_right"] = "".join(
-                bpod_data["trial_settings"]["TrialStimuli"][1].astype(str)
-            )
+        if (
+            (trial_data["stage"] <= 0)
+            or ((trial_data["task"] == 1) and (trial_data["stage"] > 4))
+            or ((trial_data["task"] == 2) and (trial_data["stage"] > 2))
+        ):
+            if trial_data["correct_side"] == "left":
+                trial_data["lambda_left"] = bpod_data["trial_settings"][
+                    "TrialFlashRates"
+                ][0]
+                trial_data["lambda_right"] = bpod_data["trial_settings"][
+                    "TrialFlashRates"
+                ][1]
+                trial_data["flashes_left"] = "".join(
+                    bpod_data["trial_settings"]["TrialStimuli"][0].astype(str)
+                )
+                trial_data["flashes_right"] = "".join(
+                    bpod_data["trial_settings"]["TrialStimuli"][1].astype(str)
+                )
+            else:
+                trial_data["lambda_left"] = bpod_data["trial_settings"][
+                    "TrialFlashRates"
+                ][1]
+                trial_data["lambda_right"] = bpod_data["trial_settings"][
+                    "TrialFlashRates"
+                ][0]
+                trial_data["flashes_left"] = "".join(
+                    bpod_data["trial_settings"]["TrialStimuli"][1].astype(str)
+                )
+                trial_data["flashes_right"] = "".join(
+                    bpod_data["trial_settings"]["TrialStimuli"][0].astype(str)
+                )
         else:
-            trial_data["lambda_left"] = bpod_data["trial_settings"]["TrialFlashRates"][
-                1
-            ]
-            trial_data["lambda_right"] = bpod_data["trial_settings"]["TrialFlashRates"][
-                0
-            ]
-            trial_data["flashes_left"] = "".join(
-                bpod_data["trial_settings"]["TrialStimuli"][1].astype(str)
+            trial_data["lambda_left"] = 1 if trial_data["correct_side"] == "left" else 0
+            trial_data["lambda_right"] = (
+                1 if trial_data["correct_side"] == "right" else 0
             )
-            trial_data["flashes_right"] = "".join(
-                bpod_data["trial_settings"]["TrialStimuli"][0].astype(str)
-            )
+            trial_data["flashes_left"] = ""
+            trial_data["flashes_right"] = ""
 
         max_flashes = len(trial_data["flashes_left"])
         if max_flashes > 1:
@@ -163,7 +178,7 @@ class FlashesTrial(dj.Computed):
             trial_data["flash_bins"] = 0
 
         trial_data["reward"] = (
-            bpod_data["trial_settings"]["Reward"][trial_data["flash_bins"]-1]
+            bpod_data["trial_settings"]["Reward"][trial_data["flash_bins"] - 1]
             if type(bpod_data["trial_settings"]["Reward"]) == np.ndarray
             else bpod_data["trial_settings"]["Reward"]
         )

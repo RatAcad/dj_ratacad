@@ -18,6 +18,8 @@ All data is currently pushed to the database everyday at 2 AM from the daily tra
 ## Using dj_ratacad
 
 Documentation for using dj_ratacad can be found below:
+- [Adding/modifying testing boxes](docs/boxes.md#)
+- [Adding new protocols](docs/boxes.md#adding-new-protocols)
 - [Adding new animals](docs/animal.md)
 - [Querying data](docs/query.md)
 - [Checking daily summaries](docs/summary.md)
