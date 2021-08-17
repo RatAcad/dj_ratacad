@@ -209,7 +209,8 @@ class DailySummary(dj.Manual):
     summary_date : date             # date of summary
     ---
     trials : int                    # number of trials completed
-    reward_rate : float             # percentage of rewarded trials
+    reward_rate : float             # percentage of rewarded trials (not counting omissions)
+    p_right : float                 # percentage of trials rat chose right (not counting omissions)
     omission_rate : float           # percentage of incomplete trials
     training_stage : tinyint        # stage at end of day
     training_criterion : float      # training criterion at end of day
@@ -231,12 +232,12 @@ class DailySummary(dj.Manual):
         latest_summary_str = (latest_summary + timedelta(days=1)).strftime("%Y-%m-%d")
         today_str = datetime.today().strftime("%Y-%m-%d")
 
-        trial_datetime, outcome, stage, training_criterion = (
+        trial_datetime, outcome, choice, stage, training_criterion = (
             FlashesTrial()
             & key
             & f"trial_datetime>'{latest_summary_str}'"
             & f"trial_datetime<'{today_str}'"
-        ).fetch("trial_datetime", "outcome", "stage", "training_criterion")
+        ).fetch("trial_datetime", "outcome", "choice", "stage", "training_criterion")
 
         if len(trial_datetime) > 0:
 
@@ -245,30 +246,37 @@ class DailySummary(dj.Manual):
 
             for d in unique_dates:
 
-                these_trials = np.flatnonzero([a == d for a in all_dates])
-                these_outcomes = outcome[these_trials]
-                these_stages = stage[these_trials]
-                these_criterion = training_criterion[these_trials]
+                try:
+                    these_trials = np.flatnonzero([a == d for a in all_dates])
+                    these_outcomes = outcome[these_trials]
+                    these_choices = choice[these_trials]
+                    these_stages = stage[these_trials]
+                    these_criterion = training_criterion[these_trials]
 
-                summary_data = key.copy()
-                summary_data["summary_date"] = d
-                summary_data["trials"] = len(these_trials)
-                summary_data["reward_rate"] = sum(
-                    ((these_stages > 0) & (these_stages < 3))
-                    | (these_outcomes == "correct")
-                ) / len(these_trials)
-                summary_data["omission_rate"] = sum(
-                    ((these_stages < 1) | (these_stages > 3))
-                    & (these_outcomes == "omission")
-                ) / len(these_trials)
-                summary_data["training_stage"] = these_stages[-1]
-                summary_data["training_criterion"] = these_criterion[-1]
+                    summary_data = key.copy()
+                    summary_data["summary_date"] = d
+                    summary_data["trials"] = len(these_trials)
+                    summary_data["reward_rate"] = sum(
+                        ((these_stages > 0) & (these_stages < 3))
+                        | (these_outcomes == "correct")
+                    ) / (len(these_trials) - sum(these_outcomes == "omission"))
+                    summary_data["p_right"] = sum(these_choices == "right") / (len(these_trials) - sum(these_outcomes == "omission"))
+                    summary_data["omission_rate"] = sum(
+                        ((these_stages < 1) | (these_stages > 3))
+                        & (these_outcomes == "omission")
+                    ) / len(these_trials)
+                    summary_data["training_stage"] = these_stages[-1]
+                    summary_data["training_criterion"] = these_criterion[-1]
 
-                self.insert1(summary_data)
+                    self.insert1(summary_data)
 
-                print(
-                    f"Added Flashes Summary for {summary_data['name']}, {summary_data['summary_date']}"
-                )
+                    print(
+                        f"Added Flashes Summary for {summary_data['name']}, {summary_data['summary_date']}"
+                    )
+
+                except:
+
+                    print(f"Failed to create summary for {key['name']}, {d}")
 
     def populate(self):
 
