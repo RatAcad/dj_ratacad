@@ -94,7 +94,7 @@ class DailySummary(dj.Manual):
     trials : int                        # number of trials completed
     timeouts : int                      # number of trials which time out & give free reward
     lever_presses : int                 # number of times lever is pressed
-    rewards : int                       # number of rewards not including timeouts
+    reward : int                        # number of rewards not including timeouts
     training_stage : tinyint            # training stage 
 
     """
@@ -115,12 +115,12 @@ class DailySummary(dj.Manual):
         latest_summary_str = (latest_summary + timedelta(days=1)).strftime("%Y-%m-%d")
         today_str = datetime.today().strftime("%Y-%m-%d")
 
-        trial_datetime, press_time, estimate, stage = (
+        trial_datetime, reward, timeouts, stage = (
             TimingtaskTrial()
             & key
             & f"trial_datetime>'{latest_summary_str}'"
             & f"trial_datetime<'{today_str}'"
-        ).fetch("trial_datetime","rewards","stage","timeouts")
+        ).fetch("trial_datetime","reward","timeouts","stage")
 
         if len(trial_datetime) >  0:
             all_dates = [t.date() for t in trial_datetime]
@@ -130,14 +130,14 @@ class DailySummary(dj.Manual):
                 these_trials = np.flatnonzero([a == d for a in all_dates])
                 these_rewards = reward[these_trials]
                 these_stages = stage[these_trials]
-                these_timeouts = timeout[these_trials]
+                these_timeouts = timeouts[these_trials]
 
                 summary_data = key.copy()
                 summary_data["summary_date"] = d
                 summary_data["trials"] = len(these_trials)
                 summary_data["lever_presses"] = sum(these_timeouts == "n")
                 summary_data["timeouts"] = sum(these_timeouts == "y")
-                summary_data["rewards"] = sum(these_rewards == "y")
+                summary_data["reward"] = sum(these_rewards == "y")
                 summary_data["training_stage"] = these_stages[-1]
 
                 self.insert1(summary_data)
