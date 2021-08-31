@@ -120,7 +120,7 @@ class DailySummary(dj.Manual):
             & key
             & f"trial_datetime>'{latest_summary_str}'"
             & f"trial_datetime<'{today_str}'"
-        ).fetch("trial_datetime","reward","stage","timeout")
+        ).fetch("trial_datetime","rewards","stage","timeouts")
 
         if len(trial_datetime) >  0:
             all_dates = [t.date() for t in trial_datetime]
