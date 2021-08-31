@@ -23,9 +23,11 @@ class TimingtaskTrial(dj.Computed):
     ---
     press_time=NULL : float                     # timestamp of iniital lever press
     release_time=NULL : float                   # timestamp of lever release
+    timeout : enum("y","n")                     # free sugar trial yes or no
     sample_time : float                         # sample time 
     estimate=NULL : enum("over","on","under")   # was estimation over/under/on time
-    reward : int                                # reward size in uL
+    reward : enum("y","n")                      # was trial rewarded, not including timeouts
+    reward_amount : int                         # reward size in uL
 
 
     """
@@ -46,10 +48,15 @@ class TimingtaskTrial(dj.Computed):
         trial_data = key.copy()
         trial_data["stage"] = bpod_data["trial_settings"]["Stage"]
         trial_data["sample_time"] = bpod_data["trial_settings"]["SampleTime"]
-        trial_data["reward"] = bpod_data["trial_settings"]["Reward"]
+        trial_data["reward_amount"] = bpod_data["trial_settings"]["Reward"]
 
         if not np.isnan(bpod_data["states"]["LPress"][0]):
+            trial_data["timeout"] = "n"
             trial_data["press_time"] = bpod_data["states"]["LPress"][0]
+            if np.isnan(bpod_data["states"]["Error"][0]):
+                trial_data["reward"] = "y"
+            else:
+                trial_data["reward"] = "n"
             if not np.isnan(bpod_data["states"]["Holding"][0]):
                 trial_data["release_time"] = bpod_data["states"]["Holding"][1]
             elif trial_data["stage"] == 1:
@@ -64,6 +71,10 @@ class TimingtaskTrial(dj.Computed):
                 else:
                     trial_data["release_time"] = bpod_data["states"]["UnderTime"][1]
                     trial_data["estimate"] = "under"
+                
+        else:
+            trial_data["timeout"] = "y"
+            trial_data["reward"] = "n"
         
         self.insert1(trial_data)
         print(
@@ -82,8 +93,8 @@ class DailySummary(dj.Manual):
     ---
     trials : int                        # number of trials completed
     timeouts : int                      # number of trials which time out & give free reward
-    lever_presses : float               # number of times lever is pressed
-    reward_rate : int                   # percent of rewarded trials not including timeouts
+    lever_presses : int                 # number of times lever is pressed
+    rewards : int                       # number of rewards not including timeouts
     training_stage : tinyint            # training stage 
 
     """
@@ -109,7 +120,7 @@ class DailySummary(dj.Manual):
             & key
             & f"trial_datetime>'{latest_summary_str}'"
             & f"trial_datetime<'{today_str}'"
-        ).fetch("trial_datetime","press_time","estimate","stage")
+        ).fetch("trial_datetime","reward","stage","timeout")
 
         if len(trial_datetime) >  0:
             all_dates = [t.date() for t in trial_datetime]
@@ -117,11 +128,23 @@ class DailySummary(dj.Manual):
 
             for d in unique_dates: 
                 these_trials = np.flatnonzero([a == d for a in all_dates])
-                these_presstimes = press_time[these_trials]
-                these_estimates = estimate[these_trials]
+                these_rewards = reward[these_trials]
                 these_stages = stage[these_trials]
+                these_timeouts = timeout[these_trials]
 
                 summary_data = key.copy()
                 summary_data["summary_date"] = d
                 summary_data["trials"] = len(these_trials)
-                summary_data["lever_presses"] = 
+                summary_data["lever_presses"] = sum(these_timeouts == "n")
+                summary_data["timeouts"] = sum(these_timeouts == "y")
+                summary_data["rewards"] = sum(these_rewards == "y")
+                summary_data["training_stage"] = these_stages[-1]
+
+                self.insert1(summary_data)
+                print(f"Added Timingtask Summary for {summary_data['name']}, {summary_data['summary_date']}"
+                )
+
+    def populate(self):
+        for k in self.key_source:
+            self._make_tuples(k)            
+
