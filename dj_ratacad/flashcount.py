@@ -241,6 +241,7 @@ class DailySummary(dj.Manual):
     early_rate : float 				# percentage of early trials
     training_stage : tinyint        # stage at end of day
     training_criterion : float      # training criterion at end of day
+    p_right : float                 # percentage of trials rats choose right 
     """
 
 	@property
@@ -259,12 +260,12 @@ class DailySummary(dj.Manual):
 		latest_summary_str = (latest_summary + timedelta(days=1)).strftime("%Y-%m-%d")
 		today_str = datetime.today().strftime("%Y-%m-%d")
 
-		trial_datetime, outcome, stage, training_criterion = (
+		trial_datetime, outcome, choice, stage, training_criterion = (
 			FlashCountTrial()
 			& key
 			& f"trial_datetime>'{latest_summary_str}'"
 			& f"trial_datetime<'{today_str}'"
-		).fetch("trial_datetime", "outcome", "stage", "training_criterion")
+		).fetch("trial_datetime", "outcome","choice", "stage", "training_criterion")
 
 		if len(trial_datetime) > 0:
 
@@ -277,7 +278,7 @@ class DailySummary(dj.Manual):
 				these_outcomes = outcome[these_trials]
 				these_stages = stage[these_trials]
 				these_criterion = training_criterion[these_trials]
-
+				these_choices = choice[these_trials]
 				summary_data = key.copy()
 				summary_data["summary_date"] = d
 				summary_data["trials"] = len(these_trials)
@@ -295,7 +296,7 @@ class DailySummary(dj.Manual):
 				) / len(these_trials)
 				summary_data["training_stage"] = these_stages[-1]
 				summary_data["training_criterion"] = these_criterion[-1]
-
+				summary_data["p_right"] = sum(these_choices == "right")/len(these_trials)
 				self.insert1(summary_data)
 
 				print(
