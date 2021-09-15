@@ -46,9 +46,15 @@ class TimingtaskTrial(dj.Computed):
         ]
 
         trial_data = key.copy()
-        trial_data["stage"] = bpod_data["trial_settings"]["Stage"]
-        trial_data["sample_time"] = bpod_data["trial_settings"]["SampleTime"]
-        trial_data["reward_amount"] = bpod_data["trial_settings"]["Reward"]
+        
+        if bpod_data["trial_settings"] == None:
+            trial_data["stage"] = 1
+            trial_data["sample_time"] = 0
+            trial_data["reward_amount"] = 50
+        else:
+            trial_data["stage"] = bpod_data["trial_settings"]["Stage"]
+            trial_data["sample_time"] = bpod_data["trial_settings"]["Sample"]
+            trial_data["reward_amount"] = bpod_data["trial_settings"]["Reward"]
 
         if not np.isnan(bpod_data["states"]["LPress"][0]):
             trial_data["timeout"] = "n"
@@ -115,12 +121,12 @@ class DailySummary(dj.Manual):
         latest_summary_str = (latest_summary + timedelta(days=1)).strftime("%Y-%m-%d")
         today_str = datetime.today().strftime("%Y-%m-%d")
 
-        trial_datetime, reward, timeouts, stage = (
+        trial_datetime, reward, timeout, stage = (
             TimingtaskTrial()
             & key
             & f"trial_datetime>'{latest_summary_str}'"
             & f"trial_datetime<'{today_str}'"
-        ).fetch("trial_datetime","reward","timeouts","stage")
+        ).fetch("trial_datetime","reward","timeout","stage")
 
         if len(trial_datetime) >  0:
             all_dates = [t.date() for t in trial_datetime]
@@ -130,7 +136,7 @@ class DailySummary(dj.Manual):
                 these_trials = np.flatnonzero([a == d for a in all_dates])
                 these_rewards = reward[these_trials]
                 these_stages = stage[these_trials]
-                these_timeouts = timeouts[these_trials]
+                these_timeouts = timeout[these_trials]
 
                 summary_data = key.copy()
                 summary_data["summary_date"] = d
