@@ -92,6 +92,8 @@ class Bpod(dj.Lookup):
         ["RATACAD_3_1", "6-port", "2021-07-29", 8529880],
         ["RATACAD_3_2", "6-port", "2021-07-29", 8528440],
         ["RATACAD_3_3", "6-port", "2021-07-29", 5736500],
+        ["RATACAD_3_6", "lever-port", "2021-08-23", 8528710],
+        ["RATACAD_3_7", "lever-port", "2021-08-23", 8410220],
     ]
 
 
@@ -109,6 +111,7 @@ class Protocol(dj.Lookup):
         ["Flashes", "Light flashes 2AFC task"],
         ["FlashCount", "Flash counting 2AFC task"],
         ["TwoStep", "Two Step planning task"],
+        ["TimingTask", "Lever press interval timing task"]
     ]
 
 
