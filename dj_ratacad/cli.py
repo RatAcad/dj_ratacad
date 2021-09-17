@@ -12,7 +12,11 @@ def cli():
 
 @cli.command()
 def update():
-    """update database"""
+    """
+    
+    update database
+    
+    """
 
     from loguru import logger
     import sys
@@ -67,9 +71,16 @@ def update():
         twostep.TwoStepTrial.populate()
         twostep.DailySummary.populate()
 
+    def populate_timingtask():
+        from dj_ratacad import timingtask
+
+        timingtask.TimingtaskTrial.populate()
+        timingtask.DailySummary.populate()
+
     mp.Process(target=populate_flashes).start()
     mp.Process(target=populate_flashcount).start()
     mp.Process(target=populate_twostep).start()
+    mp.Process(target=populate_timingtask).start()
 
 
 @cli.command()

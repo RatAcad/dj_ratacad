@@ -36,6 +36,7 @@ class TimingtaskTrial(dj.Computed):
         return bpod.BpodTrialData() & (bpod.BpodMetadata() & 'protocol="TimingTask"')
     
     def make(self, key):
+
         bpod_data = (bpod.BpodTrialData() & key).fetch(as_dict=True)[0]
         all_states = np.fromiter(bpod_data["states"].keys(),"U25")
 
@@ -68,10 +69,10 @@ class TimingtaskTrial(dj.Computed):
             elif trial_data["stage"] == 1:
                 trial_data["release_time"] = bpod_data["states"]["LPress"][1]
             else:
-                if not np.nan(bpod_data["states"]["OverTime"][0]):
+                if not np.isnan(bpod_data["states"]["OverTime"][0]):
                     trial_data["release_time"] = bpod_data["states"]["OverTime"][1]
                     trial_data["estimate"] = "over"
-                elif not np.nan(bpod_data["states"]["Ontime"][0]):
+                elif not np.isnan(bpod_data["states"]["OnTime"][0]):
                     trial_data["release_time"] = bpod_data["states"]["OnTime"][1]
                     trial_data["estimate"] = "on"
                 else:
