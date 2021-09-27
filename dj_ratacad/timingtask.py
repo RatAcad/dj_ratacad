@@ -26,7 +26,7 @@ class TimingtaskTrial(dj.Computed):
     timeout : enum("y","n")                     # free sugar trial yes or no
     sample_time : float                         # sample time 
     estimate=NULL : enum("over","on","under")   # was estimation over/under/on time
-    reward : enum("y","n")                      # was trial rewarded, not including timeouts
+    reward : enum("y","n")                      # was trial rewarded
     reward_amount : int                         # reward size in uL
 
 
@@ -66,8 +66,10 @@ class TimingtaskTrial(dj.Computed):
                 trial_data["reward"] = "n"
             if not np.isnan(bpod_data["states"]["Holding"][0]):
                 trial_data["release_time"] = bpod_data["states"]["Holding"][1]
-            elif trial_data["stage"] == 1:
+            elif trial_data["stage"] != 6 & trial_data["stage"] != 7:
                 trial_data["release_time"] = bpod_data["states"]["LPress"][1]
+                if trial_data["stage"] != 1:
+                    trial_data["estimate"] = "under"
             else:
                 if not np.isnan(bpod_data["states"]["OverTime"][0]):
                     trial_data["release_time"] = bpod_data["states"]["OverTime"][1]
