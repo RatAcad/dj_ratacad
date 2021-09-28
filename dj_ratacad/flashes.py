@@ -58,23 +58,23 @@ class FlashesTrial(dj.Computed):
         )
         trial_data["stage"] = bpod_data["trial_settings"]["Stage"]
 
-        if "Init" in bpod_data["states"]:
+        if "Init" in visited_states:
             trial_data["init_time"] = bpod_data["states"]["Init"][1]
-        elif "DecisionCue" in bpod_data["states"]:
+        elif "DecisionCue" in visited_states:
             trial_data["init_time"] = bpod_data["states"]["DecisionCue"][1]
-        elif not np.isnan(bpod_data["states"]["Correct"][0]):
+        elif "Correct" in visited_states:
             trial_data["init_time"] = bpod_data["states"]["Correct"][0]
-        elif not np.isnan(bpod_data["states"]["Error"][0]):
+        elif "Correct1" in visited_states:
+            trial_data["init_time"] = bpod_data["states"]["Correct1"][0]
+        elif "Error" in visited_states:
             trial_data["init_time"] = bpod_data["states"]["Error"][0]
         else:
             trial_data["init_time"] = -100
 
-        if not np.isnan(bpod_data["states"]["Consume"][0]):
+        if "Consume" in visited_states:
             correct_state = [vs for vs in visited_states if "Correct" in vs][0]
             dec_time = bpod_data["states"][correct_state][0]
-        elif ("Error" in bpod_data["states"].keys()) and (
-            not np.isnan(bpod_data["states"]["Error"][0])
-        ):
+        elif "Error" in visited_states:
             dec_time = bpod_data["states"]["Error"][0]
         else:
             dec_time = None
@@ -257,10 +257,11 @@ class DailySummary(dj.Manual):
                     summary_data["summary_date"] = d
                     summary_data["trials"] = len(these_trials)
                     summary_data["reward_rate"] = sum(
-                        ((these_stages > 0) & (these_stages < 3))
-                        | (these_outcomes == "correct")
-                    ) / (len(these_trials) - sum(these_outcomes == "omission"))
-                    summary_data["p_right"] = sum(these_choices == "right") / (len(these_trials) - sum(these_outcomes == "omission"))
+                        these_outcomes == "correct"
+                    ) / sum(these_outcomes != "omission")
+                    summary_data["p_right"] = sum(these_choices == "right") / sum(
+                        these_outcomes != "omission"
+                    )
                     summary_data["omission_rate"] = sum(
                         ((these_stages < 1) | (these_stages > 3))
                         & (these_outcomes == "omission")
