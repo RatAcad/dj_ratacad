@@ -162,11 +162,13 @@ class BpodMetadata(dj.Manual):
                     if bpod_data is not None:
 
                         bpod_info = bpod_data["Info"]
+
                         bpod_data["TrialStartTimestamp"] = (
                             [bpod_data["TrialStartTimestamp"]]
                             if type(bpod_data["TrialStartTimestamp"]) is float
                             else bpod_data["TrialStartTimestamp"]
                         )
+
                         bpod_data["TrialEndTimestamp"] = (
                             [bpod_data["TrialEndTimestamp"]]
                             if type(bpod_data["TrialEndTimestamp"]) is float
@@ -247,10 +249,14 @@ class BpodMetadata(dj.Manual):
                             f"Added Metadata for {key['name']}, {metadata['session_datetime']}"
                         )
 
-            except TypeError:
+            except Exception as e:
 
-                print(f"Bpod Data file {nf.stem} is empty. Deleting file...")
-                (BpodMetadata.DATA_DIR / nf).unlink()
+                if type(e) is "TypeError":
+                    print(f"Bpod Data file {nf.stem} is empty. Deleting file...")
+                    (BpodMetadata.DATA_DIR / nf).unlink()
+                else:
+                    print(f"Bpod Data file {nf.stem} is corrupted, please manually check and delete file.")
+
 
     def populate(self):
 
