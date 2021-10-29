@@ -188,7 +188,6 @@ class FlashesTrial(dj.Computed):
             else 0
         )
 
-        print([bpod_data["trial_settings"]["Label"], len(bpod_data["trial_settings"]["Label"]), bpod_data["trial_settings"]["Label"][:24]])
         trial_data["label"] = (
             bpod_data["trial_settings"]["Label"][:24]
             if "Label" in bpod_data["trial_settings"]
