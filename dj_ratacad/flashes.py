@@ -34,7 +34,7 @@ class FlashesTrial(dj.Computed):
     flashes_right : varchar(100)                                # flash sequence on the right side as a string (0 for no flash, 1 for flash)
     reward : int                                                # reward size (in uL)
     training_criterion : float                                  # training criterion variable
-    label=NULL : varchar(24)                                    # experiment label
+    label=NULL : varchar(64)                                    # experiment label
     """
 
     @property
@@ -187,8 +187,10 @@ class FlashesTrial(dj.Computed):
             if bpod_data["additional_fields"]["TrainingCriterion"] is not None
             else 0
         )
+
+        print([bpod_data["trial_settings"]["Label"], len(bpod_data["trial_settings"]["Label"]), bpod_data["trial_settings"]["Label"][:24]])
         trial_data["label"] = (
-            bpod_data["trial_settings"]["Label"]
+            bpod_data["trial_settings"]["Label"][:24]
             if "Label" in bpod_data["trial_settings"]
             else None
         )
