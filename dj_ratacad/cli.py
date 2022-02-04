@@ -74,7 +74,7 @@ def update():
     def populate_timingtask():
         from dj_ratacad import timingtask
 
-        timingtask.TimingtaskTrial.populate()
+        timingtask.TimingtaskTrialV2.populate()
         timingtask.DailySummary.populate()
 
     mp.Process(target=populate_flashes).start()
