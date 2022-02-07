@@ -19,5 +19,5 @@ pip install git+https://github.com/RatAcad/dj_ratacad
 import datajoint as dj
 dj.config['database.host'] = "buaws-aws-cf-rds-mysql-prod.cenrervr4svx.us-east-2.rds.amazonaws.com" #"buaw    s-aws-cf-rds-mysql-prod.cenrervr4svx.us-east-2.rds.amazonaws.com"
 dj.config['database.user'] = "your_user_name"
-dj.config.save_local()
+dj.config.save_global() #save the config files for all your project
 ```
