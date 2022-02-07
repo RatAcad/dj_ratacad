@@ -13,4 +13,11 @@ conda activate dj
 pip install git+https://github.com/RatAcad/dj_ratacad
 ```
 
-3. Create your datajoint configuration. Please see datajoint documentation on [setting the datajoint config object](https://docs.datajoint.io/python/setup/01-Install-and-Connect.html).
+3. Create your datajoint configuration. Please see datajoint documentation on [setting the datajoint config object](https://docs.datajoint.io/python/setup/01-Install-and-Connect.html). A few python lines like this should work: 
+
+```
+import datajoint as dj
+dj.config['database.host'] = "buaws-aws-cf-rds-mysql-prod.cenrervr4svx.us-east-2.rds.amazonaws.com" #"buaw    s-aws-cf-rds-mysql-prod.cenrervr4svx.us-east-2.rds.amazonaws.com"
+dj.config['database.user'] = "your_user_name"
+dj.config.save_local()
+```
