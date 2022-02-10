@@ -137,6 +137,10 @@ class FlashCountTrial(dj.Computed):
 			early_time in np.atleast_1d(bpod_data["events"]["Port2In"])
 		):
 			trial_data["choice"] = "earlycenter"
+		elif ("FreeReward1" in bpod_data["states"].keys()) and (not np.isnan(bpod_data["states"]["FreeReward1"][0])):
+			trial_data["choice"] = "left"
+		elif ("FreeReward2" in bpod_data["states"].keys()) and (not np.isnan(bpod_data["states"]["FreeReward2"][0])):		
+			trial_data["choice"] = "right"
 		else:
 			trial_data["choice"] = "omission"
 
