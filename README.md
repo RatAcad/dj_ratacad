@@ -28,3 +28,4 @@ Documentation for using dj_ratacad can be found below:
 - [Querying data](docs/query.md)
 - [Checking daily summaries](docs/summary.md)
 - [Logging animal weights](docs/weight.md)
+- [Fetch data directly into R using the djreadr package](https://github.com/gkane26/djreadr)
