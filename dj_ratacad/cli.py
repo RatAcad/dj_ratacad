@@ -28,7 +28,7 @@ def update():
 
     LOG_FILE = Path.home() / "dj_ratacad.log"
     log_format = "{time:YYYY:MM:DD HH:mm:ss} {level} -- line = {line} -- {message}"
-    logger.add(LOG_FILE, format=log_format)
+    logger.add(open(LOG_FILE, 'w'), format=log_format)
 
     class StreamToLogger:
         def __init__(self, level="INFO"):
