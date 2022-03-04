@@ -119,8 +119,8 @@ class FlashesTrial(dj.Computed):
 
         if (
             (trial_data["stage"] <= 0)
-            or ((trial_data["task"] == 1) and (trial_data["stage"] > 4))
-            or ((trial_data["task"] == 2) and (trial_data["stage"] > 2))
+            or ((trial_data["task"] == "count") and (trial_data["stage"] > 4))
+            or ((trial_data["task"] == "rate") and (trial_data["stage"] > 2))
         ):
             if trial_data["correct_side"] == "left":
                 trial_data["lambda_left"] = bpod_data["trial_settings"][
@@ -157,6 +157,7 @@ class FlashesTrial(dj.Computed):
             trial_data["flashes_right"] = ""
 
         max_flashes = len(trial_data["flashes_left"])
+
         if max_flashes > 1:
             flash_states = all_states[
                 [bool(re.match(r"Flash", bdk)) for bdk in all_states]
@@ -176,7 +177,7 @@ class FlashesTrial(dj.Computed):
             ]
         else:
             trial_data["flash_bins"] = 0
-
+        
         trial_data["reward"] = (
             bpod_data["trial_settings"]["Reward"][trial_data["flash_bins"] - 1]
             if type(bpod_data["trial_settings"]["Reward"]) == np.ndarray
