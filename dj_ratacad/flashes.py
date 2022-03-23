@@ -216,7 +216,7 @@ class DailySummary(dj.Manual):
     omission_rate : float           # percentage of incomplete trials
     training_stage : tinyint        # stage at end of day
     training_criterion : float      # training criterion at end of day
-    rt : float                      # reaction time
+    rt=NULL : float                      # reaction time
     """
 
     @property
@@ -271,11 +271,8 @@ class DailySummary(dj.Manual):
                     ) / len(these_trials)
                     summary_data["training_stage"] = these_stages[-1]
                     summary_data["training_criterion"] = these_criterion[-1]
-                    try:
-                        these_rt = reaction_time[these_trials]
-                        summary_data["rt"] = np.mean(these_rt)
-                    except:
-                        summary_data["rt"] = 0 
+                    these_rt = reaction_time[these_trials]
+                    summary_data["rt"] = np.nanmean(these_rt)
                     self.insert1(summary_data)
 
                     print(
