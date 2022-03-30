@@ -26,6 +26,7 @@ class Details(dj.Lookup):
         ["Rat", "Long-Evans", "Charles River", "WT", "006"],
         ["Rat", "Thy1-GCaMP", "RRRC", "LE-Tg(Thy1-GCaMP6f)7", "830"],
         ["Mouse", "Thy1-GCaMP", "Jackson Laboratory","C57BL/6J-Tg(Thy1-GCaMP6f)GP5.17Dkim/J","025393"],
+        ["Mouse", "C57BL/6", "Charles River","WT","027"]
     ]
 
 
