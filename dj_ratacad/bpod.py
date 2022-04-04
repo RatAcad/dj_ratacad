@@ -95,6 +95,8 @@ class Bpod(dj.Lookup):
         ["RATACAD_3_6", "lever-port", "2021-08-23", 8528710],
         ["RATACAD_3_7", "lever-port", "2021-08-23", 8410220],
         ["mouseAcad1","3-port","2022-02-09", 8410120],
+        ["mouseAcad2","3-port","2022-02-09", 9859370],
+        ["mouseAcad3","3-port","2022-02-09", 9852490]
     ]
 
 
