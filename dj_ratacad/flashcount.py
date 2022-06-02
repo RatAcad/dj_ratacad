@@ -216,7 +216,7 @@ class FlashCountTrial(dj.Computed):
  #       else:
  #           trial_data["flash_bins"] = 0
 		trial_data["flash_bins"] = 0
-		trial_data["reward"] = bpod_data["trial_settings"]["Reward"]
+		trial_data["reward"] = bpod_data["additional_fields"]["Reward"]
 		trial_data["training_criterion"] = bpod_data["additional_fields"]["TrainingCriterion"]
 #        trial_data["label"] = (
 #            bpod_data["trial_settings"]["Label"]
