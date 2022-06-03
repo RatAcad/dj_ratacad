@@ -38,6 +38,8 @@ class FlashCountTrial(dj.Computed):
 	probe  :  int                                                  # probe setting
 	freerw  : int                                                 # free reward setting in stage 3
 	isprobe  : int                                                # whether trial is a probe trial 
+	reversal : int						    #whether reversal is on		
+	heavy_tail : int				            #whether heavy tail is on		
 	"""
 
 	@property
@@ -59,6 +61,17 @@ class FlashCountTrial(dj.Computed):
 			trial_data["probe"] = bpod_data["trial_settings"]["Probe"]
 		else:
 			trial_data["probe"] = 0
+
+		if ("Reversal" in bpod_data["trial_settings"].keys()):
+			trial_data["reversal"] = bpod_data["trial_settings"]["Reversal"]
+		else:
+			trial_data["reversal"] = 0
+
+		if ("HeavyTail" in bpod_data["trial_settings"].keys()):
+			trial_data["heavy_tail"] = bpod_data["trial_settings"]["HeavyTail"]
+		else:
+			trial_data["heavy_tail"] = 0
+
 
 		if ("FreeS3" in bpod_data["trial_settings"].keys()):
 			trial_data["freerw"] = bpod_data["trial_settings"]["FreeS3"]
