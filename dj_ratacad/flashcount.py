@@ -229,7 +229,12 @@ class FlashCountTrial(dj.Computed):
  #       else:
  #           trial_data["flash_bins"] = 0
 		trial_data["flash_bins"] = 0
-		trial_data["reward"] = bpod_data["additional_fields"]["Reward"]
+		if ((("Consume" in bpod_data["states"].keys()) and (not np.isnan(bpod_data["states"]["Consume"][0]))) or (("FreeConsume2" in bpod_data["states"].keys()) and (not np.isnan(bpod_data["states"]["FreeConsume2"][0]))) or (("FreeConsume1" in bpod_data["states"].keys()) and (not np.isnan(bpod_data["states"]["FreeConsume1"][0]))) or (("CorrectConsume" in bpod_data["states"].keys()) and (not np.isnan(bpod_data["states"]["CorrectConsume"][0]))) or (("ErrorConsume" in bpod_data["states"].keys()) and (not np.isnan(bpod_data["states"]["ErrorConsume"][0]))) ) :
+			trial_data["reward"] = 1
+		else:		
+			trial_data["reward"] = 0
+	
+	#	trial_data["reward"] = bpod_data["additional_fields"]["Reward"]
 		trial_data["training_criterion"] = bpod_data["additional_fields"]["TrainingCriterion"]
 #        trial_data["label"] = (
 #            bpod_data["trial_settings"]["Label"]
