@@ -77,10 +77,17 @@ def update():
         timingtask.TimingtaskTrialV2.populate()
         timingtask.DailySummary.populate()
 
+    def populate_probabilities():
+        from dj_ratacad import probabilities
+
+        probabilities.ProbabilitiesTrial.populate()
+        probabilities.DailySummary.populate()
+
     mp.Process(target=populate_flashes).start()
     mp.Process(target=populate_flashcount).start()
     mp.Process(target=populate_twostep).start()
     mp.Process(target=populate_timingtask).start()
+    mp.Process(target=populate_probabilities).start()
 
 
 @cli.command()
