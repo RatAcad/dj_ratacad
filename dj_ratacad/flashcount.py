@@ -38,6 +38,8 @@ class FlashCountTrial(dj.Computed):
 	probe  :  int                                                  # probe setting
 	freerw  : int                                                 # free reward setting in stage 3
 	isprobe  : int                                                # whether trial is a probe trial 
+	reversal : int						    #whether reversal is on		
+	heavy_tail : int				            #whether heavy tail is on		
 	"""
 
 	@property
@@ -59,6 +61,17 @@ class FlashCountTrial(dj.Computed):
 			trial_data["probe"] = bpod_data["trial_settings"]["Probe"]
 		else:
 			trial_data["probe"] = 0
+
+		if ("Reversal" in bpod_data["trial_settings"].keys()):
+			trial_data["reversal"] = bpod_data["trial_settings"]["Reversal"]
+		else:
+			trial_data["reversal"] = 0
+
+		if ("HeavyTail" in bpod_data["trial_settings"].keys()):
+			trial_data["heavy_tail"] = bpod_data["trial_settings"]["HeavyTail"]
+		else:
+			trial_data["heavy_tail"] = 0
+
 
 		if ("FreeS3" in bpod_data["trial_settings"].keys()):
 			trial_data["freerw"] = bpod_data["trial_settings"]["FreeS3"]
@@ -216,7 +229,12 @@ class FlashCountTrial(dj.Computed):
  #       else:
  #           trial_data["flash_bins"] = 0
 		trial_data["flash_bins"] = 0
-		trial_data["reward"] = bpod_data["trial_settings"]["Reward"]
+		if ((("Consume" in bpod_data["states"].keys()) and (not np.isnan(bpod_data["states"]["Consume"][0]))) or (("FreeConsume2" in bpod_data["states"].keys()) and (not np.isnan(bpod_data["states"]["FreeConsume2"][0]))) or (("FreeConsume1" in bpod_data["states"].keys()) and (not np.isnan(bpod_data["states"]["FreeConsume1"][0]))) or (("CorrectConsume" in bpod_data["states"].keys()) and (not np.isnan(bpod_data["states"]["CorrectConsume"][0]))) or (("ErrorConsume" in bpod_data["states"].keys()) and (not np.isnan(bpod_data["states"]["ErrorConsume"][0]))) ) :
+			trial_data["reward"] = 1
+		else:		
+			trial_data["reward"] = 0
+	
+	#	trial_data["reward"] = bpod_data["additional_fields"]["Reward"]
 		trial_data["training_criterion"] = bpod_data["additional_fields"]["TrainingCriterion"]
 #        trial_data["label"] = (
 #            bpod_data["trial_settings"]["Label"]
