@@ -16,38 +16,38 @@ schema = dj.schema("scott_probabilities")
 @schema
 class ProbabilitiesTrial(dj.Computed):
     definition = """
-    # Gather Proabilities task specific data
+    # Gather Probabilities task specific data
 
     -> bpod.BpodTrialData
-    task : enum("probabilities")                                # which task -- the flash counting task or the free response flash rate task
+    task : enum("Two_armed")                                    # which task -- the flash counting task or the free response flash rate task
     stage : tinyint                                             # training stage
     ---
-    choice=NULL : enum("left", "right", "center", "omission")   # which side did rat choose
-    outcome=NULL : enum(c, "non_rewarded", "omission")         # was decision correct (i.e. rewarded)
-    correct_choice=NULL : int                                   # whether mice chose the option with highest probability of reward
-    rt=NULL: float                                              # response time in s
-    init_time=NULL : float                                      # time from the start of the trial to initiation
-    majorprob_side : enum("left", "right", "center")              # the side with more probability of being rewarded
-    prob_left : float                                         # the probability of a left flash
-    prob_right : float                                        # the probability of a right flash
-    bloc = NULL: int                                            # Number of bloc you are in
-    bloc_length =NULL: int                                       # number of trials per bloc
-    bloc_changing_prob = float                                       # probability of changing the bloc or side with more probability
-    bloc_criteria =NULL: int                                    # number of repeated trials in the same side to change criteria, half of them rewarded
-    min_bloc= NULL:int                                          # min number of trials to change bloc
-    max_bloc= NULL:int                                          # max number of trials to change bloc
-    enviroment = NULL : enum("None","normal", "poor", "rich")   # enviroment of the trial 
-    previous_outcome =NULL: int                                 # wheter the previous trial was rewarded (1) or non-rewarded(0) or omission(2)
-    previous_choice : enum("left", "right", "center")           # previous trial choice
-    outcome_criteria = float                                    # criteria to change to block depending on outcome 1 change 0 no change
-    choice_criteria = float                                         criteria to change to block depending on outcome 1 left 3 no right        
+    choice=NULL : enum("left", "right", "center", "omission")   # which side did mouse choose
+    outcome=NULL : enum("rewarded", "nonrewarded", "omission")          # was decision correct (i.e. rewarded)
+    correct_choice =NULL : int                                   # whether mice chose the option with highest probability of reward
+    rt= NULL: float                                             # response time in s
+    init_time= NULL : float                                    # time from the start of the trial to initiation
+    majorprob_side : enum("left", "right", "center")            # the side with more probability of being rewarded
+    prob_left : float                                           # the probability of a left flash
+    prob_right : float                                          # the probability of a right flash
+    bloc= NULL: int                                            # Number of bloc you are in
+    bloc_length : int                                      # number of trials per bloc
+    bloc_changing_prob : float                                  # probability of changing the bloc or side with more probability
+    bloc_criteria : int                                    # number of repeated trials in the same side to change criteria, half of them rewarded
+    min_bloc=NULL : int                                          # min number of trials to change bloc
+    max_bloc=NULL : int                                          # max number of trials to change bloc
+    enviroment=NULL : enum("None","normal", "poor", "rich")   # enviroment of the trial 
+    previous_outcome=NULL : int                                # whether the previous trial was rewarded (1) or non-rewarded(0) or omission(2)
+    previous_choice=NULL : enum("left", "right", "center")           # previous trial choice
+    outcome_criteria : float                                    # criteria to change to block depending on outcome 1 change 0 no change
+    choice_criteria : float                                     #criteria to change to block depending on outcome 1 left 3 no right        
     reward : int                                                # reward size (in uL)
     label=NULL : varchar(64)                                    # experiment label
     """
 
     @property
     def key_source(self):
-        return bpod.BpodTrialData() & (bpod.BpodMetadata() & 'protocol="Probabilities"')
+        return bpod.BpodTrialData() & (bpod.BpodMetadata() & 'protocol="probabilities"')
 
     def make(self, key):
 
@@ -63,7 +63,7 @@ class ProbabilitiesTrial(dj.Computed):
         #trial_data["task"] = (
         #    "probabilities" if bpod_data["trial_settings"]["Task"] == 1 else "rate"
         #)
-        trial_data["task"] = 'Two-armed'
+        trial_data["task"] = 'Two_armed'
         trial_data["stage"] = bpod_data["trial_settings"]["Stage"]
         trial_data["stage"] = bpod_data["trial_settings"]["Reward"]
         trial_data["Bloc"] = bpod_data["trial_settings"]["Bloc"]
