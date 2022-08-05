@@ -47,7 +47,7 @@ class ProbabilitiesTrial(dj.Computed):
 
     @property
     def key_source(self):
-        return bpod.BpodTrialData() & (bpod.BpodMetadata() & 'protocol="probabilities"')
+        return bpod.BpodTrialData() & (bpod.BpodMetadata() & 'protocol="Probabilities"')
 
     def make(self, key):
 
