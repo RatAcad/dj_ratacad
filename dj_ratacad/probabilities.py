@@ -92,10 +92,10 @@ class ProbabilitiesTrial(dj.Computed):
             trial_data["init_time"] = -100
 
         if "Consume1" in visited_states:
-            correct_state = [vs for vs in visited_states if "Correct1" in vs][0]
+            correct_state = [vs for vs in visited_states if "Reward1" in vs][0]
             dec_time = bpod_data["states"][correct_state][0]
         elif "Consume3" in visited_states:
-            correct_state = [vs for vs in visited_states if "Correct3" in vs][0]
+            correct_state = [vs for vs in visited_states if "Reward3" in vs][0]
             dec_time = bpod_data["states"][correct_state][0]
         elif "Error" in visited_states:
             dec_time = bpod_data["states"]["Error"][0]
