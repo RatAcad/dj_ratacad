@@ -114,7 +114,8 @@ class Protocol(dj.Lookup):
         ["Flashes", "Light flashes 2AFC task"],
         ["FlashCount", "Flash counting 2AFC task"],
         ["TwoStep", "Two Step planning task"],
-        ["TimingTask", "Lever press interval timing task"]
+        ["TimingTask", "Lever press interval timing task"],
+        ['Probabilities', 'Two-armed bandit task']
     ]
 
 
