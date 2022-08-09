@@ -19,30 +19,30 @@ class ProbabilitiesTrial(dj.Computed):
     # Gather Probabilities task specific data
 
     -> bpod.BpodTrialData
-    task : enum("Two_armed")                                    # which task -- the flash counting task or the free response flash rate task
-    stage : tinyint                                             # training stage
+    task : enum("Two_armed")                                        # which task -- the flash counting task or the free response flash rate task
+    stage : tinyint                                                 # training stage
     ---
-    choice=NULL : enum("left", "right", "center", "omission")   # which side did mouse choose
+    choice=NULL : enum("left", "right", "center", "omission")           # which side did mouse choose
     outcome=NULL : enum("rewarded", "nonrewarded", "omission")          # was decision correct (i.e. rewarded)
-    correct_choice =NULL : int                                   # whether mice chose the option with highest probability of reward
-    rt= NULL: float                                             # response time in s
-    init_time= NULL : float                                    # time from the start of the trial to initiation
-    majorprob_side : enum("left", "right", "center")            # the side with more probability of being rewarded
-    prob_left : float                                           # the probability of a left flash
-    prob_right : float                                          # the probability of a right flash
-    bloc= NULL: int                                            # Number of bloc you are in
-    bloc_length : int                                      # number of trials per bloc
-    bloc_changing_prob : float                                  # probability of changing the bloc or side with more probability
-    bloc_criteria : int                                    # number of repeated trials in the same side to change criteria, half of them rewarded
-    min_bloc=NULL : int                                          # min number of trials to change bloc
-    max_bloc=NULL : int                                          # max number of trials to change bloc
-    enviroment=NULL : enum("None","normal", "poor", "rich")   # enviroment of the trial 
-    previous_outcome=NULL : int                                # whether the previous trial was rewarded (1) or non-rewarded(0) or omission(2)
-    previous_choice=NULL : enum("left", "right", "center")           # previous trial choice
-    outcome_criteria : float                                    # criteria to change to block depending on outcome 1 change 0 no change
-    choice_criteria : float                                     #criteria to change to block depending on outcome 1 left 3 no right        
-    reward : int                                                # reward size (in uL)
-    label=NULL : varchar(64)                                    # experiment label
+    correct_choice=NULL : enum("correct", "error", "omission")          # whether mice chose the option with highest probability of reward
+    rt= NULL: float                                                     # response time in s
+    init_time= NULL : float                                             # time from the start of the trial to initiation
+    majorprob_side=NULL : enum("left", "right", "center")               # the side with more probability of being rewarded
+    environment=NULL : enum("normal", "poor", "rich", "None")           # environment of the trial 
+    prob_left : float                                                   # the probability of a left port correct
+    prob_right : float                                                  # the probability of a right port correct
+    bloc= NULL: int                                                     # Number of bloc you are in
+    bloc_length : int                                                   # number of trials per bloc
+    bloc_changing_prob : float                                          # probability of changing the bloc or side with more probability
+    bloc_criteria : int                                                 # number of repeated trials in the same side to change criteria, half of them rewarded
+    min_bloc=NULL : int                                                 # min number of trials to change bloc
+    max_bloc=NULL : int                                                 # max number of trials to change bloc
+    previous_outcome=NULL : enum("rewarded", "nonrewarded", "omission") # whether the previous trial was rewarded (1) or non-rewarded(0) or omission(2)
+    previous_choice=NULL : enum("left", "right", "center", "None")      # previous trial choice
+    outcome_criteria : float                                            # criteria to change to block depending on outcome 1 change 0 no change
+    choice_criteria : float                                             #criteria to change to block depending on outcome 1 left 3 no right        
+    reward : int                                                        # reward size (in uL)
+    label=NULL : varchar(64)                                            # experiment label
     """
 
     @property
@@ -63,21 +63,22 @@ class ProbabilitiesTrial(dj.Computed):
         #trial_data["task"] = (
         #    "probabilities" if bpod_data["trial_settings"]["Task"] == 1 else "rate"
         #)
-        trial_data["task"] = 'Two_armed'
+        trial_data["task"] = "Two_armed"
         trial_data["stage"] = bpod_data["trial_settings"]["Stage"]
         trial_data["stage"] = bpod_data["trial_settings"]["Reward"]
-        trial_data["Bloc"] = bpod_data["trial_settings"]["Bloc"]
-        trial_data["enviroment"] = ('normal' if bpod_data["trial_settings"]["Enviroment"] ==1 else 'poor' if \
-                                    bpod_data["trial_settings"]["Enviroment"] ==2 else 'rich' if bpod_data["trial_settings"]["Enviroment"] ==3 else None)
+        trial_data["bloc"] = bpod_data["trial_settings"]["Bloc"]
+        trial_data["environment"] = ("normal" if bpod_data["trial_settings"]["Enviroment"] ==1 else "poor" if \
+                                    bpod_data["trial_settings"]["Enviroment"] == 2 else "rich" if bpod_data["trial_settings"]["Enviroment"] == 3 else None if bpod_data["trial_settings"]["Enviroment"] == 0 else None)
         trial_data["bloc_length"] = bpod_data["trial_settings"]["TrialsBloc"]
         trial_data["bloc_changing_prob"] = bpod_data["trial_settings"]["BlocChanging"]
         trial_data["bloc_criteria"] = bpod_data["trial_settings"]["BlocChangingCriteria"]
         trial_data["min_bloc"] = bpod_data["trial_settings"]["MinBloc"]
         trial_data["max_bloc"] = bpod_data["trial_settings"]["MaxBloc"]
-        trial_data["previous_outcome"] = bpod_data["trial_settings"]["PrevOutcome"]
-        trial_data["previous_choice"] = bpod_data["trial_settings"]["PrevChoice"]
+        trial_data["previous_outcome"] = ("rewarded" if bpod_data["trial_settings"]["PrevOutcome"] ==1 else "nonrewarded" if bpod_data["trial_settings"]["PrevOutcome"] ==0 else None)
+        trial_data["previous_choice"] = ("left" if bpod_data["trial_settings"]["PrevChoice"] == 1 else "right" if bpod_data["trial_settings"]["PrevChoice"] == 3 else None)
         trial_data["outcome_criteria"] = bpod_data["trial_settings"]["PrevOutcomeCrit"]
         trial_data["choice_criteria"] = bpod_data["trial_settings"]["PrevChoiceCrit"]
+        trial_data["reward"] = bpod_data["trial_settings"]["RewardDeliver"]
         if "Init" in visited_states:
             trial_data["init_time"] = bpod_data["states"]["Init"][1]
         elif "Lights" in visited_states:
@@ -123,20 +124,22 @@ class ProbabilitiesTrial(dj.Computed):
             trial_data["majorprob_side"] = "right"
         elif bpod_data["trial_settings"]["RewardMaxPort"] == 2:
             trial_data["majorprob_side"] = "center"
-        if bpod_data["trial_settings"]['Reward'] == 0 and bpod_data["trial_settings"]['Choice'] == 0 and dec_time == None:
+        if bpod_data["trial_settings"]["Reward"] == 0 and bpod_data["trial_settings"]["Choice"] == 0 and dec_time == None:
             trial_data["outcome"] = "omission"
-        elif bpod_data["trial_settings"]['Reward'] == 1:
+        elif bpod_data["trial_settings"]["Reward"] == 1:
                 trial_data["outcome"] = "rewarded"
         else:
-            trial_data["outcome"] = "non_rewarded"
+            trial_data["outcome"] = "nonrewarded"
 
         trial_data["rt"] = (
             dec_time - trial_data["init_time"] if dec_time is not None else None
         )
         if trial_data["majorprob_side"] == trial_data["choice"]:
-            trial_data['correct_choice'] = 1
+            trial_data["correct_choice"] = "correct"
+        elif trial_data["choice"] == "omission":
+            trial_data["correct_choice"] = "omission"
         else:
-            trial_data['correct_choice'] = 0
+            trial_data["correct_choice"] = "error"
         if trial_data["stage"] < 8:
             if trial_data["majorprob_side"] == "left":
                 trial_data["prob_right"] = bpod_data["trial_settings"]["MaxLambdaLow"]
@@ -145,22 +148,22 @@ class ProbabilitiesTrial(dj.Computed):
                 trial_data["prob_left"] = bpod_data["trial_settings"]["MaxLambdaLow"]
                 trial_data["prob_right"] = bpod_data["trial_settings"]["MinLambdaHigh"]
         else:
-            if trial_data["majorprob_side"] == "left" and trial_data["eniroment"] == "normal":
+            if trial_data["majorprob_side"] == "left" and trial_data["environment"] == "normal":
                 trial_data["prob_right"] = bpod_data["trial_settings"]["MinLambdaLow"]
                 trial_data["prob_left"] = bpod_data["trial_settings"]["MaxLambdaHigh"]
-            elif trial_data["majorprob_side"] == "right" and trial_data["eniroment"] == "normal":
+            elif trial_data["majorprob_side"] == "right" and trial_data["environment"] == "normal":
                 trial_data["prob_left"] = bpod_data["trial_settings"]["MinLambdaLow"]
                 trial_data["prob_right"] = bpod_data["trial_settings"]["MaxLambdaHigh"]
-            elif trial_data["majorprob_side"] == "left" and trial_data["eniroment"] == "poor":
+            elif trial_data["majorprob_side"] == "left" and trial_data["environment"] == "poor":
                 trial_data["prob_right"] = bpod_data["trial_settings"]["MinLambdaLow"]
                 trial_data["prob_left"] = bpod_data["trial_settings"]["MinLambdaHigh"]
-            elif trial_data["majorprob_side"] == "right" and trial_data["eniroment"] == "poor":
+            elif trial_data["majorprob_side"] == "right" and trial_data["environment"] == "poor":
                 trial_data["prob_left"] = bpod_data["trial_settings"]["MinLambdaLow"]
                 trial_data["prob_right"] = bpod_data["trial_settings"]["MinLambdaHigh"]
-            elif trial_data["majorprob_side"] == "left" and trial_data["eniroment"] == "rich":
+            elif trial_data["majorprob_side"] == "left" and trial_data["environment"] == "rich":
                 trial_data["prob_right"] = bpod_data["trial_settings"]["MaxLambdaLow"]
                 trial_data["prob_left"] = bpod_data["trial_settings"]["MaxLambdaHigh"]
-            elif trial_data["majorprob_side"] == "right" and trial_data["eniroment"] == "rich":
+            elif trial_data["majorprob_side"] == "right" and trial_data["environment"] == "rich":
                 trial_data["prob_left"] = bpod_data["trial_settings"]["MaxLambdaLow"]
                 trial_data["prob_right"] = bpod_data["trial_settings"]["MaxLambdaHigh"]
             else:
@@ -211,12 +214,12 @@ class DailySummary(dj.Manual):
         latest_summary_str = (latest_summary + timedelta(days=1)).strftime("%Y-%m-%d")
         today_str = datetime.today().strftime("%Y-%m-%d")
 
-        trial_datetime, outcome, choice, stage, training_criterion, reaction_time = (
+        trial_datetime, outcome, choice, stage, reaction_time = (
                 ProbabilitiesTrial()
                 & key
                 & f"trial_datetime>'{latest_summary_str}'"
                 & f"trial_datetime<'{today_str}'"
-        ).fetch("trial_datetime", "outcome", "choice", "stage", "training_criterion", "rt")
+        ).fetch("trial_datetime", "outcome", "choice", "stage", "rt")
 
         if len(trial_datetime) > 0:
 
@@ -230,7 +233,7 @@ class DailySummary(dj.Manual):
                     these_outcomes = outcome[these_trials]
                     these_choices = choice[these_trials]
                     these_stages = stage[these_trials]
-                    these_criterion = training_criterion[these_trials]
+                  #  these_criterion = training_criterion[these_trials]
 
                     summary_data = key.copy()
                     summary_data["summary_date"] = d
