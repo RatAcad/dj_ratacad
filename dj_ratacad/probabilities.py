@@ -126,7 +126,7 @@ class ProbabilitiesTrial(dj.Computed):
         if bpod_data["trial_settings"]["Reward"] == 0 and bpod_data["trial_settings"]["Choice"] == 0 and dec_time == None:
             trial_data["outcome"] = "omission"
         elif bpod_data["trial_settings"]["Reward"] == 1:
-                trial_data["outcome"] = "rewarded"
+            trial_data["outcome"] = "rewarded"
         else:
             trial_data["outcome"] = "nonrewarded"
 

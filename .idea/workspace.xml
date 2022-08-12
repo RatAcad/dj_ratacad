@@ -5,6 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e8835f86-b8f6-4786-b6da-dff7f8b88ff1" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dj_ratacad/probabilities.py" beforeDir="false" afterPath="$PROJECT_DIR$/dj_ratacad/probabilities.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -98,9 +99,6 @@
       <module name="dj_ratacad" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
       <option name="SDK_HOME" value="" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../Scripts MouseAcademy" />
       <option name="IS_MODULE_SDK" value="true" />
@@ -218,7 +216,7 @@
       <workItem from="1658443715163" duration="26133000" />
       <workItem from="1659558345251" duration="65255000" />
       <workItem from="1660141958021" duration="1801000" />
-      <workItem from="1660148028199" duration="1781000" />
+      <workItem from="1660148028199" duration="7850000" />
     </task>
     <servers />
   </component>
