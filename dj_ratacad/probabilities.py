@@ -65,7 +65,6 @@ class ProbabilitiesTrial(dj.Computed):
         #)
         trial_data["task"] = "Two_armed"
         trial_data["stage"] = bpod_data["trial_settings"]["Stage"]
-        trial_data["stage"] = bpod_data["trial_settings"]["Reward"]
         trial_data["bloc"] = bpod_data["trial_settings"]["Bloc"]
         trial_data["environment"] = ("normal" if bpod_data["trial_settings"]["Enviroment"] ==1 else "poor" if \
                                     bpod_data["trial_settings"]["Enviroment"] == 2 else "rich" if bpod_data["trial_settings"]["Enviroment"] == 3 else None if bpod_data["trial_settings"]["Enviroment"] == 0 else None)
@@ -127,7 +126,7 @@ class ProbabilitiesTrial(dj.Computed):
         if bpod_data["trial_settings"]["Reward"] == 0 and bpod_data["trial_settings"]["Choice"] == 0 and dec_time == None:
             trial_data["outcome"] = "omission"
         elif bpod_data["trial_settings"]["Reward"] == 1:
-                trial_data["outcome"] = "rewarded"
+            trial_data["outcome"] = "rewarded"
         else:
             trial_data["outcome"] = "nonrewarded"
 

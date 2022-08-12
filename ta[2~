@@ -1,0 +1,915 @@
+[33mcommit 425182d51000c3a325aa8ce817909d747270eec7[m[33m ([m[1;36mHEAD -> [m[1;32mCDS[m[33m, [m[1;31morigin/CDS[m[33m)[m
+Author: Crisds24 <cristinads248@gmail.com>
+Date:   Thu Aug 4 16:02:50 2022 -0400
+
+    Update cli.py
+
+[33mcommit a25525b8fdbc1aaf1f20752be5a56b8bfdc4a030[m[33m ([m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmaster[m[33m)[m
+Merge: a8ddcf9 eaf24ff
+Author: Crisds24 <cristinads248@gmail.com>
+Date:   Thu Aug 4 15:36:20 2022 -0400
+
+    Merge branch 'master' of https://github.com/RatAcad/dj_ratacad
+
+[33mcommit a8ddcf99a7f80210421e8f17786da8b61a66c8b8[m
+Author: Crisds24 <cristinads248@gmail.com>
+Date:   Thu Aug 4 15:33:19 2022 -0400
+
+    Create Probabilities DJ schema
+
+[33mcommit eaf24ff0536068eb97709b30a79636a52b6621f9[m
+Author: qdo1010 <do.q@husky.neu.edu>
+Date:   Tue Jun 7 16:14:55 2022 -0400
+
+    new reward
+
+[33mcommit c32ea6ef021fa45538ac1cc28f345d7da7270e06[m
+Author: qdo1010 <do.q@husky.neu.edu>
+Date:   Thu Jun 2 22:09:44 2022 -0400
+
+    add new setting
+
+[33mcommit 15570322d6a50b14ac644faab260c0d262c4ae56[m
+Author: qdo1010 <do.q@husky.neu.edu>
+Date:   Wed Jun 1 21:17:13 2022 -0400
+
+    reward
+
+[33mcommit f0755b2c8531b01c55f0d911e96899cb4cdef1de[m
+Author: Crisds24 <cristinads248@gmail.com>
+Date:   Mon Apr 4 18:07:05 2022 -0400
+
+    Update bpod with the 3 Mouse Academy cages
+
+[33mcommit 7fc8c2324068a98be409052609438790c14b2e4e[m
+Author: Crisds24 <cristinads248@gmail.com>
+Date:   Wed Mar 30 17:26:09 2022 -0400
+
+    hi
+
+[33mcommit 39b259841af919d78c906927c740599d0221c32c[m
+Merge: e48a82d bfbafcd
+Author: qdo1010 <qdo@bu.edu>
+Date:   Wed Mar 23 14:28:21 2022 -0400
+
+    Merge pull request #25 from RatAcad/flashesRT
+    
+    fix nan rt
+
+[33mcommit bfbafcd48decbd4b11c6cc81c314a2e24c7c1c8a[m[33m ([m[1;31morigin/flashesRT[m[33m)[m
+Author: qdo1010 <do.q@husky.neu.edu>
+Date:   Wed Mar 23 14:25:54 2022 -0400
+
+    fix nan rt
+
+[33mcommit e48a82d63e86b719c27b2ea587b2a7b0b96bf3dd[m
+Merge: 583cf01 cd55bfe
+Author: qdo1010 <qdo@bu.edu>
+Date:   Wed Mar 23 13:47:39 2022 -0400
+
+    Merge pull request #24 from RatAcad/flashesRT
+    
+    add rt
+
+[33mcommit cd55bfec93170003837166fa5131454c27a720c6[m
+Author: qdo1010 <do.q@husky.neu.edu>
+Date:   Wed Mar 23 13:44:58 2022 -0400
+
+    add rt
+
+[33mcommit 583cf01d1c4aa517dcb1398697198d201a3d4195[m
+Author: Gary Kane <gakane@bu.edu>
+Date:   Fri Mar 4 13:05:48 2022 -0500
+
+    cli: overwrite log file daily
+
+[33mcommit 6cddb20531d6baffdcc65b3013c326355bb39111[m
+Merge: 400ee31 e50463b
+Author: Gary Kane <gakane@bu.edu>
+Date:   Thu Mar 3 20:15:41 2022 -0500
+
+    Merge pull request #23 from RatAcad/flashesRT
+    
+    flashes: bug with flash sequence during training stages
+
+[33mcommit e50463bd3e3b3d3b471505402e901f3af78b98a4[m
+Author: Gary Kane <gakane@bu.edu>
+Date:   Thu Mar 3 19:55:19 2022 -0500
+
+    flashes: bug with flash sequence during training stages
+
+[33mcommit 400ee31c9953e87b152bf995aa5fe7f571cb2b67[m
+Merge: d7a48ad 665c837
+Author: Gary Kane <gakane@bu.edu>
+Date:   Fri Feb 11 11:40:10 2022 -0500
+
+    Merge pull request #22 from RatAcad/docs
+    
+    Update documentation
+
+[33mcommit 665c8371b96b6cc93567a890b214a163ccd66afc[m
+Author: Gary Kane <gakane@bu.edu>
+Date:   Fri Feb 11 11:39:21 2022 -0500
+
+    docs: add link to djreadr
+
+[33mcommit 3fb05819e1872095a9cec0f2b749037f415493cb[m
+Author: Gary Kane <gakane@bu.edu>
+Date:   Fri Feb 11 11:20:59 2022 -0500
+
+    docs: update ratacad pipeline and mysql docs
+
+[33mcommit 49e8827a799ddcf432612b69005a61ad183d9166[m
+Author: Gary Kane <gakane@bu.edu>
+Date:   Fri Feb 11 11:09:32 2022 -0500
+
+    docs: pipeline and adding new tasks/schema
+
+[33mcommit d7a48ad422ed50720277ef58d9e4e5ce73d94a3d[m
+Author: qdo1010 <do.q@husky.neu.edu>
+Date:   Wed Feb 9 21:59:03 2022 -0500
+
+    recover choice at s123
+
+[33mcommit ae4db3e3f31887af93d0811eae46847f029a6789[m
+Author: qdo1010 <qdo@bu.edu>
+Date:   Wed Feb 9 14:17:08 2022 -0500
+
+    Update bpod.py
+
+[33mcommit d3e0febfef97b2d9ea5d8486fdcfc8ba81c705bf[m
+Author: qdo1010 <qdo@bu.edu>
+Date:   Wed Feb 9 12:14:37 2022 -0500
+
+    Update animal.py
+    
+    add mice
+
+[33mcommit 9e02e4c1dba07a654d43693929dc0cc1e398f036[m
+Author: qdo1010 <qdo@bu.edu>
+Date:   Mon Feb 7 18:07:15 2022 -0500
+
+    Update setup.md
+
+[33mcommit 3750b8e353e121c99b11c78030c0ccbeac46c268[m
+Author: qdo1010 <qdo@bu.edu>
+Date:   Mon Feb 7 18:06:53 2022 -0500
+
+    Update setup.md
+
+[33mcommit 96ff69f87aa365564e827765caaf86f6ed440454[m
+Author: qdo1010 <qdo@bu.edu>
+Date:   Mon Feb 7 18:05:57 2022 -0500
+
+    Update setup.md
+
+[33mcommit c4382d46495470a72f700ff7b9009713406f8da5[m
+Merge: f217ea1 7520567
+Author: nchiulli <65319671+nchiulli@users.noreply.github.com>
+Date:   Fri Feb 4 10:49:58 2022 -0500
+
+    Merge pull request #21 from RatAcad/timingtask
+    
+    Update cli.py
+
+[33mcommit 7520567b48807aac8a50b97dd3a7d2a271f4a90c[m[33m ([m[1;31morigin/timingtask[m[33m)[m
+Author: nchiulli <65319671+nchiulli@users.noreply.github.com>
+Date:   Fri Feb 4 10:49:35 2022 -0500
+
+    Update cli.py
+
+[33mcommit f217ea1df1a6b0ca211aabe24711570907be1b0b[m
+Merge: 0215554 347952c
+Author: nchiulli <65319671+nchiulli@users.noreply.github.com>
+Date:   Mon Jan 31 14:12:23 2022 -0500
+
+    Merge pull request #20 from RatAcad/timingtask
+    
+    Update timingtask.py
+
+[33mcommit 347952cb541253cf58abd43738cf5e00347c28c9[m
+Author: nchiulli <nchiulli@bu.edu>
+Date:   Mon Jan 31 14:12:01 2022 -0500
+
+    Update timingtask.py
+
+[33mcommit 0215554db1ffa5ceed1f36c821f643bc62ab1619[m
+Merge: 40157bf bf47ce5
+Author: Gary Kane <gakane@bu.edu>
+Date:   Fri Oct 29 10:51:09 2021 -0400
+
+    Merge pull request #19 from RatAcad/flashesRT
+    
+    flashesRT: remove print statement
+
+[33mcommit bf47ce588d08e84148cc610d00b73ea045b13e14[m
+Author: Gary Kane <gakane@bu.edu>
+Date:   Fri Oct 29 10:50:20 2021 -0400
+
+    flashesRT: remove print statement
+
+[33mcommit 40157bf8a1e49685aa889472ad91dda58d8097b1[m
+Merge: a09d22d 33588c6
+Author: Gary Kane <gakane@bu.edu>
+Date:   Fri Oct 29 10:36:14 2021 -0400
+
+    Merge pull request #18 from RatAcad/flashesRT
+    
+    flashesRT: fix labels with > 24 characters
+
+[33mcommit 33588c6b0e7917df13dfd727d9871da5cf2a302e[m
+Author: Gary Kane <gakane@bu.edu>
+Date:   Fri Oct 29 10:35:39 2021 -0400
+
+    flashesRT: fix labels with > 24 characters
+
+[33mcommit a09d22d01f881c680cd5a07a9d1d7dff02052565[m
+Merge: 104506c ff48f83
+Author: Gary Kane <gakane@bu.edu>
+Date:   Wed Oct 6 09:33:04 2021 -0400
+
+    Merge pull request #17 from RatAcad/bugfix
+    
+    bpod: catch corrupted files when populating metadata
+
+[33mcommit ff48f835dad5952bdcc8630296ccc73c821dde5a[m
+Author: Gary Kane <gakane@bu.edu>
+Date:   Wed Oct 6 09:32:32 2021 -0400
+
+    bpod: catch corrupted files when populating metadata
+
+[33mcommit 104506c11987fdcf554ff5ca35ec4ba1bcb2f986[m
+Merge: 008ee8e dd7697d
+Author: Gary Kane <gakane@bu.edu>
+Date:   Tue Sep 28 08:50:42 2021 -0400
+
+    Merge pull request #16 from RatAcad/flashesRT
+    
+    flashesRT: bugs in early stages
+
+[33mcommit dd7697dfaf2e79072ecd34d50b52be1c949c22ab[m
+Author: Gary Kane <gakane@bu.edu>
+Date:   Tue Sep 28 08:50:11 2021 -0400
+
+    flashesRT: bugs in early stages
+
+[33mcommit 008ee8eaed9aa14343cfe0a1ccdcbefb24861bce[m
+Merge: 96b5564 76824f4
+Author: nchiulli <65319671+nchiulli@users.noreply.github.com>
+Date:   Mon Sep 27 17:16:48 2021 -0400
+
+    Merge pull request #15 from RatAcad/timingtask
+    
+    Timingtask
+
+[33mcommit 76824f44159da6459bf60f70adfeea4b50e56ff0[m
+Merge: 7200a2d 4d8cf90
+Author: nchiulli <nchiulli@bu.edu>
+Date:   Mon Sep 27 17:16:24 2021 -0400
+
+    Merge branch 'timingtask' of https://github.com/RatAcad/dj_ratacad into timingtask
+
+[33mcommit 7200a2dbcd31e6ca83d78a4d6b1c52e0d667c9c5[m
+Author: nchiulli <nchiulli@bu.edu>
+Date:   Mon Sep 27 17:16:20 2021 -0400
+
+    Update timingtask.py
+
+[33mcommit 96b556483e7a018fbd78f92d8e0cc8f894360721[m
+Merge: ed09d4b 4d8cf90
+Author: Gary Kane <gakane@bu.edu>
+Date:   Fri Sep 17 11:09:37 2021 -0400
+
+    Merge pull request #14 from RatAcad/timingtask
+    
+    added timingtask to cli, fixed a few timingtask typos
+
+[33mcommit 4d8cf90d4954ab47e70f4923d16116d3b68cc129[m
+Author: Gary Kane <gakane@bu.edu>
+Date:   Fri Sep 17 11:09:11 2021 -0400
+
+    added timingtask to cli, fixed a few timingtask typos
+
+[33mcommit ed09d4bb4ad3a27a09c84ae03614b9be4a9060f9[m
+Merge: dbd3a49 0ee62f6
+Author: nchiulli <65319671+nchiulli@users.noreply.github.com>
+Date:   Wed Sep 15 12:12:09 2021 -0400
+
+    Merge pull request #13 from RatAcad/timingtask
+    
+    Timingtask
+
+[33mcommit 0ee62f61fb4fbd5ce67bb86aafd1626c937c186c[m
+Author: nchiulli <nchiulli@bu.edu>
+Date:   Wed Sep 15 10:19:58 2021 -0400
+
+    Update timingtask.py
+
+[33mcommit dbd3a49e3e5995a21ad4ab02405d760a81e08fa5[m
+Author: qdo1010 <do.q@husky.neu.edu>
+Date:   Mon Sep 13 14:34:21 2021 -0400
+
+    add p_right
+
+[33mcommit 5cbe432d9af23b1950e8dc7ae39703a86bbdec23[m
+Author: nchiulli <nchiulli@bu.edu>
+Date:   Tue Aug 31 16:06:25 2021 -0400
+
+    Update timingtask.py
+
+[33mcommit 084e594ccceded24c106c544a9b0aa027f837d6f[m
+Author: nchiulli <nchiulli@bu.edu>
+Date:   Tue Aug 31 15:42:44 2021 -0400
+
+    Update timingtask.py
+
+[33mcommit c0ad6c803ccb9812907aedd84069891742093018[m
+Merge: 81b44d5 ac31030
+Author: nchiulli <nchiulli@bu.edu>
+Date:   Tue Aug 31 15:06:10 2021 -0400
+
+    Merge branch 'timingtask' of https://github.com/RatAcad/dj_ratacad into timingtask
+
+[33mcommit 81b44d5741d5595e359bc8e7b12b8794663683ab[m
+Author: nchiulli <nchiulli@bu.edu>
+Date:   Tue Aug 31 15:05:57 2021 -0400
+
+    the actual right file this time
+
+[33mcommit ac31030e1416dfffc9c5bad8864faa0c1922265b[m
+Author: nchiulli <65319671+nchiulli@users.noreply.github.com>
+Date:   Tue Aug 31 15:04:49 2021 -0400
+
+    Delete timingtask.py
+
+[33mcommit 009c70f9fb25b7301956ca4ba9cd9a6891f6236c[m
+Author: nchiulli <nchiulli@bu.edu>
+Date:   Tue Aug 31 15:02:33 2021 -0400
+
+    Create timingtask.py
+
+[33mcommit e88d36a585a20756d2bdcf4f9e20f7d84a209e0a[m
+Author: nchiulli <nchiulli@bu.edu>
+Date:   Tue Aug 31 15:00:19 2021 -0400
+
+    timingtask dj init
+
+[33mcommit dd4a1a521636aba0e25f33cb81e4fdec3b045ee6[m
+Merge: 31a6786 bbea177
+Author: Gary Kane <gakane@bu.edu>
+Date:   Mon Aug 16 22:18:40 2021 -0400
+
+    Merge pull request #12 from RatAcad/flashesRT
+    
+    flashesRT: add side bias to summary table
+
+[33mcommit bbea177aa8a6f5d3eff88ba2e18112b07ae2a367[m
+Merge: 6ca9c67 5f9411c
+Author: Gary Kane <gakane@bu.edu>
+Date:   Mon Aug 16 17:24:05 2021 -0400
+
+    Merge branch 'flashesRT' of github.com:RatAcad/dj_ratacad into flashesRT
+
+[33mcommit 6ca9c6755f44be03574bc1e8fae703262a3ce969[m
+Author: Gary Kane <gakane@bu.edu>
+Date:   Mon Aug 16 17:23:22 2021 -0400
+
+    flashesRT: add p_right to summary table
+
+[33mcommit 31a6786f8aa496761920e74549563582195ecd9f[m
+Merge: a9b9aa2 5f9411c
+Author: Gary Kane <gakane@bu.edu>
+Date:   Fri Jul 30 13:25:35 2021 -0400
+
+    Merge pull request #11 from RatAcad/flashesRT
+    
+    flashes: fix bug in populating training stages
+
+[33mcommit 5f9411c3d458031ea3c993ab74c190d7dac6e791[m
+Author: Gary Kane <gakane@bu.edu>
+Date:   Fri Jul 30 13:23:12 2021 -0400
+
+    flashes: fix bug in populating training stages
+
+[33mcommit a9b9aa2237adaa33577f844cdf751842ea6502c1[m
+Merge: af3584b d749f3f
+Author: qdo1010 <do.q@husky.neu.edu>
+Date:   Thu Jul 29 22:44:36 2021 -0400
+
+    Merge branch 'master' of https://github.com/RatAcad/dj_ratacad
+
+[33mcommit af3584bec859eb57d1d4932a35b9d158db0dbf45[m
+Author: qdo1010 <do.q@husky.neu.edu>
+Date:   Thu Jul 29 22:44:05 2021 -0400
+
+    add try except to catch
+
+[33mcommit d749f3f0fa910ad25255caf8bb23c5c33556643a[m
+Merge: 679492a e1b1042
+Author: roaffan <roaffan@bu.edu>
+Date:   Thu Jul 29 19:58:23 2021 -0400
+
+    Merge branch 'twostep'
+
+[33mcommit e1b104278b94695058ec71cc3285e19d53c26013[m[33m ([m[1;31morigin/twostep[m[33m)[m
+Author: roaffan <roaffan@bu.edu>
+Date:   Thu Jul 29 19:57:45 2021 -0400
+
+    twostep: add rack 3 box 1-3 to bpod.Bpod table
+
+[33mcommit 09fb2630acf406eb80881ae73580c971c2510aa8[m
+Author: roaffan <roaffan@bu.edu>
+Date:   Thu Jul 29 19:55:38 2021 -0400
+
+    twostep: add rack 3 box 1-3 to bpod.Bpod table
+
+[33mcommit 679492abc762edcb22d89923854f5be3da0e1b3b[m
+Author: qdo1010 <do.q@husky.neu.edu>
+Date:   Thu Jul 29 17:12:57 2021 -0400
+
+    drop too many tables for this
+
+[33mcommit 06cb7b1c941b3e626ad21762c46bc17dbb724f30[m
+Author: qdo1010 <do.q@husky.neu.edu>
+Date:   Thu Jul 29 16:55:29 2021 -0400
+
+    tab space
+
+[33mcommit 43737544c11cd32d7c41a0c4afdc160b741dc6fa[m
+Author: qdo1010 <do.q@husky.neu.edu>
+Date:   Thu Jul 29 16:31:15 2021 -0400
+
+    tab and space
+
+[33mcommit 5d456f71467e64bce8f4f386ff23057c07a0a36d[m
+Author: qdo1010 <do.q@husky.neu.edu>
+Date:   Thu Jul 29 15:57:07 2021 -0400
+
+    add early time
+
+[33mcommit f5573fcb9499ea0fbaa9378bf14c7b7906cfef02[m
+Author: roaffan <roaffan@bu.edu>
+Date:   Thu Jul 29 13:48:33 2021 -0400
+
+    twostep: add leftward_choices to DailySummary
+
+[33mcommit c4363379e710051d3a6a1be8f37d8c1055d78041[m
+Merge: a480336 b001e2b
+Author: Gary Kane <gakane@bu.edu>
+Date:   Thu Jul 29 13:27:52 2021 -0400
+
+    Merge pull request #10 from RatAcad/flashesRT
+    
+    flashes: bug with early stages, update cli
+
+[33mcommit b001e2b56c7e9c31bc8b482315132bba238ec1dc[m
+Author: Gary Kane <gakane@bu.edu>
+Date:   Thu Jul 29 13:25:14 2021 -0400
+
+    flashes: bug with early stages, update cli
+
+[33mcommit a48033628751e3091a321a07344d22071b38518a[m
+Merge: dee2e99 32f33bf
+Author: Gary Kane <gakane@bu.edu>
+Date:   Tue Jul 27 21:56:06 2021 -0400
+
+    Merge pull request #9 from RatAcad/docs
+    
+    docs: adding boxes and protocols
+
+[33mcommit 32f33bf7803a9582470417d36e5718c1dbcc9267[m
+Author: Gary Kane <gakane@bu.edu>
+Date:   Tue Jul 27 21:52:16 2021 -0400
+
+    docs: adding boxes and protocols
+
+[33mcommit dee2e992dbb5afebebba6d5f24fea056e095870a[m
+Author: roaffan <roaffan@bu.edu>
+Date:   Fri Jun 11 16:05:21 2021 -0400
+
+    twostep: add import twostep from dj_ratacad
+
+[33mcommit 5f93f9da90d706cf58e6358a29ade31b162067a2[m
+Author: roaffan <roaffan@bu.edu>
+Date:   Fri Jun 11 16:01:47 2021 -0400
+
+    twostep: add populate trial data and daily summary for twostep
+
+[33mcommit dc65c00ef4b564327e4c2dbb23912d1e7e1cdb32[m
+Merge: 43ebb20 a390d55
+Author: roaffan <roaffan@bu.edu>
+Date:   Tue Jun 1 16:36:31 2021 -0400
+
+    Merge branch 'twostep'
+
+[33mcommit a390d5554136a9c38ce116a6c84078c7d588be64[m
+Author: roaffan <roaffan@bu.edu>
+Date:   Tue Jun 1 16:36:02 2021 -0400
+
+    twostep: edit timestamp section
+
+[33mcommit 4a6933302d5cd3f2f6dd5d057c15cebb0cec9f61[m
+Author: roaffan <roaffan@bu.edu>
+Date:   Mon May 31 16:58:00 2021 -0400
+
+    twostep: edit timestamp section
+
+[33mcommit 0338521a7f8d34e57909f5c54757344a71cb7b88[m
+Author: roaffan <roaffan@bu.edu>
+Date:   Mon May 31 16:55:17 2021 -0400
+
+    twostep: edit timestamp section
+
+[33mcommit a0395811a483dd7de50db0dc944120e360f29ebd[m
+Author: roaffan <roaffan@bu.edu>
+Date:   Mon May 31 09:05:09 2021 -0400
+
+    twostep: edit timestamp section
+
+[33mcommit 43ebb204abfdd1ccce7ecd51e38bdcbd9869d6aa[m
+Merge: 9e1d7e5 1217677
+Author: roaffan <roaffan@bu.edu>
+Date:   Thu May 27 09:55:42 2021 -0400
+
+    Merge branch 'twostep'
+
+[33mcommit 121767738bf307df0b74b3fa88b5d3d4d894e84b[m
+Author: roaffan <roaffan@bu.edu>
+Date:   Thu May 27 09:54:31 2021 -0400
+
+    twostep: change timestamp section
+
+[33mcommit 9e1d7e5f33801aa0ff917baa65fc6264d8e5d061[m
+Merge: 71ace3b e796ba8
+Author: Rifqi O. Affan <roaffan@bu.edu>
+Date:   Thu May 27 09:33:22 2021 -0400
+
+    Merge pull request #7 from RatAcad/twostep
+    
+    Twostep
+
+[33mcommit e796ba86ad74e340e2376e3e4daae14d6cd3b563[m
+Merge: f45db37 71ace3b
+Author: Comparative Cognition <ratacad1@bu.edu>
+Date:   Wed May 26 18:03:07 2021 -0400
+
+    bpod: merge bpod changes into twostep
+
+[33mcommit 71ace3b03c9633cadc227a6141eef1189b3723d0[m
+Merge: 3362048 e69a444
+Author: ratacad1 <77755555+ratacad1@users.noreply.github.com>
+Date:   Wed May 26 15:20:46 2021 -0400
+
+    Merge pull request #8 from RatAcad/windows-path
+    
+    bpod: convert windows paths to unix
+
+[33mcommit e69a444cb97b8e0c09f598873c2081e312d873c8[m
+Author: Gary Kane <gakane@bu.edu>
+Date:   Wed May 26 10:40:20 2021 -0400
+
+    bpod: convert windows paths to unix
+
+[33mcommit f45db3777c0af338a82a77123c9353c9d1a49f63[m
+Author: roaffan <roaffan@bu.edu>
+Date:   Tue May 25 15:36:44 2021 -0400
+
+    twostep: testtwostep.py code
+
+[33mcommit b77d49b2923e4a788e2684fd403aa5528affdd43[m
+Author: roaffan <roaffan@bu.edu>
+Date:   Tue May 25 13:34:33 2021 -0400
+
+    twostep: added twostep protocol to bpod.py
+
+[33mcommit 33620485bc59baaafd5c27423fdf72b16d7fd371[m
+Author: roaffan <roaffan@bu.edu>
+Date:   Tue May 25 13:09:47 2021 -0400
+
+    twostep: changed headings in definition to lowercase
+
+[33mcommit 802a5e4d08e628f2a8e0967f8a5ec011eddcc04b[m
+Author: roaffan <roaffan@bu.edu>
+Date:   Tue May 25 08:53:27 2021 -0400
+
+    twostep: fixed definition section for table columns
+
+[33mcommit 917b8d57cf3f9c7ec86c74eaf2538a8963f71ccf[m
+Author: roaffan <roaffan@bu.edu>
+Date:   Fri May 21 08:13:50 2021 -0400
+
+    twostep: created new script to add twostep trial data to dj
+
+[33mcommit 4df89becca2a60958142d93a1a3635bea7b0e38e[m
+Author: Gary Kane <gakane@bu.edu>
+Date:   Thu May 6 09:27:09 2021 -0400
+
+    load_bpod_data: catch errors
+
+[33mcommit 8a29fe0b027664358adcacc221c87395bf89dcc3[m
+Merge: b5ab7c7 d054c21
+Author: Gary Kane <gakane@bu.edu>
+Date:   Tue May 4 12:34:55 2021 -0400
+
+    Merge pull request #6 from RatAcad/flashesRT
+    
+    flashesRT: yet another bug in reward slope experiment
+
+[33mcommit d054c2178b2eb1277090d8fd060b00c2ce41ab5d[m
+Author: Gary Kane <gakane@bu.edu>
+Date:   Tue May 4 12:34:06 2021 -0400
+
+    flashesRT: yet another bug in reward slope experiment
+
+[33mcommit b5ab7c7fb80d7ecd709e820b66670600bb31ed05[m
+Merge: 208629c 5d28f19
+Author: Gary Kane <gakane@bu.edu>
+Date:   Tue May 4 07:58:26 2021 -0400
+
+    Merge pull request #5 from RatAcad/flashesRT
+    
+    Flashes rt
+
+[33mcommit 5d28f19507da7e2c4cd816db7e3e7d6aad519661[m
+Author: Gary Kane <gakane@bu.edu>
+Date:   Tue May 4 07:39:49 2021 -0400
+
+    flashes: bugs from reward slope experiment
+
+[33mcommit f70ad347816c9fdcf71b94926e12b09cdb243a69[m
+Merge: 01cfae2 208629c
+Author: Gary Kane <gakane@bu.edu>
+Date:   Mon May 3 13:24:04 2021 -0400
+
+    Merge branch 'master' into flashesRT
+
+[33mcommit 01cfae280c53ebe89ebff2b37e71462144cf2fcb[m
+Author: Gary Kane <gakane@bu.edu>
+Date:   Mon May 3 13:21:36 2021 -0400
+
+    flashesRT: bug in reward
+
+[33mcommit 208629c713b18286282a44e17da41573a643bcd3[m
+Author: Gary Kane <gakane@bu.edu>
+Date:   Mon May 3 10:45:44 2021 -0400
+
+    bpod: hotfix bug in additional fields
+
+[33mcommit 145226b1c59412d8e64fbf50cef9de72d3aa54ac[m
+Merge: dc789bb a3bfa0d
+Author: Gary Kane <gakane@bu.edu>
+Date:   Sun May 2 16:01:38 2021 -0400
+
+    Merge pull request #4 from RatAcad/flashesRT
+    
+    flashesRT: update for reward slope experiments
+
+[33mcommit a3bfa0d38bca669613ac3a513da1ec97770532f4[m
+Author: Gary Kane <gakane@bu.edu>
+Date:   Sun May 2 15:54:03 2021 -0400
+
+    flashesRT: update for reward slope experiments
+
+[33mcommit dc789bb78a030fe4ffcced41152863bf936db9a7[m
+Author: qdo1010 <do.q@husky.neu.edu>
+Date:   Fri Apr 23 15:21:54 2021 -0400
+
+    stupid datajoin field cannot include uppercase
+
+[33mcommit 3875fee6e2e47485157d8ea490615447a99ec985[m
+Author: qdo1010 <do.q@husky.neu.edu>
+Date:   Fri Apr 23 15:06:55 2021 -0400
+
+    change settings
+
+[33mcommit 9cf6bdb19256a19ec9ae37125ef2832a27d5eee7[m
+Author: qdo1010 <do.q@husky.neu.edu>
+Date:   Thu Apr 22 17:48:28 2021 -0400
+
+    change heading
+
+[33mcommit b5f11891e78b884def59c844ae7a667db747c836[m
+Author: qdo1010 <do.q@husky.neu.edu>
+Date:   Thu Apr 22 17:18:51 2021 -0400
+
+    add probe trials
+
+[33mcommit 06f53e4faf43445cea08e45ab1f22051fc31c6eb[m
+Author: qhdo1010 <do.q@husky.neu.edu>
+Date:   Wed Apr 21 18:19:19 2021 -0400
+
+    NO MORE SPACES! TAB ONLY
+
+[33mcommit 7ea8e0a4e61160829810f821068f7f7fd97970e4[m
+Author: qhdo1010 <do.q@husky.neu.edu>
+Date:   Wed Apr 21 18:08:59 2021 -0400
+
+    tab vs space
+
+[33mcommit 3b0250e78ae82aab64de8f255f33d2ada0f54a5d[m
+Author: qhdo1010 <do.q@husky.neu.edu>
+Date:   Wed Apr 21 18:06:04 2021 -0400
+
+    setting changed again...tab vs space
+
+[33mcommit 6c7ee2cacc02a2780ed2f5565f12cb071a176ad0[m
+Author: qhdo1010 <do.q@husky.neu.edu>
+Date:   Wed Apr 21 18:04:54 2021 -0400
+
+    change settings again
+
+[33mcommit 0a83e006ba5b6fb09f9ef79de3522e30023b1cf7[m
+Author: qhdo1010 <do.q@husky.neu.edu>
+Date:   Wed Apr 21 15:34:43 2021 -0400
+
+    add some new settings to database
+
+[33mcommit 33025d97b4054be49c73d79f87147b3401a528c2[m
+Merge: 50dbbcd 99c4777
+Author: qhdo1010 <do.q@husky.neu.edu>
+Date:   Thu Apr 1 15:15:44 2021 -0400
+
+    Merge branch 'master' of https://github.com/RatAcad/dj_ratacad
+
+[33mcommit 99c4777b5e23e14fac1f218e555ecf048578d207[m
+Author: Gary Kane <gakane@bu.edu>
+Date:   Thu Apr 1 09:42:43 2021 -0400
+
+    update docs (#3)
+    
+    * docs: instructions to enter new animals
+    
+    * docs: update all
+    
+    * docs: query minor change
+
+[33mcommit 045284c1c6a48b445c0c853678c1e306d0bb8267[m
+Author: qhdo1010 <do.q@husky.neu.edu>
+Date:   Tue Mar 23 01:30:23 2021 -0400
+
+    flashcount: added new schema. contains 7 commits:
+      - add flashcount
+      - Update flashcount.py
+      - Update flashcount.py
+      - what is up
+      - now what
+      - indentation
+      - dectime added
+
+[33mcommit 50dbbcd256943510ee822cfb1a2ddfa44a1276ee[m
+Author: qhdo1010 <do.q@husky.neu.edu>
+Date:   Wed Mar 24 15:17:58 2021 -0400
+
+    dectime added
+
+[33mcommit 725edf97baee6771d647f98d025fc7609164a84d[m
+Author: qhdo1010 <do.q@husky.neu.edu>
+Date:   Wed Mar 24 15:01:00 2021 -0400
+
+    indentation
+
+[33mcommit 5471dfd9b7a583d827e04aeeef63aa0b513c84b0[m
+Author: qhdo1010 <do.q@husky.neu.edu>
+Date:   Wed Mar 24 14:58:28 2021 -0400
+
+    now what
+
+[33mcommit 3c1887cc7df1bab4d66bf43e78d919df47741a99[m
+Author: qhdo1010 <do.q@husky.neu.edu>
+Date:   Wed Mar 24 14:36:38 2021 -0400
+
+    what is up
+
+[33mcommit e6aa8dfd75caf0444b65f5fa19a3483d0e3f8041[m
+Author: qhdo1010 <qdo@bu.edu>
+Date:   Tue Mar 23 01:50:42 2021 -0400
+
+    Update flashcount.py
+
+[33mcommit adb74ce1fee1cd62b49a138259d6373a6d102061[m
+Author: qhdo1010 <qdo@bu.edu>
+Date:   Tue Mar 23 01:38:19 2021 -0400
+
+    Update flashcount.py
+
+[33mcommit 687daa52d0aa8a97d4ad1fca7f1102f289578494[m
+Author: qhdo1010 <do.q@husky.neu.edu>
+Date:   Tue Mar 23 01:30:23 2021 -0400
+
+    add flashcount
+
+[33mcommit 05806826a39efd967ff024a604e9aecec1f0610f[m
+Author: Gary Kane <gakane@bu.edu>
+Date:   Wed Mar 17 10:25:14 2021 -0400
+
+    update docs
+
+[33mcommit a850faa2161496e1b67e0a2b5912236b934ad36b[m
+Author: Gary Kane <gakane@bu.edu>
+Date:   Thu Mar 11 19:03:00 2021 -0500
+
+    cli: bug in weights
+
+[33mcommit 65c7fbcbd3fc4146d82add37959d86f4c5aa57b1[m
+Author: Gary Kane <gakane@bu.edu>
+Date:   Thu Mar 11 12:14:22 2021 -0500
+
+    update weight cli, documentation
+
+[33mcommit a0a96438201c3594cbd52a7a8cda29b6bbe9e9d8[m
+Author: Gary Kane <gakane@bu.edu>
+Date:   Tue Mar 2 07:30:22 2021 -0500
+
+    flashes: FlashesTrial bug when adding Flash0 state
+
+[33mcommit 19635f601e53b27676535890fbf70a02ae38cc9f[m
+Author: Gary Kane <gakane@bu.edu>
+Date:   Sun Feb 28 10:24:37 2021 -0500
+
+    animal: changed weights table, added weights cli
+
+[33mcommit 5fdbe0e1f4fddf0aa9d771f51bcab1d4d8244910[m
+Author: Gary Kane <gakane@bu.edu>
+Date:   Mon Feb 22 08:52:47 2021 -0500
+
+    flashes: fixes for bernoulli
+
+[33mcommit fcdd3715579efc37429dd759fea9a8546397c573[m
+Author: Gary Kane <gakane@bu.edu>
+Date:   Fri Feb 12 18:46:09 2021 -0500
+
+    flashes: update flashes trial per new training
+
+[33mcommit 3ce9c635eecd549cf52976d1ee3bf75e7dbf8d8a[m
+Author: Gary Kane <gakane@bu.edu>
+Date:   Sun Feb 7 11:22:48 2021 -0500
+
+    bpod: fix bug populating BpodTrialData with 1 trial in file
+
+[33mcommit d87288ff830f9b9f8260587a2f0f6aa9127e06c5[m
+Author: Gary Kane <gakane@bu.edu>
+Date:   Sat Feb 6 15:55:00 2021 -0500
+
+    bpod: safely check RATACAD_DATA_DIR, wait 3 days to close files
+
+[33mcommit a56bfedbe70f12b2803255274b9b6ae3a3bb9453[m
+Author: Gary Kane <gakane@bu.edu>
+Date:   Fri Feb 5 11:15:41 2021 -0500
+
+    flashes: fix stage=0 choice & rt
+
+[33mcommit c6e409f060501b79251e8bc08ed55815df546443[m
+Author: Gary Kane <gakane@bu.edu>
+Date:   Wed Feb 3 14:37:01 2021 -0500
+
+    flashes: fix summary table for stage=0
+
+[33mcommit 8b237b84862fb7f7e3597c62dbe00d5bab39b237[m
+Author: Gary Kane <gakane@bu.edu>
+Date:   Mon Feb 1 12:04:33 2021 -0500
+
+    bpod: fix metadata session start
+
+[33mcommit 6fb18c5b843fab42e1905288c666e78b0cd752db[m
+Author: Gary Kane <gakane@bu.edu>
+Date:   Wed Jan 27 08:43:40 2021 -0500
+
+    flashes: fix summary bug
+
+[33mcommit 66fdb45f57022f0b6db3401b4c0d76c037ba8323[m
+Author: Gary Kane <gakane@bu.edu>
+Date:   Tue Jan 26 11:38:40 2021 -0500
+
+    daily summary: update flashes summary table and summary cli (#2)
+    
+    * flashes: convert daily summary to manual table
+    
+    * edit cli summary
+
+[33mcommit 86663fe8eae02edf6b526cf000c0c0da65e47294[m
+Author: Gary Kane <gakane@bu.edu>
+Date:   Mon Jan 25 22:58:49 2021 -0500
+
+    animal schema, flashes summary, update cli (#1)
+    
+    * switch to animal, interim update on dj-ratacad
+    
+    * update imports
+    
+    * format animal bpod, populate FileClosed, update load_bpod_data
+    
+    * flashes: edit summary table
+    
+    * change cli interface
+
+[33mcommit 58c4b95ba352043b92f10e12cd574046aaa7132b[m
+Author: gkane <gkane@rowland.harvard.edu>
+Date:   Tue Oct 27 22:12:52 2020 -0400
+
+    initial pipeline
+
+[33mcommit 0726ea992884620f003ecf0fe367450ea63859a2[m
+Author: gkane <gkane@rowland.harvard.edu>
+Date:   Sun Oct 18 15:34:12 2020 -0400
+
+    initial commit
