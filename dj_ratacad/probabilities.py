@@ -117,11 +117,11 @@ class ProbabilitiesTrial(dj.Computed):
         else:
             trial_data["choice"] = "omission"
 
-        if bpod_data["trial_settings"]["RewardMaxPort"] == 1:
+        if bpod_data["trial_settings"]["MajorProb"] == 1:
             trial_data["majorprob_side"] = "left"
-        elif bpod_data["trial_settings"]["RewardMaxPort"] == 3:
+        elif bpod_data["trial_settings"]["MajorProb"] == 3:
             trial_data["majorprob_side"] = "right"
-        elif bpod_data["trial_settings"]["RewardMaxPort"] == 2:
+        elif bpod_data["trial_settings"]["MajorProb"] == 2:
             trial_data["majorprob_side"] = "center"
         if bpod_data["trial_settings"]["Reward"] == 0 and bpod_data["trial_settings"]["Choice"] == 0 and dec_time == None:
             trial_data["outcome"] = "omission"
