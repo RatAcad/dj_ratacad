@@ -25,6 +25,7 @@ class FlashesTrial(dj.Computed):
     choice=NULL : enum("left", "right", "center", "omission")   # which side did rat choose
     outcome=NULL : enum("correct", "error", "omission")         # was decision correct (i.e. rewarded)
     rt=NULL: float                                              # response time in s
+    trial_start_time: float                                     # time of the trial start
     init_time=NULL : float                                      # time from the start of the trial to initiation
     correct_side : enum("left", "right", "center")              # correct side
     lambda_left : float                                         # the probability of a left flash
@@ -58,6 +59,8 @@ class FlashesTrial(dj.Computed):
         )
         trial_data["stage"] = bpod_data["trial_settings"]["Stage"]
 
+        trial_data["trial_start_time"] = bpod_data["TrialStartTimestamp"]
+        
         if "Init" in visited_states:
             trial_data["init_time"] = bpod_data["states"]["Init"][1]
         elif "DecisionCue" in visited_states:
