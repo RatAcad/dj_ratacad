@@ -59,7 +59,7 @@ class FlashesTrial(dj.Computed):
         )
         trial_data["stage"] = bpod_data["trial_settings"]["Stage"]
 
-        trial_data["trial_start_time"] = bpod_data["TrialStartTimestamp"]
+        trial_data["trial_start_time"] = bpod_data["trial_start_timestamp"]
         
         if "Init" in visited_states:
             trial_data["init_time"] = bpod_data["states"]["Init"][1]
