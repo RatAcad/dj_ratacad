@@ -75,7 +75,7 @@ class TwoStepTrial(dj.Computed):
         trial_data = key.copy()   
         
         # Time of trial start
-        trial_data["trial_start_time"] = bpod_data["TrialStartTimestamp"]
+        trial_data["trial_start_time"] = bpod_data["trial_start_timestamp"]
         
         # Task variant and training stage
         trial_data["task"] = (
