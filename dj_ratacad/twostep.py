@@ -50,7 +50,6 @@ class TwoStepTrial(dj.Computed):
     co=NULL : int                                               # whether reward omitted following a common transition
     uo=NULL : int                                               # whether reward omitted following an uncommon transition
     ---
-    trial_start_time: float                                     # time of the trial start
     top_init_time=NULL : float                                  # time stamp for top center poke trial initiation
     choice_time=NULL : float                                    # time stamp for entering choice port
     bottom_init_time=NULL : float                               # time stamp for light in bottom center poke
@@ -73,9 +72,6 @@ class TwoStepTrial(dj.Computed):
         ]
 
         trial_data = key.copy()   
-        
-        # Time of trial start
-        trial_data["trial_start_time"] = bpod_data["trial_start_timestamp"]
         
         # Task variant and training stage
         trial_data["task"] = (
