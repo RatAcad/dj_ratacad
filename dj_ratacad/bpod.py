@@ -294,7 +294,7 @@ class BpodTrialData(dj.Manual):
     original_state_timestamps : longblob        # OriginalStateTimestamps from RawData in Bpod data file, as numpy array
     original_event_timestamps : longblob        # OriginalEventTimestamps from RawData in Bpod data file, as numpy array
     state_machine_error_codes : longblob        # StateMachineErrorCodes from RawData in Bpod data file, as numpy array
-    trial_start_timestamp : float               # TrialStartTimestamp from Bpod data file
+    trial_start_timestamp : double              # TrialStartTimestamp from Bpod data file
     trial_end_timestamp : float                 # TrialEndTimestamp from Bpod data file
     data_timestamp=NULL : longblob              # DataTimestamp from Bpod data file
     trial_settings=NULL : longblob              # TrialSettings from Bpod data
