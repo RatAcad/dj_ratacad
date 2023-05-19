@@ -50,7 +50,7 @@ class TwoStepTrial(dj.Computed):
     co=NULL : int                                               # whether reward omitted following a common transition
     uo=NULL : int                                               # whether reward omitted following an uncommon transition
     ---
-    trial_start_ts=NULL : float                                 # timestamp for start of each trial
+    trial_start_ts=NULL : double                                 # timestamp for start of each trial
     top_init_time=NULL : float                                  # time stamp for top center poke trial initiation
     choice_time=NULL : float                                    # time stamp for entering choice port
     bottom_init_time=NULL : float                               # time stamp for light in bottom center poke
