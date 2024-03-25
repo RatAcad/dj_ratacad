@@ -236,11 +236,11 @@ class FlashCountTrial(dj.Computed):
 	
 	#	trial_data["reward"] = bpod_data["additional_fields"]["Reward"]
 		trial_data["training_criterion"] = bpod_data["additional_fields"]["TrainingCriterion"]
-#        trial_data["label"] = (
-#            bpod_data["trial_settings"]["Label"]
-#            if "Label" in bpod_data["trial_settings"]
-#            else None
-#        )
+		trial_data["label"] = (
+			bpod_data["trial_settings"]["Label"]
+			if "Label" in bpod_data["trial_settings"]
+			else None
+		)
 
 		self.insert1(trial_data)
 
