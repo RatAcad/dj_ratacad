@@ -358,7 +358,7 @@ class BpodTrialData(dj.Manual):
                     ]
 
                 for t in range(current_trial, bpod_data["nTrials"]):
-
+                    
                     trial_data = key.copy()
                     trial_data["trial"] = t + 1
 
@@ -378,6 +378,7 @@ class BpodTrialData(dj.Manual):
                     trial_data["trial_time"] = datetime.strftime(
                         trial_datetime, "%H:%M:%S"
                     )
+                    print(f"Adding Trial data for {trial_data['name']}, {trial_data['session_datetime']}, trial = {trial_data['trial']}")
 
                     raw_events = (
                         recarray_to_dict(bpod_data["RawEvents"]["Trial"][t])
