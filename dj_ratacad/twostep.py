@@ -224,10 +224,21 @@ class TwoStepTrial(dj.Computed):
         if (trial_data["stage"] >= 2) and ("Step1" in bpod_data["states"]):
                 trial_data["top_init_time"] = bpod_data["states"]["Step1"][1]
                 trial_data["choice_time"] = bpod_data["states"]["Choice"][1]
+                trial_data["stepone_rt"] = bpod_data["states"]["Choice"][1] - bpod_data["states"]["Step1"][1]
         else:
             trial_data["top_init_time"] = None
             trial_data["choice_time"] = None
-
+        
+        if trial_data["stage"] == 2:
+            if not np.isnan(bpod_data["states"]["OutcomeA"][0]):
+                trial_data["steptwo_rt"] = bpod_data["states"]["OutcomeA"][1] - bpod_data["states"]["OutcomeA"][0]
+            elif not np.isnan(bpod_data["states"]["OutcomeB"][0]):
+                trial_data["steptwo_rt"] = bpod_data["states"]["OutcomeB"][1] - bpod_data["states"]["OutcomeB"][0]
+            else:
+                trial_data["steptwo_rt"] = None
+        else:
+            trial_data["steptwo_rt"] = None
+        
         if trial_data["stage"] >= 3:
             if trial_data["free_choice"] == 0 and trial_data["violation"] == 1:
                 
