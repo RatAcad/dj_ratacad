@@ -236,10 +236,7 @@ class TwoStepTrial(dj.Computed):
                 trial_data["steptwo_rt"] = bpod_data["states"]["OutcomeB"][1] - bpod_data["states"]["OutcomeB"][0]
             else:
                 trial_data["steptwo_rt"] = None
-        else:
-            trial_data["steptwo_rt"] = None
-        
-        if trial_data["stage"] >= 3:
+        elif trial_data["stage"] >= 3:
             if trial_data["free_choice"] == 0 and trial_data["violation"] == 1:
                 
                 violate_time = bpod_data["states"]["Violation"][0]
