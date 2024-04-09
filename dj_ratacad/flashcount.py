@@ -24,8 +24,8 @@ class FlashCountTrial(dj.Computed):
 	---
 	choice=NULL : enum("left", "right","earlyleft","earlyright","earlycenter", "center", "omission")   # which side did rat choose
 	outcome=NULL : enum("correct", "error", "omission","early")         # was decision correct (i.e. rewarded)
-	rt=NULL: float                                              # response time in s
-	init_time=NULL : float                                      # time from the start of the trial to initiation
+	rt=NULL: double                                              # response time in s
+	init_time=NULL : double                                      # time from the start of the trial to initiation
 	correct_side : enum("left", "right", "center")              # correct side
 	lambda_left : float                                         # the probability of a left flash
 	lambda_right : float                                        # the probability of a right flash
