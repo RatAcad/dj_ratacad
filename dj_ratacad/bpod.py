@@ -420,12 +420,16 @@ class BpodTrialData(dj.Manual):
                     if "TrialSettings" in bpod_data:
                         trial_data["trial_settings"] = {}
                         for ts in bpod_data["TrialSettings"].keys():
-                            trial_data["trial_settings"][ts] = (
-                                bpod_data["TrialSettings"][ts][t]
-                                if bpod_data["nTrials"] > 1
-                                else bpod_data["TrialSettings"][ts]
-                            )
-
+                            try:
+                                trial_data["trial_settings"][ts] = (
+                                    bpod_data["TrialSettings"][ts][t]
+                                    if bpod_data["nTrials"] > 1
+                                    else bpod_data["TrialSettings"][ts]
+                                )
+                            except:
+                                print("error w trial settings")	
+                                print(ts)
+                                print(t)        
                     add_fields = [
                         k
                         for k in bpod_data.keys()
