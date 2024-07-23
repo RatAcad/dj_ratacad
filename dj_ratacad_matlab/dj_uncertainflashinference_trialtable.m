@@ -10,7 +10,7 @@ portlabels = {'left', 'middle', 'right'};
 pairlabels = {'none', 'miniblock', 'replay'};
 
 % Specify the date-time format
-dtformat = 'yyyy-MM-dd hh:mm:ss';
+dtformat = 'yyyy-MM-dd HH:mm:ss';
 dtfun = @(x) char(datetime(x, 'Format', dtformat));
 
 % Loop over trials
