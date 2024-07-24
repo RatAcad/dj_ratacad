@@ -14,6 +14,7 @@ trial_instage : int                                                        # tri
 init_time : float                                                          # poke delay
 flashes_left : varchar(50)                                                 # sequence of left flashes
 flashes_right : varchar(50)                                                # sequence of right flashes
+generative_side : enum("left", "right")                                    # generative category
 correct_side : enum("left", "right")                                       # side of correct response
 choice : enum("left", "right", "earlyleft", "earlyright", "omission")      # side of reported response
 outcome : enum("correct", "error", "early", "omission")                    # trial outcome

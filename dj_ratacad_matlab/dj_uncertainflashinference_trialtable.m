@@ -28,6 +28,10 @@ for i = 1:Ntrials
     elseif isfield(states, 'Flash1'),  timeon = states.Flash1(1);
     end
     
+    % Labels for generative categories
+    gencat = [-1,1];
+    gencatlabels = {'left', 'right'};
+    
     % Build table
     T(i).name               = name;
     T(i).trial_datetime     = dtfun(settings.InitTimeTrial);
@@ -45,6 +49,7 @@ for i = 1:Ntrials
     T(i).init_time          = seconds(settings.InitTimeTrial - settings.InitTimeFixation);
     T(i).flashes_left       = strjoin(arrayfun(@num2str, settings.Trial(1,:), 'uni', 0), ' ');
     T(i).flashes_right      = strjoin(arrayfun(@num2str, settings.Trial(2,:), 'uni', 0), ' ');
+    T(i).generative_side    = gencatlabels{settings.CatGen == gencat};
     T(i).correct_side       = portlabels{settings.SideCorrect};
     T(i).choice             = choice;
     T(i).outcome            = outcome;
