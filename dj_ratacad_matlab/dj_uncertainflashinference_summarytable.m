@@ -34,7 +34,7 @@ for i = 1:N
         cmpi = contains(trialtable.outcome, 'correct') | contains(trialtable.outcome, 'error');
         
         % Build table
-        if sum(trli) > 0
+        if sum(trli & cmpi) > 0
             T(k).name          = trialtable.name{1};
             T(k).(cond)        = levels{i};
             T(k).isday         = j;
