@@ -32,9 +32,18 @@ fprintf('- Setting up datajoint connection... ');
 reset = true;
 use_tls = false;
 dj.conn([], [], [], [], reset, use_tls);
+fprintf('Done.\n');
+
+% Retrieve data already populated on DataJoint
+fprintf('- Getting data already on datajoint database... ');
+query = uncertainflashinference.Trials;
+keys = query.fetch;
+availablerats  = {keys.name};
+availabledates = cellfun(@(x) erase(x(1:10), '-'), {keys.trial_datetime}, 'uni', 0);
+fprintf('Done.\n');
 
 % Get rat list
-fprintf('- Getting rat list... ');
+fprintf('- Getting local rat list... ');
 sublist = dir(ratacaddir);
 sublist = sublist(~cellfun(@(x) x(1) == '.', {sublist.name}));
 sublist = sublist(~contains({sublist.name}, 'Experimenter'));
@@ -46,48 +55,67 @@ DATA = cell(1,Nr);
 for ir = 1:Nr
     fprintf('\n- Processing "%s"... ', sublist(ir).name);
     
-    % Get session list
-    datelist = dir(fullfile(sublist(ir).folder, sublist(ir).name, protocolname, ...
+    % Get session list on local data
+    filelist = dir(fullfile(sublist(ir).folder, sublist(ir).name, protocolname, ...
         'Session Data', sprintf('*_%s_*.mat', protocolname)));
-    Nd = numel(datelist);
+    parsed = cellfun(@(x) textscan(x, '%[^_]_%[^_]_%[^_]_%[^_.].%s'), {filelist.name}, 'uni', 0);
+    datelist = cellfun(@(x) x{3}{1}, parsed, 'uni', 0);
+    hourlist = cellfun(@(x) x{4}{1}, parsed, 'uni', 0);
+    Nd = numel(filelist);
     
     % Determine whether data is available
     if Nd == 0
         fprintf('No data found.');
     else
+        fprintf('Data found.');
         
         % Loop over files
         DATA{ir} = cell(1,Nd);
         for id = 1:Nd
-            prs = textscan(datelist(id).name, '%[^_]_%[^_]_%[^_]_%[^_.].%s');
-            fprintf('\n\t* Loading data from %s-%s... ', prs{end-2}{1}, prs{end-1}{1});
             
-            % Load data
-            load(fullfile(datelist(id).folder, datelist(id).name), 'SessionData');
-            fprintf('Done. Building table... ');
+            % Determine whether data is already available on DataJoint
+            fprintf('\n     * Data from %s-%s... ', datelist{id}, hourlist{id});
+            isavailable = any(strcmpi(availablerats,  sublist(ir).name) & ...
+                              strcmpi(availabledates, datelist{id}));
             
-            % Get trial table
-            DATA{ir}{id} = fun_trialtable(SessionData, sublist(ir).name);
+            % Always overwrite data from the last two data files, which may
+            % still be running
+            if any(id == Nd-1:Nd), isavailable = false; end
             
-            % Send trial data table on the SQL database
-            fprintf('Done. Sending table... ');
-            insert(trialfun, DATA{ir}{id}, duplmeth);
-            fprintf('Done.');
+            % If data is not yet available, publish it
+            if isavailable
+                fprintf('Data aleady available on DataJoint.');
+            elseif ~isavailable
+                
+                % Load data
+                fprintf('Loading data... ');
+                load(fullfile(filelist(id).folder, filelist(id).name), 'SessionData');
+                fprintf('Done. Building table... ');
+                
+                % Get trial table
+                DATA{ir}{id} = fun_trialtable(SessionData, sublist(ir).name);
+                
+                % Send trial data table on the SQL database
+                fprintf('Done. Sending table... ');
+                insert(trialfun, DATA{ir}{id}, duplmeth);
+                fprintf('Done.');
+            end
         end
         
         % Combine data from different files
         DATA{ir} = [DATA{ir}{:}];
         
         % Create and send stage summary to SQL database
-        fprintf('\n\t* Sending summary stage table... ');
+        fprintf('\n     * Sending summary stage table... ');
         stagetable = fun_summarytable(DATA{ir}, 'stage');
         insert(stagefun, stagetable, duplmeth);
         
         % Create and send daily summary to SQL database
-        fprintf('Done.\n\t* Sending summary day table... ');
+        fprintf('Done.\n     * Sending summary day table... ');
         daytable = fun_summarytable(DATA{ir}, 'day');
         insert(dailyfun, daytable, duplmeth);
         fprintf('Done.');
     end
 end
+fprintf('\n');
 end
