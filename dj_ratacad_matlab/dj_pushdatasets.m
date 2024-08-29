@@ -78,9 +78,10 @@ for ir = 1:Nr
             isavailable = any(strcmpi(availablerats,  sublist(ir).name) & ...
                               strcmpi(availabledates, datelist{id}));
             
-            % Always overwrite data from the last two data files, which may
+            % Always overwrite data from the last two days, which may
             % still be running
-            if any(id == Nd-1:Nd), isavailable = false; end
+            unqdates = unique(datelist);
+            if any(strcmpi(unqdates(end-1:end), datelist{id})), isavailable = false; end
             
             % If data is not yet available, publish it
             if isavailable
