@@ -1,4 +1,4 @@
-function DATA = dj_pushdatasets(protocolname, ratacaddir, duplmeth)
+function dj_pushdatasets(ratacaddir, protocolname, djtable, duplmeth)
 % The function publishes all available data from a given protocol to
 % the SQL datajoint database.
 % The following analysis functions must be available: 
@@ -13,19 +13,21 @@ function DATA = dj_pushdatasets(protocolname, ratacaddir, duplmeth)
 % Maxime Maheu <maheu.mp@gmail.com> | 2024
 
 % Define default path to data
-if nargin < 2, ratacaddir = '/ad/eng/research/eng_research_scottlab/RATACAD_DATA'; end
-
-% Determine how to deal with duplicates by default
-if nargin < 3, duplmeth = 'REPLACE'; end
+if nargin < 1, ratacaddir = '/ad/eng/research/eng_research_scottlab/RATACAD_DATA'; end
+if isempty(ratacaddir), ratacaddir = pwd; end
 
 % Get analysis functions corresponding to the protocol
 fun_trialtable   = eval(sprintf('@(d,n) dj_%s_trialtable(d,n)',   lower(protocolname)));
 fun_summarytable = eval(sprintf('@(d,c) dj_%s_summarytable(d,c)', lower(protocolname)));
 
 % Get datajoint functions corresponding to the protocol
-trialfun = eval(sprintf('%s.Trials',       lower(protocolname)));
-stagefun = eval(sprintf('%s.StageSummary', lower(protocolname)));
-dailyfun = eval(sprintf('%s.DailySummary', lower(protocolname)));
+if nargin < 3 || isempty(djtable), djtable = protocolname; end
+trialfun = eval(sprintf('%s.Trials',       lower(djtable)));
+stagefun = eval(sprintf('%s.StageSummary', lower(djtable)));
+dailyfun = eval(sprintf('%s.DailySummary', lower(djtable)));
+
+% Determine how to deal with duplicates by default
+if nargin < 4 || isempty(duplmeth), duplmeth = 'REPLACE'; end
 
 % Initialize connection without TLS
 fprintf('- Setting up datajoint connection... ');
@@ -51,7 +53,6 @@ Nr = numel(sublist);
 fprintf('Done.');
 
 % Loop over rats
-DATA = cell(1,Nr);
 for ir = 1:Nr
     fprintf('\n- Processing "%s"... ', sublist(ir).name);
     
@@ -70,7 +71,7 @@ for ir = 1:Nr
         fprintf('Data found.');
         
         % Loop over files
-        DATA{ir} = cell(1,Nd);
+        DATA = cell(1,Nd);
         for id = 1:Nd
             
             % Determine whether data is already available on DataJoint
@@ -81,7 +82,7 @@ for ir = 1:Nr
             % Always overwrite data from the last two days, which may
             % still be running
             unqdates = unique(datelist);
-            if any(strcmpi(unqdates(end-1:end), datelist{id})), isavailable = false; end
+            if any(strcmpi(unqdates(max([1,end-1]):end), datelist{id})), isavailable = false; end
             
             % If data is not yet available, publish it
             if isavailable
@@ -94,26 +95,26 @@ for ir = 1:Nr
                 fprintf('Done. Building table... ');
                 
                 % Get trial table
-                DATA{ir}{id} = fun_trialtable(SessionData, sublist(ir).name);
+                DATA{id} = fun_trialtable(SessionData, sublist(ir).name);
                 
                 % Send trial data table on the SQL database
                 fprintf('Done. Sending table... ');
-                insert(trialfun, DATA{ir}{id}, duplmeth);
+                insert(trialfun, DATA{id}, duplmeth);
                 fprintf('Done.');
             end
         end
         
         % Combine data from different files
-        DATA{ir} = [DATA{ir}{:}];
+        DATA = [DATA{:}];
         
         % Create and send stage summary to SQL database
         fprintf('\n     * Sending summary stage table... ');
-        stagetable = fun_summarytable(DATA{ir}, 'stage');
+        stagetable = fun_summarytable(DATA, 'stage');
         insert(stagefun, stagetable, duplmeth);
         
         % Create and send daily summary to SQL database
         fprintf('Done.\n     * Sending summary day table... ');
-        daytable = fun_summarytable(DATA{ir}, 'day');
+        daytable = fun_summarytable(DATA, 'day');
         insert(dailyfun, daytable, duplmeth);
         fprintf('Done.');
     end

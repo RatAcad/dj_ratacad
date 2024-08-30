@@ -21,6 +21,7 @@ for i = 1:Ntrials
     % Get info corresponding to current trial
     settings = bpodstruct.TrialSettings(i);
     states = bpodstruct.RawEvents.Trial{i}.States;
+    events = bpodstruct.RawEvents.Trial{i}.Events;
     
     % Get choice and timings
     [choice, outcome, timepoke] = getdecisionlabels(states);
@@ -36,8 +37,7 @@ for i = 1:Ntrials
     T(i).name               = name;
     T(i).trial_datetime     = dtfun(settings.InitTimeTrial);
     % ---------------------------------------------------------------------
-    T(i).run_datetime       = dtfun(settings.RunOnset);
-    T(i).session_datetime   = dtfun([bpodstruct.Info.SessionDate ' ' bpodstruct.Info.SessionStartTime_UTC]);
+    T(i).session_datetime   = dtfun(settings.RunOnset);
     T(i).trial              = i;
     T(i).isday              = settings.IsDay;
     % ---------------------------------------------------------------------
@@ -45,6 +45,9 @@ for i = 1:Ntrials
     T(i).task               = tasklabels{settings.Design + 1};
     T(i).stage              = settings.Stage;
     T(i).trial_instage      = settings.StageTrials;
+    % ---------------------------------------------------------------------
+    T(i).rewardsize_left    = settings.SizeReward(1);
+    T(i).rewardsize_right   = settings.SizeReward(end);
     % ---------------------------------------------------------------------
     T(i).init_time          = seconds(settings.InitTimeTrial - settings.InitTimeFixation);
     T(i).flashes_left       = strjoin(arrayfun(@num2str, settings.Trial(1,:), 'uni', 0), ' ');
@@ -55,17 +58,24 @@ for i = 1:Ntrials
     T(i).outcome            = outcome;
     T(i).rt                 = max([timepoke - timeon, -1], [], 'OmitNaN');
     % ---------------------------------------------------------------------
-    T(i).ispaired           = settings.PairedTrial;
+    T(i).isuniform          = getvalue(settings, 'UniformTrial');
+    % ---------------------------------------------------------------------
+    T(i).isopto             = getvalue(settings, 'OptoTrial');
+    T(i).optoonset          = getvalue(events, 'GlobalTimer1_Start');
+    T(i).optodur            = T(i).isopto * max([T(i).rt, getvalue(settings, 'OptoMaxDuration')]);
+    % ---------------------------------------------------------------------
+    T(i).ispaired           = getvalue(settings, 'PairedTrial');
     T(i).pairedstrat        = pairlabels{settings.PairedStrategy + 1};
     T(i).paired_inittime    = dtfun(settings.PairedInitTime);
     % ---------------------------------------------------------------------
-    T(i).isstaircase        = settings.StaircaseTrial;
-    T(i).staircase_nightval = settings.StaircaseVal{1}(end);
-    T(i).staircase_dayval   = settings.StaircaseVal{2}(end);
+    T(i).isstaircase        = getvalue(settings, 'StaircaseTrial');
+    staircase               = getvalue(settings, 'StaircaseVal', {0, 0});
+    T(i).staircase_nightval = staircase{1}(end);
+    T(i).staircase_dayval   = staircase{2}(end);
     % ---------------------------------------------------------------------
-    T(i).tau                = settings.Tau;
-    T(i).alpha              = settings.Alpha;
-    T(i).sigma              = settings.Sigma;
+    T(i).tau                = getvalue(settings, 'Tau');
+    T(i).alpha              = getvalue(settings, 'Alpha');
+    T(i).sigma              = getvalue(settings, 'Sigma');
 end
 end
 
@@ -81,8 +91,8 @@ early   = arrayfun(@(x) sprintf('EarlyEnter%i', x), ports, 'uni', 0);
 fun     = @(x,y) any(~isnan([x, y]));
 
 % Get boolean categories
-isleft       = fun(trialstruc.(correct{1}), trialstruc.(error  {1}));
-isright      = fun(trialstruc.(correct{2}), trialstruc.(error  {2}));
+isleft       = fun(trialstruc.(correct{1}), trialstruc.(error{1}));
+isright      = fun(trialstruc.(correct{2}), trialstruc.(error{2}));
 isleftearly  = fun(trialstruc.(early{1}), []);
 isrightearly = fun(trialstruc.(early{2}), []);
 isearly      = isleftearly | isrightearly;
@@ -105,4 +115,20 @@ if  isomitted, outcome = 'omission'; end
 % Get timing of decision poke
 timepoke = cellfun(@(x) trialstruc.(x)(1), [correct, error, early]);
 timepoke = timepoke(~isnan(timepoke));
+end
+
+% =========================================================================
+% Subfunction to deal with missing field
+function value = getvalue(trialstruc, fieldname, defaultvalue)
+
+% By default, the default value is 0
+if nargin < 3 || isempty(defaultvalue), defaultvalue = 0; end
+
+% Return value it it exists
+if isfield(trialstruc, fieldname), value = trialstruc.(fieldname);
+
+% Otherwise return default value
+else, value = defaultvalue;
+end
+
 end

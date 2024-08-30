@@ -9,5 +9,5 @@ addpath('/home/ratacad1/MATLAB Add-Ons/Toolboxes/mym/distribution/mexa64');
 ratacaddir = '/ad/eng/research/eng_research_scottlab/RATACAD_DATA';
 
 % Run routine to update SQL database with behavioural data on network drive
-dj_pushdatasets('UncertainFlashInference',    ratacaddir);
-dj_pushdatasets('UncertainFlashInference_v2', ratacaddir);
+dj_pushdatasets(ratacaddir, 'UncertainFlashInference');
+dj_pushdatasets(ratacaddir, 'UncertainFlashInference_v2', 'UncertainFlashInference');
