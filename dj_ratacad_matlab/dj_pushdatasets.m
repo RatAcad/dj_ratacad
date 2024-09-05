@@ -58,10 +58,9 @@ for ir = 1:Nr
     
     % Get session list on local data
     filelist = dir(fullfile(sublist(ir).folder, sublist(ir).name, protocolname, ...
-        'Session Data', sprintf('*_%s_*.mat', protocolname)));
-    parsed = cellfun(@(x) textscan(x, '%[^_]_%[^_]_%[^_]_%[^_.].%s'), {filelist.name}, 'uni', 0);
-    datelist = cellfun(@(x) x{3}{1}, parsed, 'uni', 0);
-    hourlist = cellfun(@(x) x{4}{1}, parsed, 'uni', 0);
+        'Session Data', sprintf('%s_*.mat', sublist(ir).name)));
+    datelist = cellfun(@(x) x(end-18:end-11), {filelist.name}, 'uni', 0);
+    hourlist = cellfun(@(x) x(end-9:end-4),   {filelist.name}, 'uni', 0);
     Nd = numel(filelist);
     
     % Determine whether data is available
