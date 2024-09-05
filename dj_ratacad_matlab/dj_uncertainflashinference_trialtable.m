@@ -25,9 +25,7 @@ for i = 1:Ntrials
     
     % Get choice and timings
     [choice, outcome, timepoke] = getdecisionlabels(states);
-    if     isfield(states, 'SideCue'), timeon = states.SideCue(1);
-    elseif isfield(states, 'Flash1'),  timeon = states.Flash1(1);
-    end
+    computingdelay = seconds(settings.InitTimeSMA - settings.InitTimeTrial);
     
     % Labels for generative categories
     gencat = [-1,1];
@@ -56,7 +54,7 @@ for i = 1:Ntrials
     T(i).correct_side       = portlabels{settings.SideCorrect};
     T(i).choice             = choice;
     T(i).outcome            = outcome;
-    T(i).rt                 = max([timepoke - timeon, -1], [], 'OmitNaN');
+    T(i).rt                 = max([timepoke + computingdelay, -1], [], 'OmitNaN');
     % ---------------------------------------------------------------------
     T(i).isuniform          = getvalue(settings, 'UniformTrial');
     % ---------------------------------------------------------------------
