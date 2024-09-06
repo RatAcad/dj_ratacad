@@ -9,5 +9,10 @@ addpath('/home/ratacad1/MATLAB Add-Ons/Toolboxes/mym/distribution/mexa64');
 ratacaddir = '/ad/eng/research/eng_research_scottlab/RATACAD_DATA';
 
 % Run routine to update SQL database with behavioural data on network drive
-dj_pushdatasets(ratacaddir, 'UncertainFlashInference');
-dj_pushdatasets(ratacaddir, 'UncertainFlashInference_v2', 'UncertainFlashInference');
+try
+    dj_pushdatasets(ratacaddir, 'UncertainFlashInference');
+    dj_pushdatasets(ratacaddir, 'UncertainFlashInference_v2', 'UncertainFlashInference');
+catch
+    system(['/home/ratacad1/anaconda3/bin/curl -H "Tags: desktop_computer" ', ...
+        '-d "Failed to publish new data on DataJoint" ntfy.sh/ratacademy']);
+end
