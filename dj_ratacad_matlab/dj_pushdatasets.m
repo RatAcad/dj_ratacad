@@ -61,6 +61,9 @@ for ir = 1:Nr
         'Session Data', sprintf('%s_*.mat', sublist(ir).name)));
     datelist = cellfun(@(x) x(end-18:end-11), {filelist.name}, 'uni', 0);
     hourlist = cellfun(@(x) x(end-9:end-4),   {filelist.name}, 'uni', 0);
+    [~,idx] = sortrows([datelist(:), hourlist(:)], 1:2);
+    datelist = datelist(idx);
+    hourlist = hourlist(idx);
     Nd = numel(filelist);
     
     % Determine whether data is available
