@@ -95,7 +95,6 @@ for ir = 1:Nr
                 % Load data
                 fprintf('Loading data... ');
                 load(fullfile(filelist(id).folder, filelist(id).name), 'SessionData');
-                SessionData
                 fprintf('Done. Building table... ');
                 
                 % Get trial table
