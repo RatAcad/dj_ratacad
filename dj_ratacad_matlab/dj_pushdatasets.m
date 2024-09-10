@@ -64,6 +64,7 @@ for ir = 1:Nr
     [~,idx] = sortrows([datelist(:), hourlist(:)], 1:2);
     datelist = datelist(idx);
     hourlist = hourlist(idx);
+    filelist = filelist(idx);
     Nd = numel(filelist);
     
     % Determine whether data is available
@@ -88,12 +89,13 @@ for ir = 1:Nr
             
             % If data is not yet available, publish it
             if isavailable
-                fprintf('Data aleady available on DataJoint.');
+                fprintf('Data already available on DataJoint.');
             elseif ~isavailable
                 
                 % Load data
                 fprintf('Loading data... ');
                 load(fullfile(filelist(id).folder, filelist(id).name), 'SessionData');
+                SessionData
                 fprintf('Done. Building table... ');
                 
                 % Get trial table
