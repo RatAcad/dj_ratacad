@@ -18,7 +18,19 @@ switch cond
         
     % Split according to days
     case 'day'
-        levels = unique(cellfun(@(x) x(1:10), trialtable.trial_datetime, 'uni', 0));
+
+        % For nights, we put together late hour trials of day i with early
+        % hour trials of day i+1 (instead of both early and late hours of day i)
+        % N.B. in practice, morning night are labelled as belonging to yesterday
+        dayStartTime  = hours(07) + minutes(30); % 7:30 AM
+        dateTimeList  = datetime(trialtable.trial_datetime);
+        baseDates     = dateshift(dateTimeList, 'start', 'day');
+        timeOfDay     = timeofday(dateTimeList);
+        adjustedDates = baseDates;
+        adjustedDates(timeOfDay < dayStartTime) = adjustedDates(timeOfDay < dayStartTime) - days(1);
+        
+        % Get trial indices for each day after the transformation
+        levels = arrayfun(@(x) char(datetime(x, 'Format', 'yyyy-MM-dd')), unique(adjustedDates), 'uni', 0);
         idx = cellfun(@(x) contains(trialtable.trial_datetime, x), levels, 'uni', 0);
 end
 
