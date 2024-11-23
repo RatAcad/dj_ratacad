@@ -49,7 +49,14 @@ fprintf('- Getting local rat list... ');
 sublist = dir(ratacaddir);
 sublist = sublist(~cellfun(@(x) x(1) == '.', {sublist.name}));
 sublist = sublist(~contains({sublist.name}, 'Experimenter'));
+sublist = sublist(~contains({sublist.name}, 'FakeSubject'));
 Nr = numel(sublist);
+fprintf('Done.\n');
+
+% Get rat list
+fprintf('- Loading meta-data... ');
+global explab badsegm;
+[explab, badsegm] = dj_uncertainflashinference_metadata;
 fprintf('Done.');
 
 % Loop over rats
@@ -78,7 +85,7 @@ for ir = 1:Nr
         for id = 1:Nd
             
             % Determine whether data is already available on DataJoint
-            fprintf('\n     * Data from %s-%s... ', datelist{id}, hourlist{id});
+            fprintf('\n\t* Data from %s-%s... ', datelist{id}, hourlist{id});
             isavailable = any(strcmpi(availablerats,  sublist(ir).name) & ...
                               strcmpi(availabledates, datelist{id}));
             
@@ -101,9 +108,11 @@ for ir = 1:Nr
                 DATA{id} = fun_trialtable(SessionData, sublist(ir).name);
                 
                 % Send trial data table on the SQL database
-                fprintf('Done. Sending table... ');
-                insert(trialfun, DATA{id}, duplmeth);
-                fprintf('Done.');
+                if ~isempty(DATA{id})
+                    fprintf('Done. Sending table... ');
+                    insert(trialfun, DATA{id}, duplmeth);
+                    fprintf('Done.');
+                end
             end
         end
         
@@ -111,12 +120,12 @@ for ir = 1:Nr
         DATA = [DATA{:}];
         
         % Create and send stage summary to SQL database
-        fprintf('\n     * Sending summary stage table... ');
+        fprintf('\n\t* Sending summary stage table... ');
         stagetable = fun_summarytable(DATA, 'stage');
         insert(stagefun, stagetable, duplmeth);
         
         % Create and send daily summary to SQL database
-        fprintf('Done.\n     * Sending summary day table... ');
+        fprintf('Done.\n\t* Sending summary day table... ');
         daytable = fun_summarytable(DATA, 'day');
         insert(dailyfun, daytable, duplmeth);
         fprintf('Done.');

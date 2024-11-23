@@ -24,6 +24,7 @@ isuniform: int                                                             # whe
 isopto: int                                                                # whether optogenetic manipulations were performed on that trial 
 optoonset: float                                                           # onset of optogenetic manipulations
 optodur: float                                                             # duration of optogenetic manipulations
+iseeg: int                                                                 # whether EEG recordings were performed
 ispaired: int                                                              # repeated trial from the past
 pairedstrat: enum("none", "miniblock", "replay")                           # strategy for trial repetition
 paired_inittime: datetime                                                  # trial timestamp of the repeated trial
@@ -32,6 +33,7 @@ staircase_dayval: tinyint unsigned                                         # bri
 staircase_nightval: tinyint unsigned                                       # brightness value of the night staircase
 tau: float                                                                 # value of tau parameter (number of bins)
 alpha: float                                                               # value of alpha parameter (presence of empty bins)
+beta: float                                                                # value of beta parameter (proportion of unilateral/bilateral flashes)
 sigma: float                                                               # value of sigma parameter (weak and incongruent flashes)
 %}
 classdef Trials < dj.Manual
