@@ -18,7 +18,7 @@ switch cond
         
     % Split according to days
     case 'day'
-
+        
         % For nights, we put together late hour trials of day i with early
         % hour trials of day i+1 (instead of both early and late hours of day i)
         % N.B. in practice, morning night are labelled as belonging to yesterday
