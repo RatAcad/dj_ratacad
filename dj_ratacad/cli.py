@@ -101,12 +101,19 @@ def summary(protocol, date=None):
 
     if date is None:
         date = (datetime.today() - timedelta(days=1)).strftime("%Y-%m-%d")
+    if protocol == 'ufi':
+        import datajoint as dj
+        dj_schema = dj.create_virtual_module(module_name='dj_schema', schema_name='scott_uncertainflashinference')
+        tbl = (dj_schema.DailySummary() & f"day='{date}'").fetch(format="frame")
+        tbl.reset_index(inplace=True)
 
-    dj_schema = importlib.import_module(f"dj_ratacad.{protocol}")
-    tbl = (dj_schema.DailySummary() & f"summary_date='{date}'").fetch(format="frame")
-    tbl.reset_index(inplace=True)
+        print(tbl)
+    else:
+        dj_schema = importlib.import_module(f"dj_ratacad.{protocol}")
+        tbl = (dj_schema.DailySummary() & f"summary_date='{date}'").fetch(format="frame")
+        tbl.reset_index(inplace=True)
 
-    print(tbl)
+        print(tbl)
 
 
 @cli.command()
