@@ -4,6 +4,7 @@ function dj_pushdatasets(ratacaddir, protocolname, djtable, data2push)
 % The following analysis functions must be available: 
 % - "dj_[PROTOCOL NAME]_trialtable.m"
 % - "dj_[PROTOCOL NAME]_summarytable.m"
+% - "dj_[PROTOCOL NAME]_metadata.m" (optional)
 % The following datajoint functions must be available:
 % - "+[PROTOCOL NAME]/getSchema.m"
 % - "+[PROTOCOL NAME]/Trials.m"
@@ -56,8 +57,9 @@ fprintf('Done.\n');
 
 % Get rat list
 fprintf('- Loading meta-data... ');
+metadatafun = sprintf('dj_%s_metadata', lower(protocolname));
 global explab badsegm;
-[explab, badsegm] = dj_uncertainflashinference_metadata;
+if exist(metadatafun, 'file') == 2, [explab, badsegm] = eval(metadatafun); end
 fprintf('Done.');
 
 % Loop over rats
