@@ -113,7 +113,7 @@ for ir = 1:Nr
                 DATA{id} = fun_trialtable(SessionData, sublist(ir).name);
                 
                 % Send trial data table on the SQL database
-                if ~isempty(DATA{id})
+                if ~isempty(fieldnames(DATA{id}))
                     fprintf('Done. Sending table... ');
                     insert(trialfun, DATA{id}, duplmeth);
                     fprintf('Done.');
