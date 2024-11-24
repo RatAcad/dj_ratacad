@@ -6,8 +6,9 @@ function varargout = dj_uncertainflashinference_metadata
 % Maxime Maheu <maheu.mp@gmail.com> | 2024
 
 % Define properties of the meta-data sheet
-code  = '2PACX-1vSvzAAvw_wZnhjZ3yNAYowx2yyWw4EBfgGtAP3ANvShjDQmTlWZVPxkDUS6UkGsvKK1TaMc0JB1XLfc';
-tabid = [0, 1782685558];
+code   = '2PACX-1vSvzAAvw_wZnhjZ3yNAYowx2yyWw4EBfgGtAP3ANvShjDQmTlWZVPxkDUS6UkGsvKK1TaMc0JB1XLfc';
+tabid  = [0, 1782685558];
+format = {'dd-MMM-yyyy', 'dd-MMM-yyyy HH:mm'};
 
 % Loop over both tabs
 varargout = cell(1,2);
@@ -25,7 +26,7 @@ for i = 1:2
     for j = 1:numel(datelab)
         k = strcmpi(opts.VariableNames, datelab{j});
         opts.VariableTypes{k} = 'datetime';
-        opts = setvaropts(opts, datelab{j}, 'InputFormat', 'dd-MMM-yyyy HH:mm');
+        opts = setvaropts(opts, datelab{j}, 'InputFormat', format{i});
     end
     
     % Import data

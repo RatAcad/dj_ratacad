@@ -39,7 +39,7 @@ N = numel(idx);
 T = struct;
 k = 1;
 for i = 1:N
-    for j = 0:1 % separately for day vs. night
+    for j = [1,0] % separately for day vs. night
         
         % Get trial indices
         trli = idx{i} & (trialtable.isday == j);

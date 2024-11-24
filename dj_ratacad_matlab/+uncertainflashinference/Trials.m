@@ -6,7 +6,9 @@ trial_datetime : datetime                                                  # uni
 session_datetime : datetime                                                # timestamp of the session
 trial : int                                                                # trial number w.r.t. experiment onset
 isday : int                                                                # day or night trial
-label : varchar(20)                                                        # experiment label
+protocol: varchar(20)                                                      # protocol function
+experiment: varchar(100)                                                   # experiment label
+setting : varchar(20)                                                      # setting label
 task : enum("count", "weigh")                                              # task version
 stage: int                                                                 # stage number
 trial_instage : int                                                        # trial number w.r.t. stage onset

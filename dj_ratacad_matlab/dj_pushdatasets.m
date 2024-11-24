@@ -1,4 +1,4 @@
-function dj_pushdatasets(ratacaddir, protocolname, djtable, duplmeth)
+function dj_pushdatasets(ratacaddir, protocolname, djtable, data2push)
 % The function publishes all available data from a given protocol to
 % the SQL datajoint database.
 % The following analysis functions must be available: 
@@ -26,8 +26,9 @@ trialfun = eval(sprintf('%s.Trials',       lower(djtable)));
 stagefun = eval(sprintf('%s.StageSummary', lower(djtable)));
 dailyfun = eval(sprintf('%s.DailySummary', lower(djtable)));
 
-% Determine how to deal with duplicates by default
-if nargin < 4 || isempty(duplmeth), duplmeth = 'REPLACE'; end
+% Whether to push only missing sessions
+if nargin < 4 || isempty(data2push), data2push = 'all'; end
+duplmeth = 'REPLACE';
 
 % Initialize connection without TLS
 fprintf('- Setting up datajoint connection... ');
@@ -94,6 +95,9 @@ for ir = 1:Nr
             unqdates = unique(datelist);
             if any(strcmpi(unqdates(max([1,end-1]):end), datelist{id})), isavailable = false; end
             
+            % If we have to overwrite all entries
+            if strcmpi(data2push, 'all'), isavailable = false; end
+            
             % If data is not yet available, publish it
             if isavailable
                 fprintf('Data already available on DataJoint.');
@@ -105,6 +109,7 @@ for ir = 1:Nr
                 fprintf('Done. Building table... ');
                 
                 % Get trial table
+                SessionData.ProtocolName = protocolname;
                 DATA{id} = fun_trialtable(SessionData, sublist(ir).name);
                 
                 % Send trial data table on the SQL database
