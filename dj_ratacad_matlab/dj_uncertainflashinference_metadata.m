@@ -16,19 +16,30 @@ for i = 1:2
     
     % Detect import options from the URL
     url = sprintf('https://docs.google.com/spreadsheets/d/e/%s/pub?gid=%i&single=true&output=csv', code, tabid(i));
-    opts = detectImportOptions(url);
-    
-    % Customize import options
-    opts.Delimiter = ',';
-    opts.DataLines = [2, Inf];
-    for j = 1:numel(opts.VariableNames), opts.VariableTypes{j} = 'string'; end
-    datelab = {'Beginning', 'End'};
-    for j = 1:numel(datelab)
-        k = strcmpi(opts.VariableNames, datelab{j});
-        opts.VariableTypes{k} = 'datetime';
-        opts = setvaropts(opts, datelab{j}, 'InputFormat', format{i});
-    end
-    
-    % Import data
-    varargout{i} = readtable(url, opts);
+    varargout{i} = readgooglesheet(url, format{i});
+end
+
+end
+
+% =========================================================================
+% Subfunction to read Google Sheet and return a formatted table
+function T = readgooglesheet(url, dtformat)
+
+% Read data as text
+metadata = urlread(url);
+
+% Organise in rows and columns
+metadata = textscan(metadata, '%s', 'Delimiter', '\n');
+metadata = cellfun(@(x) textscan(x, '%s', 'Delimiter', ','), metadata{1}, 'uni', 0);
+metadata = cellfun(@(x) x{1}, metadata, 'uni', 0);
+metadata = [metadata{:}]';
+
+% Convert to table
+T = cell2table(metadata(2:end,:));
+T.Properties.VariableNames = metadata(1,:);
+
+% Format
+T.Beginning = datetime(T.Beginning, 'Format', dtformat);
+T.End = datetime(T.End, 'Format', dtformat);
+
 end
