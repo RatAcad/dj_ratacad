@@ -25,6 +25,7 @@ global explab badsegm;
 % Loop over trials
 Ntrials = bpodstruct.nTrials;
 T = struct;
+j = 1;
 for i = 1:Ntrials
     
     % Get info corresponding to current trial
@@ -45,54 +46,55 @@ for i = 1:Ntrials
         computingdelay = seconds(settings.InitTimeSMA - settings.InitTimeTrial);
         
         % Build table
-        T(i).name               = ratname;
-        T(i).trial_datetime     = dtfun(settings.InitTimeTrial);
+        T(j).name               = ratname;
+        T(j).trial_datetime     = dtfun(settings.InitTimeTrial);
         % -----------------------------------------------------------------
-        T(i).session_datetime   = dtfun(settings.RunOnset);
-        T(i).trial              = i;
-        T(i).isday              = settings.IsDay;
+        T(j).session_datetime   = dtfun(settings.RunOnset);
+        T(j).trial              = i;
+        T(j).isday              = settings.IsDay;
         % -----------------------------------------------------------------
-        T(i).protocol           = protocol;
-        T(i).experiment         = getvalue(table2struct(explab(idx,:)), 'Experiment', 'None');
+        T(j).protocol           = protocol;
+        T(j).experiment         = getvalue(table2struct(explab(idx,:)), 'Experiment', 'None');
         % -----------------------------------------------------------------
-        T(i).setting            = settings.Label;
-        T(i).task               = tasklabels{settings.Design + 1};
-        T(i).stage              = settings.Stage;
-        T(i).trial_instage      = settings.StageTrials;
+        T(j).setting            = settings.Label;
+        T(j).task               = tasklabels{settings.Design + 1};
+        T(j).stage              = settings.Stage;
+        T(j).trial_instage      = settings.StageTrials;
         % -----------------------------------------------------------------
-        T(i).rewardsize_left    = settings.SizeReward(1);
-        T(i).rewardsize_right   = settings.SizeReward(end);
+        T(j).rewardsize_left    = settings.SizeReward(1);
+        T(j).rewardsize_right   = settings.SizeReward(end);
         % -----------------------------------------------------------------
-        T(i).init_time          = seconds(settings.InitTimeTrial - settings.InitTimeFixation);
-        T(i).flashes_left       = strjoin(arrayfun(@num2str, settings.Trial(1,:), 'uni', 0), ' ');
-        T(i).flashes_right      = strjoin(arrayfun(@num2str, settings.Trial(2,:), 'uni', 0), ' ');
-        T(i).generative_side    = gencatlabels{settings.CatGen == gencat};
-        T(i).correct_side       = portlabels{settings.SideCorrect};
-        T(i).choice             = choice;
-        T(i).outcome            = outcome;
-        T(i).rt                 = max([timepoke + computingdelay, -1], [], 'OmitNaN');
+        T(j).init_time          = seconds(settings.InitTimeTrial - settings.InitTimeFixation);
+        T(j).flashes_left       = strjoin(arrayfun(@num2str, settings.Trial(1,:), 'uni', 0), ' ');
+        T(j).flashes_right      = strjoin(arrayfun(@num2str, settings.Trial(2,:), 'uni', 0), ' ');
+        T(j).generative_side    = gencatlabels{settings.CatGen == gencat};
+        T(j).correct_side       = portlabels{settings.SideCorrect};
+        T(j).choice             = choice;
+        T(j).outcome            = outcome;
+        T(j).rt                 = max([timepoke + computingdelay, -1], [], 'OmitNaN');
         % -----------------------------------------------------------------
-        T(i).isuniform          = getvalue(settings, 'UniformTrial');
+        T(j).isuniform          = getvalue(settings, 'UniformTrial');
         % -----------------------------------------------------------------
-        T(i).isopto             = getvalue(settings, 'OptoTrial');
-        T(i).optoonset          = getvalue(events, 'GlobalTimer1_Start');
-        T(i).optodur            = T(i).isopto * max([T(i).rt, getvalue(settings, 'OptoMaxDuration')]);
+        T(j).isopto             = getvalue(settings, 'OptoTrial');
+        T(j).optoonset          = getvalue(events, 'GlobalTimer1_Start');
+        T(j).optodur            = T(j).isopto * max([T(j).rt, getvalue(settings, 'OptoMaxDuration')]);
         % -----------------------------------------------------------------
-        T(i).iseeg              = getvalue(settings, 'EEGtrigs');
+        T(j).iseeg              = getvalue(settings, 'EEGtrigs');
         % -----------------------------------------------------------------
-        T(i).ispaired           = getvalue(settings, 'PairedTrial');
-        T(i).pairedstrat        = pairlabels{settings.PairedStrategy + 1};
-        T(i).paired_inittime    = dtfun(settings.PairedInitTime);
+        T(j).ispaired           = getvalue(settings, 'PairedTrial');
+        T(j).pairedstrat        = pairlabels{settings.PairedStrategy + 1};
+        T(j).paired_inittime    = dtfun(settings.PairedInitTime);
         % -----------------------------------------------------------------
-        T(i).isstaircase        = getvalue(settings, 'StaircaseTrial');
+        T(j).isstaircase        = getvalue(settings, 'StaircaseTrial');
         staircase               = getvalue(settings, 'StaircaseVal', {0, 0});
-        T(i).staircase_nightval = staircase{1}(end);
-        T(i).staircase_dayval   = staircase{2}(end);
+        T(j).staircase_nightval = staircase{1}(end);
+        T(j).staircase_dayval   = staircase{2}(end);
         % -----------------------------------------------------------------
-        T(i).tau                = getvalue(settings, 'Tau');
-        T(i).alpha              = getvalue(settings, 'Alpha');
-        T(i).beta               = getvalue(settings, 'Beta');
-        T(i).sigma              = getvalue(settings, 'Sigma');
+        T(j).tau                = getvalue(settings, 'Tau');
+        T(j).alpha              = getvalue(settings, 'Alpha');
+        T(j).beta               = getvalue(settings, 'Beta');
+        T(j).sigma              = getvalue(settings, 'Sigma');
+        j = j + 1;
     end
 end
 end

@@ -115,16 +115,17 @@ for ir = 1:Nr
                 DATA{id} = fun_trialtable(SessionData, sublist(ir).name);
                 
                 % Send trial data table on the SQL database
+                fprintf('Done. Sending table... ');
                 if ~isempty(fieldnames(DATA{id}))
-                    fprintf('Done. Sending table... ');
                     insert(trialfun, DATA{id}, duplmeth);
-                    fprintf('Done.');
                 end
+                fprintf('Done.');
             end
         end
         
         % Combine data from different files
-        DATA = [DATA{:}];
+        nonempty = cellfun(@(x) ~isempty(fieldnames(x)), DATA);
+        DATA = [DATA{nonempty}];
         
         % Create and send stage summary to SQL database
         fprintf('\n\t* Sending summary stage table... ');
