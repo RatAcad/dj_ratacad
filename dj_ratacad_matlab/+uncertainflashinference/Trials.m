@@ -6,7 +6,7 @@ trial_datetime : datetime                                                  # uni
 session_datetime : datetime                                                # timestamp of the session
 trial : int                                                                # trial number w.r.t. experiment onset
 isday : int                                                                # day or night trial
-protocol: varchar(20)                                                      # protocol function
+protocol: varchar(30)                                                      # protocol function
 experiment: varchar(100)                                                   # experiment label
 commitid: varchar(40)                                                      # GitHub commit ID
 setting : varchar(20)                                                      # setting label
