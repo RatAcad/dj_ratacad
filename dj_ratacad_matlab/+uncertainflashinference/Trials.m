@@ -8,6 +8,7 @@ trial : int                                                                # tri
 isday : int                                                                # day or night trial
 protocol: varchar(20)                                                      # protocol function
 experiment: varchar(100)                                                   # experiment label
+commitid: varchar(40)                                                      # GitHub commit ID
 setting : varchar(20)                                                      # setting label
 task : enum("count", "weigh")                                              # task version
 stage: int                                                                 # stage number

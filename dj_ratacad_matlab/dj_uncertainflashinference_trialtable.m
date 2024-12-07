@@ -43,6 +43,7 @@ for i = 1:Ntrials
         
         % Get choice and timings
         [choice, outcome, timepoke] = getdecisionlabels(states);
+        if ~isfield(settings, 'InitTimeSMA'), settings.InitTimeSMA = settings.InitTimeTrial; end
         computingdelay = seconds(settings.InitTimeSMA - settings.InitTimeTrial);
         
         % Build table
@@ -55,6 +56,7 @@ for i = 1:Ntrials
         % -----------------------------------------------------------------
         T(j).protocol           = protocol;
         T(j).experiment         = getvalue(table2struct(explab(idx,:)), 'Experiment', 'None');
+        T(j).commitid           = getvalue(settings, 'CommitID', 'Unknown');
         % -----------------------------------------------------------------
         T(j).setting            = settings.Label;
         T(j).task               = tasklabels{settings.Design + 1};
