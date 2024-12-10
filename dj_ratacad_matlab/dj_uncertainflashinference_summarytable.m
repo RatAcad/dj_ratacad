@@ -23,7 +23,7 @@ switch cond
         % hour trials of day i+1 (instead of both early and late hours of day i)
         % N.B. in practice, morning night are labelled as belonging to yesterday
         dayStartTime  = hours(07) + minutes(30); % 7:30 AM
-        dateTimeList  = datetime(trialtable.trial_datetime);
+        dateTimeList  = datetime(trialtable.trial_inittime);
         baseDates     = dateshift(dateTimeList, 'start', 'day');
         timeOfDay     = timeofday(dateTimeList);
         adjustedDates = baseDates;
@@ -31,7 +31,7 @@ switch cond
         
         % Get trial indices for each day after the transformation
         levels = arrayfun(@(x) char(datetime(x, 'Format', 'yyyy-MM-dd')), unique(adjustedDates), 'uni', 0);
-        idx = cellfun(@(x) contains(trialtable.trial_datetime, x), levels, 'uni', 0);
+        idx = cellfun(@(x) contains(trialtable.trial_inittime, x), levels, 'uni', 0);
 end
 
 % Loop over stages/days
@@ -56,9 +56,9 @@ for i = 1:N
             T(k).accuracy      = mean(contains(trialtable.outcome(trli & cmpi), 'correct')); % completed trials
             T(k).p_right       = mean(contains(trialtable.choice(trli & cmpi), 'right')); % completed trials
             T(k).omission_rate = mean(contains(trialtable.outcome(trli), 'omission'));
-            T(k).early_rate    = mean(contains(trialtable.outcome(trli), 'early'));
-            T(k).rt            = median(trialtable.rt(trli & cmpi)); % completed trials
-            T(k).init          = median(trialtable.init_time(trli & cmpi)); % completed trials
+            T(k).early_rate    = mean(contains(trialtable.outcome(trli), {'early', 'brokenfix'}));
+            T(k).rt            = median(trialtable.rt_side(trli & cmpi)); % completed trials
+            T(k).it            = median(trialtable.it(trli & cmpi)); % completed trials
             k = k + 1;
         end
     end

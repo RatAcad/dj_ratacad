@@ -34,17 +34,20 @@ duplmeth = 'REPLACE';
 % Initialize connection without TLS
 fprintf('- Setting up datajoint connection... ');
 reset = true;
-use_tls = false;
-dj.conn([], [], [], [], reset, use_tls);
+usetls = false;
+dj.conn([], [], [], [], reset, usetls);
 fprintf('Done.\n');
 
 % Retrieve data already populated on DataJoint
-fprintf('- Getting data already on datajoint database... ');
-query = uncertainflashinference.Trials;
-keys = query.fetch;
-availablerats  = {keys.name};
-availabledates = cellfun(@(x) erase(x(1:10), '-'), {keys.trial_datetime}, 'uni', 0);
-fprintf('Done.\n');
+if ~strcmpi(data2push, 'all')
+    fprintf('- Getting data already on datajoint database... ');
+    query = uncertainflashinference.Trials;
+    keys = query.fetch;
+    availablerats  = {keys.name};
+    availabledates = cellfun(@(x) erase(x(1:10), '-'), {keys.trial_datetime}, 'uni', 0);
+    fprintf('Done.\n');
+else, availablerats = {}; availabledates = {};
+end
 
 % Get rat list
 fprintf('- Getting local rat list... ');
@@ -57,7 +60,7 @@ fprintf('Done.\n');
 
 % Get rat list
 fprintf('- Loading meta-data... ');
-metadatafun = sprintf('dj_%s_metadata', lower(protocolname));
+metadatafun = sprintf('dj_%s_metadata', lower(djtable));
 global explab badsegm;
 if exist(metadatafun, 'file') == 2, [explab, badsegm] = eval(metadatafun); end
 fprintf('Done.');
@@ -96,9 +99,6 @@ for ir = 1:Nr
             % still be running
             unqdates = unique(datelist);
             if any(strcmpi(unqdates(max([1,end-1]):end), datelist{id})), isavailable = false; end
-            
-            % If we have to overwrite all entries
-            if strcmpi(data2push, 'all'), isavailable = false; end
             
             % If data is not yet available, publish it
             if isavailable
