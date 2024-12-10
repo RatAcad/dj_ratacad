@@ -191,7 +191,9 @@ if  isomitted,   outcome = 'omission';  end
 % ~~~~~~~~~~~~~~
 
 % Get timing of the side cue
-tsidecue = cellfun(@(x) states.(x)(1), {'SideCue', 'DecisionCue'});
+f = fieldnames(states);
+i = strcmpi(f, 'SideCue') | strcmpi(f, 'DecisionCue');
+tsidecue = cellfun(@(x) states.(x)(1), f(i));
 tsidecue = tsidecue(~isnan(tsidecue));
 
 % Get timing of decision poke
@@ -207,7 +209,7 @@ cportname = sprintf('Port%iOut', centerport);
 rtcenter = NaN;
 if contains(protocol, 'v3')
     if isfield(events, cportname) && ...       % center poke out detected
-       all(~isnan(states.FixationMaintenance)) % stage with fixation
+       all(~isnan(states.FixationMaintenance(:))) % stage with fixation
         
         % Get last port out event between side port available and side poke
         to = events.(cportname);
