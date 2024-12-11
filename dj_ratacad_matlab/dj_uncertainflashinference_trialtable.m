@@ -85,7 +85,7 @@ for i = 1:Ntrials
         T(j).choice             = choice;
         T(j).outcome            = outcome;
         % -----------------------------------------------------------------
-        T(j).it                 = max([it, -10], [], 'OmitNaN');
+        T(j).it                 = max([it,       -10], [], 'OmitNaN');
         T(j).rt_side            = max([rtside,   -10], [], 'OmitNaN');
         T(j).rt_center          = max([rtcenter, -10], [], 'OmitNaN');
         % -----------------------------------------------------------------
@@ -107,8 +107,8 @@ for i = 1:Ntrials
         T(j).sigma              = getvalue(settings, 'Sigma');
         % -----------------------------------------------------------------
         T(j).isopto             = getvalue(settings, 'OptoTrial');
-        T(j).opto_onset         = T(j).isopto * getvalue(events, 'GlobalTimer1_Start');
-        T(j).opto_dur           = T(j).isopto * max([tsidepoke, getvalue(settings, 'OptoMaxDuration')]);
+        T(j).opto_onset         = T(j).isopto * min(getvalue(events, 'GlobalTimer1_Start'));
+        T(j).opto_dur           = T(j).isopto * max([tsidepoke, getvalue(settings, 'OptoMaxDuration')], [], 'OmitNaN');
         % -----------------------------------------------------------------
         T(j).iseeg              = getvalue(settings, 'EEGtrigs');
         j = j + 1;
@@ -195,10 +195,12 @@ f = fieldnames(states);
 i = strcmpi(f, 'SideCue') | strcmpi(f, 'DecisionCue');
 tsidecue = cellfun(@(x) states.(x)(1), f(i));
 tsidecue = tsidecue(~isnan(tsidecue));
+if isempty(tsidecue), tsidecue = NaN; end 
 
 % Get timing of decision poke
 tsidepoke = cellfun(@(x) states.(x)(1), possresp);
 tsidepoke = tsidepoke(~isnan(tsidepoke));
+if isempty(tsidepoke), tsidepoke = NaN; end
 
 % Compute reaction time as the different between 
 rtside = tsidepoke - tsidecue;
@@ -223,6 +225,7 @@ if contains(protocol, 'v3')
         rtcenter = lastto - tsidecue;
     end
 end
+
 end
 
 % =========================================================================
