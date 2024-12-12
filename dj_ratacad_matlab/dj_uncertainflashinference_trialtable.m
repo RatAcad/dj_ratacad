@@ -163,14 +163,15 @@ if contains(protocol, 'v3') % v3 protocol
     isrightearly = false;
     isearly      = false;
     possresp     = [correct, error];
+    isomitted    = all(cellfun(@(x) all(isnan(states.(x))), [possresp, 'BrokenFixation']));
 else % v1/v2 protocol
     isbrokenfix  = false;
     isleftearly  = fun(states.(early{1}), []);
     isrightearly = fun(states.(early{2}), []);
     isearly      = isleftearly | isrightearly;
     possresp     = [correct, error, early];
+    isomitted    = all(cellfun(@(x) all(isnan(states.(x))), possresp));
 end
-isomitted = all(cellfun(@(x) all(isnan(states.(x))), possresp));
 
 % Determine choice label
 if isleft,       choice = 'left';       end
