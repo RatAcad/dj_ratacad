@@ -271,7 +271,7 @@ dayon   = timeofday(datetime('07:30', 'InputFormat', 'HH:mm'));
 nighton = timeofday(datetime('19:30', 'InputFormat', 'HH:mm'));
 day2night_trans = timeofday(begtrl) < nighton && timeofday(begctr) > nighton;
 night2day_trans = timeofday(begtrl) < dayon   && timeofday(begctr) > dayon;
-if day2night_trans || night2day_trans, isday = -1;
+if day2night_trans || night2day_trans, isday = -10;
 else, isday = settings.IsDay;
 end
 
