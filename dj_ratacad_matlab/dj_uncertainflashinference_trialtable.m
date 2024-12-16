@@ -34,85 +34,86 @@ for i = 1:Ntrials
     states   = bpodstruct.RawEvents.Trial{i}.States;
     events   = bpodstruct.RawEvents.Trial{i}.Events;
     
+    % First, determine if the current trial belongs to a bad segment, in
+    % which case we simply ignore this trial
+    if isempty(settings.InitTimeTrial), continue; end % file corrupted
+    inbadseg = (settings.InitTimeTrial >= badon) & (settings.InitTimeTrial <= badoff);
+    if any(inbadseg), continue; end
+    
     % Determine experiment label of current trial
     idx = ratidx((settings.InitTimeTrial >= expon) & (settings.InitTimeTrial <= expoff));
     
-    % Determine if the current trial belongs to a bad segment
-    inbadseg = (settings.InitTimeTrial >= badon) & (settings.InitTimeTrial <= badoff);
-    if ~any(inbadseg)
-        
-        % Get choice and timings
-        [choice, outcome, tsidepoke, rtside, rtcenter] = getdecisionlabels(states, events, protocol);
-        
-        % If trial field is missing, it means a single, maximally bright
-        % flash was presented
-        if ~isfield(settings, 'CatGen'), settings.CatGen = settings.CatInf; end
-        if ~isfield(settings, 'Trial')
-            settings.Trial = [0; 0];
-            settings.Trial((settings.CatInf + 3) / 2) = settings.BrightnessMax;
-        end
-        
-        % Get trial starting and initiation times
-        [begtrl, begctr, it, prdtrl, isday] = getinittimes(settings, states, protocol);
-        
-        % Build table
-        T(j).name               = ratname;
-        T(j).trial_inittime     = dtfun(begctr);
-        T(j).trial_starttime    = dtfun(begtrl);
-        % -----------------------------------------------------------------
-        T(j).session_starttime  = dtfun(settings.RunOnset);
-        T(j).trial              = i;
-        T(j).isday              = isday;
-        % -----------------------------------------------------------------
-        T(j).protocol           = protocol;
-        T(j).room               = getvalue(table2struct(explab(idx,:)), 'Room', 'Unknown');
-        T(j).position           = getvalue(table2struct(explab(idx,:)), 'Position', 'Unknown');
-        T(j).experiment         = getvalue(table2struct(explab(idx,:)), 'Experiment', 'Unknown');
-        T(j).commit_id          = getvalue(settings, 'CommitID', 'Unknown');
-        % -----------------------------------------------------------------
-        T(j).setting            = settings.Label;
-        T(j).task               = tasklabels{settings.Design + 1};
-        T(j).stage              = settings.Stage;
-        T(j).trial_instage      = settings.StageTrials;
-        % -----------------------------------------------------------------
-        T(j).rewardsize_left    = settings.SizeReward(1);
-        T(j).rewardsize_right   = settings.SizeReward(end);
-        % -----------------------------------------------------------------
-        T(j).flashes_left       = strjoin(arrayfun(@num2str, settings.Trial(1,:), 'uni', 0), ' ');
-        T(j).flashes_right      = strjoin(arrayfun(@num2str, settings.Trial(2,:), 'uni', 0), ' ');
-        T(j).generative_side    = gencatlabels{settings.CatGen == gencat};
-        T(j).correct_side       = portlabels{settings.SideCorrect};
-        T(j).choice             = choice;
-        T(j).outcome            = outcome;
-        % -----------------------------------------------------------------
-        T(j).it                 = max([it,       -10], [], 'OmitNaN');
-        T(j).rt_side            = max([rtside,   -10], [], 'OmitNaN');
-        T(j).rt_center          = max([rtcenter, -10], [], 'OmitNaN');
-        % -----------------------------------------------------------------
-        T(j).isuniform          = getvalue(settings, 'UniformTrial');
-        % -----------------------------------------------------------------
-        T(j).ispaired           = getvalue(settings, 'PairedTrial');
-        T(j).paired_strat       = pairlabels{settings.PairedStrategy + 1};
-        T(j).paired_reftime     = dtfun(settings.PairedInitTime);
-        T(j).trial_pairedtime   = dtfun(prdtrl);
-        % -----------------------------------------------------------------
-        T(j).isstaircase        = getvalue(settings, 'StaircaseTrial');
-        staircase               = getvalue(settings, 'StaircaseVal', {0, 0});
-        T(j).staircase_nightval = staircase{1}(end);
-        T(j).staircase_dayval   = staircase{2}(end);
-        % -----------------------------------------------------------------
-        T(j).tau                = getvalue(settings, 'Tau');
-        T(j).alpha              = getvalue(settings, 'Alpha');
-        T(j).beta               = getvalue(settings, 'Beta');
-        T(j).sigma              = getvalue(settings, 'Sigma');
-        % -----------------------------------------------------------------
-        T(j).isopto             = getvalue(settings, 'OptoTrial');
-        T(j).opto_onset         = T(j).isopto * min(getvalue(events, 'GlobalTimer1_Start'));
-        T(j).opto_dur           = T(j).isopto * max([tsidepoke, getvalue(settings, 'OptoMaxDuration')], [], 'OmitNaN');
-        % -----------------------------------------------------------------
-        T(j).iseeg              = getvalue(settings, 'EEGtrigs');
-        j = j + 1;
+    % Get choice and timings
+    [choice, outcome, tsidepoke, rtside, rtcenter] = getdecisionlabels(states, events, protocol);
+    
+    % If trial field is missing, it means a single, maximally bright
+    % flash was presented
+    if ~isfield(settings, 'CatGen'), settings.CatGen = settings.CatInf; end
+    if ~isfield(settings, 'Trial')
+        settings.Trial = [0; 0];
+        settings.Trial((settings.CatInf + 3) / 2) = settings.BrightnessMax;
     end
+    
+    % Get trial starting and initiation times
+    [begtrl, begctr, it, prdtrl, isday] = getinittimes(settings, states, protocol);
+    
+    % Build table
+    T(j).name               = ratname;
+    T(j).trial_inittime     = dtfun(begctr);
+    T(j).trial_starttime    = dtfun(begtrl);
+    % -----------------------------------------------------------------
+    T(j).session_starttime  = dtfun(settings.RunOnset);
+    T(j).trial              = i;
+    T(j).isday              = isday;
+    % -----------------------------------------------------------------
+    T(j).protocol           = protocol;
+    T(j).room               = getvalue(table2struct(explab(idx,:)), 'Room', 'Unknown');
+    T(j).position           = getvalue(table2struct(explab(idx,:)), 'Position', 'Unknown');
+    T(j).experiment         = getvalue(table2struct(explab(idx,:)), 'Experiment', 'Unknown');
+    T(j).commit_id          = getvalue(settings, 'CommitID', 'Unknown');
+    % -----------------------------------------------------------------
+    T(j).setting            = settings.Label;
+    T(j).task               = tasklabels{settings.Design + 1};
+    T(j).stage              = settings.Stage;
+    T(j).trial_instage      = settings.StageTrials;
+    % -----------------------------------------------------------------
+    T(j).rewardsize_left    = settings.SizeReward(1);
+    T(j).rewardsize_right   = settings.SizeReward(end);
+    % -----------------------------------------------------------------
+    T(j).flashes_left       = strjoin(arrayfun(@num2str, settings.Trial(1,:), 'uni', 0), ' ');
+    T(j).flashes_right      = strjoin(arrayfun(@num2str, settings.Trial(2,:), 'uni', 0), ' ');
+    T(j).generative_side    = gencatlabels{settings.CatGen == gencat};
+    T(j).correct_side       = portlabels{settings.SideCorrect};
+    T(j).choice             = choice;
+    T(j).outcome            = outcome;
+    % -----------------------------------------------------------------
+    T(j).it                 = max([it,       -10], [], 'OmitNaN');
+    T(j).rt_side            = max([rtside,   -10], [], 'OmitNaN');
+    T(j).rt_center          = max([rtcenter, -10], [], 'OmitNaN');
+    % -----------------------------------------------------------------
+    T(j).isuniform          = getvalue(settings, 'UniformTrial');
+    % -----------------------------------------------------------------
+    T(j).ispaired           = getvalue(settings, 'PairedTrial');
+    T(j).paired_strat       = pairlabels{settings.PairedStrategy + 1};
+    T(j).paired_reftime     = dtfun(settings.PairedInitTime);
+    T(j).trial_pairedtime   = dtfun(prdtrl);
+    % -----------------------------------------------------------------
+    T(j).isstaircase        = getvalue(settings, 'StaircaseTrial');
+    staircase               = getvalue(settings, 'StaircaseVal', {0, 0});
+    T(j).staircase_nightval = staircase{1}(end);
+    T(j).staircase_dayval   = staircase{2}(end);
+    % -----------------------------------------------------------------
+    T(j).tau                = getvalue(settings, 'Tau');
+    T(j).alpha              = getvalue(settings, 'Alpha');
+    T(j).beta               = getvalue(settings, 'Beta');
+    T(j).sigma              = getvalue(settings, 'Sigma');
+    % -----------------------------------------------------------------
+    T(j).isopto             = getvalue(settings, 'OptoTrial');
+    T(j).opto_onset         = T(j).isopto * min(getvalue(events, 'GlobalTimer1_Start'));
+    T(j).opto_dur           = T(j).isopto * max([tsidepoke, getvalue(settings, 'OptoMaxDuration')], [], 'OmitNaN');
+    % -----------------------------------------------------------------
+    T(j).iseeg              = getvalue(settings, 'EEGtrigs');
+    j = j + 1;
 end
 end
 

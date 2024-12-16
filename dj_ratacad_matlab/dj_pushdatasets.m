@@ -107,7 +107,9 @@ for ir = 1:Nr
                 
                 % Load data
                 fprintf('Loading data... ');
-                load(fullfile(filelist(id).folder, filelist(id).name), 'SessionData');
+                try load(fullfile(filelist(id).folder, filelist(id).name), 'SessionData');
+                catch, fprintf('Unable to load data. File likely corrupted'); continue;
+                end
                 fprintf('Done. Building table... ');
                 
                 % Get trial table
@@ -124,6 +126,7 @@ for ir = 1:Nr
         end
         
         % Combine data from different files
+        DATA = DATA(~cellfun(@isempty, DATA));
         nonempty = cellfun(@(x) ~isempty(fieldnames(x)), DATA);
         DATA = [DATA{nonempty}];
         
