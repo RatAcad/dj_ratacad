@@ -14,7 +14,7 @@ gencat = [-1,1];
 gencatlabels = {'left', 'right'};
 
 % Specify the date-time format
-dtformat = 'yyyy-MM-dd HH:mm:ss';
+dtformat = 'yyyy-MM-dd HH:mm:ss.SSS';
 dtfun = @(x) char(datetime(x, 'Format', dtformat));
 
 % Get onsets and offsets of bad segments and of experiments

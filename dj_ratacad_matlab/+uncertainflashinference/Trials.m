@@ -1,10 +1,10 @@
 %{
 # Detailed database with all statistics at each trial
 name : varchar(20)                                                                  # unique rat name
-trial_inittime : datetime                                                           # unique timestamp of the trial
+trial_inittime : char(23)                                                           # unique timestamp of the trial
 ---
-trial_starttime : datetime                                                          # start time of the trial (different than initiated)
-session_starttime : datetime                                                        # timestamp of the session
+trial_starttime : char(23)                                                          # start time of the trial (different than initiated)
+session_starttime : char(23)                                                        # timestamp of the session
 trial : int                                                                         # trial number w.r.t. experiment onset
 isday : int                                                                         # day or night trial
 protocol: varchar(30)                                                               # protocol function
@@ -30,8 +30,8 @@ rt_center: float                                                                
 isuniform: int                                                                      # whether the trial is a uniform, single LED brightness trial (only in last stage)
 ispaired: int                                                                       # repeated trial from the past
 paired_strat: enum("none", "miniblock", "replay")                                   # strategy for trial repetition
-paired_reftime: datetime                                                            # trial timestamp of the repeated trial
-trial_pairedtime : datetime                                                         # timestamp used to identify paired trials (see paired_reftime)
+paired_reftime: char(23)                                                            # trial timestamp of the repeated trial
+trial_pairedtime : char(23)                                                         # timestamp used to identify paired trials (see paired_reftime)
 isstaircase: int                                                                    # trial informing the staircase titration procedure
 staircase_dayval: tinyint unsigned                                                  # brightness value of the day staircase
 staircase_nightval: tinyint unsigned                                                # brightness value of the night staircase
