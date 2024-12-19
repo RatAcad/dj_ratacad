@@ -49,7 +49,7 @@ for i = 1:Ntrials
     % If trial field is missing, it means a single, maximally bright
     % flash was presented
     if ~isfield(settings, 'CatGen'), settings.CatGen = settings.CatInf; end
-    if ~isfield(settings, 'Trial')
+    if ~isfield(settings, 'Trial') || isempty(settings.Trial)
         settings.Trial = [0; 0];
         settings.Trial((settings.CatInf + 3) / 2) = settings.BrightnessMax;
     end
