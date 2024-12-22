@@ -158,7 +158,7 @@ fun        = @(x,y) any(~isnan([x, y]));
 isleft    = fun(states.(correct{1}), states.(error{1}));
 isright   = fun(states.(correct{2}), states.(error{2}));
 iscorrect = fun(states.(correct{1}), states.(correct{2}));
-if contains(protocol, 'v3') % v3 protocol
+if contains(protocol, {'v3', 'v4'})
     isbrokenfix  = fun(states.('BrokenFixation'), []);
     isleftearly  = false;
     isrightearly = false;
@@ -207,12 +207,12 @@ if isempty(tsidepoke), tsidepoke = NaN; end
 % Compute reaction time as the different between 
 rtside = tsidepoke - tsidecue;
 
-% For the 3rd version of the protocol, we can measure RT as the timing at
-% which the central port is left
+% For the 3rd/4th versions of the protocol, we can measure RT as the timing
+% at which the central port is left
 cportname = sprintf('Port%iOut', centerport);
 rtcenter = NaN;
-if contains(protocol, 'v3')
-    if isfield(events, cportname) && ...       % center poke out detected
+if contains(protocol, {'v3', 'v4'})
+    if isfield(events, cportname) && ...          % center poke out detected
        all(~isnan(states.FixationMaintenance(:))) % stage with fixation
         
         % Get last port out event between side port available and side poke
@@ -233,8 +233,8 @@ end
 % =========================================================================
 function [begtrl, begctr, it, prdtrl, isday] = getinittimes(settings, states, protocol)
 
-% In v3 of the protocol
-if contains(protocol, 'v3')
+% In v3/v4 of the protocol
+if contains(protocol, {'v3', 'v4'})
     
     % Get the trial start time (single state machine)
     begtrl = settings.InitTimeTrial;
