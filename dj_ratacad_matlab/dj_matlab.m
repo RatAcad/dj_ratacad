@@ -18,6 +18,7 @@ try
     dj_pushdatasets(ratacaddir, 'UncertainFlashInference_v2', 'UncertainFlashInference', data2push);
     dj_pushdatasets(ratacaddir, 'UncertainFlashInference_v3', 'UncertainFlashInference', data2push);
     dj_pushdatasets(ratacaddir, 'UncertainFlashInference_v4', 'UncertainFlashInference', data2push);
+    dj_pushdatasets(ratacaddir, 'UncertainFlashInference_v5', 'UncertainFlashInference', data2push);
 catch
     system(['/home/ratacad1/anaconda3/bin/curl -H "Tags: desktop_computer" ', ...
         '-d "Failed to publish new data on DataJoint" ntfy.sh/ratacademy']);
