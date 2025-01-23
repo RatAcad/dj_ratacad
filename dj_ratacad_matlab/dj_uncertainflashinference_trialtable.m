@@ -17,6 +17,10 @@ gencatlabels = {'left', 'right'};
 dtformat = 'yyyy-MM-dd HH:mm:ss.SSS';
 dtfun = @(x) char(datetime(x, 'Format', dtformat));
 
+% Specify which versions of the protocol have the central fixation enabled
+global fixationver;
+fixationver = {'v3', 'v4', 'v5'};
+
 % Get onsets and offsets of bad segments and of experiments
 global explab badsegm;
 [badon, badoff]         = getonoff(badsegm, ratname);
@@ -124,7 +128,7 @@ function [on, off, ratidx] = getonoff(metadatatable, ratname)
 % Get rows corresponding to the rat
 ratidx = find(strcmpi(metadatatable.Rat, ratname));
 
-% Get beginning and enf of time windos
+% Get beginning and enf of time windows
 on  = metadatatable(ratidx,:).Beginning;
 off = metadatatable(ratidx,:).End;
 
@@ -158,7 +162,8 @@ fun        = @(x,y) any(~isnan([x, y]));
 isleft    = fun(states.(correct{1}), states.(error{1}));
 isright   = fun(states.(correct{2}), states.(error{2}));
 iscorrect = fun(states.(correct{1}), states.(correct{2}));
-if contains(protocol, {'v3', 'v4'})
+global fixationver;
+if contains(protocol, fixationver)
     isbrokenfix  = fun(states.('BrokenFixation'), []);
     isleftearly  = false;
     isrightearly = false;
@@ -211,7 +216,7 @@ rtside = tsidepoke - tsidecue;
 % at which the central port is left
 cportname = sprintf('Port%iOut', centerport);
 rtcenter = NaN;
-if contains(protocol, {'v3', 'v4'})
+if contains(protocol, fixationver)
     if isfield(events, cportname) && ...          % center poke out detected
        all(~isnan(states.FixationMaintenance(:))) % stage with fixation
         
@@ -234,7 +239,8 @@ end
 function [begtrl, begctr, it, prdtrl, isday] = getinittimes(settings, states, protocol)
 
 % In v3/v4 of the protocol
-if contains(protocol, {'v3', 'v4'})
+global fixationver;
+if contains(protocol, fixationver)
     
     % Get the trial start time (single state machine)
     begtrl = settings.InitTimeTrial;
