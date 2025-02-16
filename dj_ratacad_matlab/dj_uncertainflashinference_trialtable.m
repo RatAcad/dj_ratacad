@@ -19,7 +19,7 @@ dtfun = @(x) char(datetime(x, 'Format', dtformat));
 
 % Specify which versions of the protocol have the central fixation enabled
 global fixationver;
-fixationver = {'v3', 'v4', 'v5'};
+fixationver = {'v3', 'v4', 'v5', 'v6'};
 
 % Get onsets and offsets of bad segments and of experiments
 global explab badsegm;
@@ -199,7 +199,7 @@ if  isomitted,   outcome = 'omission';  end
 
 % Get timing of the side cue
 f = fieldnames(states);
-i = strcmpi(f, 'SideCue') | strcmpi(f, 'DecisionCue');
+i = strcmpi(f, 'SideCue') | strcmpi(f, 'DecisionCue') | strcmpi(f, 'WaitForPoke');
 tsidecue = cellfun(@(x) states.(x)(1), f(i));
 tsidecue = tsidecue(~isnan(tsidecue));
 if isempty(tsidecue), tsidecue = NaN; end 
