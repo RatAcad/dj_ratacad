@@ -238,7 +238,7 @@ end
 % =========================================================================
 function [begtrl, begctr, it, prdtrl, isday] = getinittimes(settings, states, protocol)
 
-% In v3/v4 of the protocol
+% In v3-6 of the protocol
 global fixationver;
 if contains(protocol, fixationver)
     
@@ -247,8 +247,12 @@ if contains(protocol, fixationver)
     
     % Determine the duration of the initation cue state
     f = fieldnames(states);
-    f = f{contains(f, 'InitiationCue')};
-    it = states.(f)(end);
+    fi = contains(f, 'InitiationCue');
+    if any(fi)
+        f = f{fi};
+        it = states.(f)(end);
+    else, it = 0;
+    end
     
     % The trial initiation time it the starting time plus the initiation
     % cue duration
