@@ -5,7 +5,7 @@ function T = dj_uncertainflashinference_trialtable(bpodstruct, ratname)
 % Maxime Maheu <maheu.mp@gmail.com> | 2024
 
 % Define labels
-tasklabels = {'count', 'weigh'};
+tasklabels = {'count', 'weigh1', 'weigh2'};
 portlabels = {'left', 'middle', 'right'};
 pairlabels = {'none', 'miniblock', 'replay'};
 
@@ -238,7 +238,7 @@ end
 % =========================================================================
 function [begtrl, begctr, it, prdtrl, isday] = getinittimes(settings, states, protocol)
 
-% In v3-6 of the protocol
+% In v3-7 of the protocol
 global fixationver;
 if contains(protocol, fixationver)
     
