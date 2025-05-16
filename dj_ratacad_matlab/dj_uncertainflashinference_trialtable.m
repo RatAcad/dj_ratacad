@@ -19,7 +19,7 @@ dtfun = @(x) char(datetime(x, 'Format', dtformat));
 
 % Specify which versions of the protocol have the central fixation enabled
 global fixationver;
-fixationver = {'v3', 'v4', 'v5', 'v6'};
+fixationver = {'v3', 'v4', 'v5', 'v6', 'v7'};
 
 % Get onsets and offsets of bad segments and of experiments
 global explab badsegm;
