@@ -16,7 +16,7 @@ protocolver = 'last'; % 'all' or 'last'
 tic;
 try
     if strcmpi(protocolver, 'all')        
-        dj_pushdatasets(ratacaddir, 'UncertainFlashInference'.  , []                       , data2push);
+        dj_pushdatasets(ratacaddir, 'UncertainFlashInference'   , []                       , data2push);
         dj_pushdatasets(ratacaddir, 'UncertainFlashInference_v2', 'UncertainFlashInference', data2push);
         dj_pushdatasets(ratacaddir, 'UncertainFlashInference_v3', 'UncertainFlashInference', data2push);
         dj_pushdatasets(ratacaddir, 'UncertainFlashInference_v4', 'UncertainFlashInference', data2push);
