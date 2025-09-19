@@ -44,7 +44,7 @@ if ~strcmpi(data2push, 'all')
     query = uncertainflashinference.Trials;
     keys = query.fetch;
     availablerats  = {keys.name};
-    availabledates = cellfun(@(x) erase(x(1:10), '-'), {keys.trial_starttime}, 'uni', 0);
+    availabledates = cellfun(@(x) erase(x(1:10), '-'), {keys.trial_inittime}, 'uni', 0);
     fprintf('Done.\n');
 else, availablerats = {}; availabledates = {};
 end
