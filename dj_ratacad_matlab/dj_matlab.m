@@ -1,7 +1,7 @@
 % Routine to update DataJoint SQL database with network data
 
 % Add toolboxes to the MATLAB path 
-addpath('/home/ratacad1/ratacad/dj_ratacad/dj_ratacad_matlab');
+addpath('/home/ratacad1/Documents/MATLAB/dj_ratacad/dj_ratacad_matlab');
 addpath('/home/ratacad1/Documents/MATLAB/datajoint-matlab');
 addpath('/home/ratacad1/MATLAB Add-Ons/Toolboxes/mym/distribution/mexa64');
 
@@ -22,6 +22,7 @@ try
         dj_pushdatasets(ratacaddir, 'UncertainFlashInference_v4', 'UncertainFlashInference', data2push);
         dj_pushdatasets(ratacaddir, 'UncertainFlashInference_v5', 'UncertainFlashInference', data2push);
         dj_pushdatasets(ratacaddir, 'UncertainFlashInference_v6', 'UncertainFlashInference', data2push);
+        dj_pushdatasets(ratacaddir, 'UncertainFlashInference_v7', 'UncertainFlashInference', data2push);
     elseif strcmpi(protocolver, 'last')
         dj_pushdatasets(ratacaddir, 'UncertainFlashInference_v7', 'UncertainFlashInference', data2push);
     end
