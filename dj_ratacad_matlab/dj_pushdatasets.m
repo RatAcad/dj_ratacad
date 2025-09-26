@@ -39,14 +39,15 @@ dj.conn([], [], [], [], reset, usetls);
 fprintf('Done.\n');
 
 % Retrieve data already populated on DataJoint
-if ~strcmpi(data2push, 'all')
+if strcmpi(data2push, 'missing')
     fprintf('- Getting data already on datajoint database... ');
-    query = uncertainflashinference.Trials;
+    query = eval(sprintf('%s.Trials', lower(djtable)));
     keys = query.fetch;
-    availablerats  = {keys.name};
-    availabledates = cellfun(@(x) erase(x(1:10), '-'), {keys.trial_inittime}, 'uni', 0);
+    availablerats  = unique({keys.name})';
+    availabledates = unique(cellfun(@(x) erase(x(1:10), '-'), {keys.trial_inittime}, 'uni', 0))';
     fprintf('Done.\n');
-else, availablerats = {}; availabledates = {};
+elseif strcmpi(data2push, 'all')
+    availablerats = {}; availabledates = {};
 end
 
 % Get rat list
@@ -67,11 +68,12 @@ fprintf('Done.');
 
 % Loop over rats
 for ir = 1:Nr
-    fprintf('\n- Processing "%s"... ', sublist(ir).name);
+    ratname = sublist(ir).name;
+    fprintf('\n- Processing "%s"... ', ratname);
     
     % Get session list on local data
-    filelist = dir(fullfile(sublist(ir).folder, sublist(ir).name, protocolname, ...
-        'Session Data', sprintf('%s_*.mat', sublist(ir).name)));
+    filelist = dir(fullfile(sublist(ir).folder, ratname, protocolname, ...
+        'Session Data', sprintf('%s_*.mat', ratname)));
     datelist = cellfun(@(x) x(end-18:end-11), {filelist.name}, 'uni', 0);
     hourlist = cellfun(@(x) x(end-9:end-4),   {filelist.name}, 'uni', 0);
     [~,idx] = sortrows([datelist(:), hourlist(:)], 1:2);
@@ -87,18 +89,16 @@ for ir = 1:Nr
         fprintf('Data found.');
         
         % Loop over files
-        DATA = cell(1,Nd);
         for id = 1:Nd
             
             % Determine whether data is already available on DataJoint
             fprintf('\n\t* Data from %s-%s... ', datelist{id}, hourlist{id});
-            isavailable = any(strcmpi(availablerats,  sublist(ir).name) & ...
-                              strcmpi(availabledates, datelist{id}));
+            isavailable = any(strcmpi(availablerats,  ratname) & ...
+                          any(strcmpi(availabledates, datelist{id})));
             
-            % Always overwrite data from the last two days, which may
-            % still be running
-            unqdates = unique(datelist);
-            if any(strcmpi(unqdates(max([1,end-1]):end), datelist{id})), isavailable = false; end
+            % Always overwrite data from today in case new trials were added
+            if strcmpi(char(datetime('today',     'Format', 'yyyyMMdd')), datelist{id}), isavailable = false; end
+            if strcmpi(char(datetime('yesterday', 'Format', 'yyyyMMdd')), datelist{id}), isavailable = false; end
             
             % If data is not yet available, publish it
             if isavailable
@@ -108,30 +108,32 @@ for ir = 1:Nr
                 % Load data
                 fprintf('Loading data... ');
                 try load(fullfile(filelist(id).folder, filelist(id).name), 'SessionData');
-                catch, fprintf('Unable to load data. File likely corrupted'); continue;
+                catch, fprintf('Unable to load data. File likely corrupted! '); continue;
                 end
                 fprintf('Done. Building table... ');
                 
                 % Get trial table
                 SessionData.ProtocolName = protocolname;
-                DATA{id} = fun_trialtable(SessionData, sublist(ir).name);
+                DATA = fun_trialtable(SessionData, ratname);
                 
                 % Send trial data table on the SQL database
                 fprintf('Done. Sending table... ');
-                if ~isempty(fieldnames(DATA{id}))
-                    insert(trialfun, DATA{id}, duplmeth);
+                if ~isempty(fieldnames(DATA))
+                    insert(trialfun, DATA, duplmeth);
                 end
                 fprintf('Done.');
             end
         end
         
-        % Combine data from different files
-        DATA = DATA(~cellfun(@isempty, DATA));
-        nonempty = cellfun(@(x) ~isempty(fieldnames(x)), DATA);
-        DATA = [DATA{nonempty}];
+        % Pull all data
+        fprintf('\n\t* Pulling all data... ');
+        DATA = struct2table(fetch(eval(sprintf('%s.Trials', lower(djtable))) & ...
+            sprintf('name = "%s"', ratname) & ...
+            sprintf('protocol = "%s"', protocolname), ...
+            'isday', 'stage', 'outcome', 'choice', 'rt_side', 'it'));
         
         % Create and send stage summary to SQL database
-        fprintf('\n\t* Sending summary stage table... ');
+        fprintf('Done.\n\t* Sending summary stage table... ');
         stagetable = fun_summarytable(DATA, 'stage');
         insert(stagefun, stagetable, duplmeth);
         
