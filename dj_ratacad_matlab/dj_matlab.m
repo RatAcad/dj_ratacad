@@ -26,8 +26,6 @@ try
     elseif strcmpi(protocolver, 'last')
         dj_pushdatasets(ratacaddir, 'UncertainFlashInference_v7', 'UncertainFlashInference', data2push);
     end
-    system(['/home/ratacad1/anaconda3/bin/curl -H "Tags: desktop_computer" ', ...
-        '-d "New data available on DataJoint" ntfy.sh/ratacademy_datajoint']);
 catch
     system(['/home/ratacad1/anaconda3/bin/curl -H "Tags: desktop_computer" ', ...
         '-d "Failed to publish new data on DataJoint" ntfy.sh/ratacademy']);
