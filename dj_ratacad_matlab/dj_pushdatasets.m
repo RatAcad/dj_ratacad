@@ -62,8 +62,10 @@ fprintf('Done.\n');
 % Get rat list
 fprintf('- Loading meta-data... ');
 metadatafun = sprintf('dj_%s_metadata', lower(djtable));
-global explab badsegm;
-if exist(metadatafun, 'file') == 2, [explab, badsegm] = eval(metadatafun); end
+global explab badsegm injections;
+if exist(metadatafun, 'file') == 2
+    [explab, badsegm, injections] = eval(metadatafun);
+end
 fprintf('Done.');
 
 % Loop over rats
@@ -105,6 +107,9 @@ for ir = 1:Nr
                 fprintf('Data already available on DataJoint.');
             elseif ~isavailable
                 
+                % Determine whether there was an injection on that day
+                injection = getinjectionlabel(ratname, datelist{id});
+                
                 % Load data
                 fprintf('Loading data... ');
                 try load(fullfile(filelist(id).folder, filelist(id).name), 'SessionData');
@@ -114,6 +119,7 @@ for ir = 1:Nr
                 
                 % Get trial table
                 SessionData.ProtocolName = protocolname;
+                SessionData.Injection = injection;
                 DATA = fun_trialtable(SessionData, ratname);
                 
                 % Send trial data table on the SQL database
@@ -145,4 +151,24 @@ for ir = 1:Nr
     end
 end
 fprintf('\n');
+end
+
+% =========================================================================
+% Subfunction to get injection label
+function injectionlabel = getinjectionlabel(ratname, sessiontime)
+
+% Loop over injection table
+global injections;
+for i = 1:numel(injections)
+    
+    % Determine whether there was an injection performed on that date for
+    % that rat
+    colid = find(strcmpi(injections{i}.Properties.VariableNames, ratname));
+    rowid = find(strcmpi(injections{i}.Properties.RowNames,      sessiontime));
+    if ~isempty(rowid) & ~isempty(colid), injectionlabel = injections{i}{rowid,colid}{1};
+    
+    % Otherwise, return a none label
+    else, injectionlabel = 'None';
+    end
+end
 end

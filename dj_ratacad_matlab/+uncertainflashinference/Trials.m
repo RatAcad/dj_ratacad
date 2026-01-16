@@ -43,6 +43,7 @@ isopto: int                                                                     
 opto_onset: float                                                                   # onset of optogenetic manipulations
 opto_dur: float                                                                     # duration of optogenetic manipulations
 iseeg: int                                                                          # whether EEG recordings were performed
+injection: enum("None", "Saline", "DCZ", "Saline_problem", "DCZ_problem")           # whether injection was performed
 %}
 classdef Trials < dj.Manual
 end

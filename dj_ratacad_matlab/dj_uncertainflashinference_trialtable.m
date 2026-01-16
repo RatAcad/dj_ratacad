@@ -5,7 +5,7 @@ function T = dj_uncertainflashinference_trialtable(bpodstruct, ratname)
 % Maxime Maheu <maheu.mp@gmail.com> | 2024
 
 % Define labels
-tasklabels = {'count', 'weigh1', 'weigh2'};
+tasklabels = {'count', 'weight1', 'weight2'};
 portlabels = {'left', 'middle', 'right'};
 pairlabels = {'none', 'miniblock', 'replay'};
 
@@ -111,6 +111,8 @@ for i = 1:Ntrials
     T(j).alpha              = getvalue(settings, 'Alpha');
     T(j).beta               = getvalue(settings, 'Beta');
     T(j).sigma              = getvalue(settings, 'Sigma');
+    % ---------------------------------------------------------------------
+    T(j).injection          = bpodstruct.Injection;
     % ---------------------------------------------------------------------
     T(j).isopto             = getvalue(settings, 'OptoTrial');
     T(j).opto_onset         = T(j).isopto * min(getvalue(events, 'GlobalTimer1_Start'));
