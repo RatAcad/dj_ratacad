@@ -13,7 +13,7 @@ position: varchar(5)                                                            
 experiment: varchar(100)                                                            # experiment label
 commit_id: varchar(40)                                                              # GitHub commit ID
 setting : varchar(20)                                                               # setting label
-task : enum("count", "weigh")                                                       # task version
+task : enum("count", "weight1", "weight2")                                          # task version
 stage: int                                                                          # stage number
 trial_instage : int                                                                 # trial number w.r.t. stage onset
 rewardsize_left: int                                                                # size of the reward on left port  
