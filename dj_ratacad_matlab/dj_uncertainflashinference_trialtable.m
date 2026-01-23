@@ -67,13 +67,14 @@ for i = 1:Ntrials
     T(j).trial_starttime    = dtfun(begtrl);
     % ---------------------------------------------------------------------
     T(j).session_starttime  = dtfun(settings.RunOnset);
-    T(j).trial              = i;
+    T(j).filename           = bpodstruct.FileName;
     T(j).isday              = isday;
     % ---------------------------------------------------------------------
     T(j).protocol           = protocol;
     T(j).room               = getvalue(table2struct(explab(idx,:)), 'Room', 'Unknown');
     T(j).position           = getvalue(table2struct(explab(idx,:)), 'Position', 'Unknown');
     T(j).experiment         = getvalue(table2struct(explab(idx,:)), 'Experiment', 'Unknown');
+    T(j).bpod               = bpodstruct.Info.BpodName;
     T(j).commit_id          = getvalue(settings, 'CommitID', 'Unknown');
     % ---------------------------------------------------------------------
     T(j).setting            = settings.Label;

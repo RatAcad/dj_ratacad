@@ -118,6 +118,7 @@ for ir = 1:Nr
                 fprintf('Done. Building table... ');
                 
                 % Get trial table
+                SessionData.FileName = filelist(id).name;
                 SessionData.ProtocolName = protocolname;
                 SessionData.Injection = injection;
                 DATA = fun_trialtable(SessionData, ratname);

@@ -5,12 +5,13 @@ trial_inittime : char(23)                                                       
 ---
 trial_starttime : char(23)                                                          # start time of the trial (different than initiated)
 session_starttime : char(23)                                                        # timestamp of the session
-trial : int                                                                         # trial number w.r.t. experiment onset
+filename : varchar(60)                                                              # timestamp of the session
 isday : int                                                                         # day or night trial
 protocol: varchar(30)                                                               # protocol function
 room: varchar(16)                                                                   # experimental room
-position: varchar(5)                                                                # rack number and box position in the rack
+position: char(5)                                                                   # rack number and box position in the rack
 experiment: varchar(100)                                                            # experiment label
+bpod: varchar(40)                                                                   # bpod ID
 commit_id: varchar(40)                                                              # GitHub commit ID
 setting : varchar(20)                                                               # setting label
 task : enum("count", "weight1", "weight2")                                          # task version
@@ -43,7 +44,7 @@ isopto: int                                                                     
 opto_onset: float                                                                   # onset of optogenetic manipulations
 opto_dur: float                                                                     # duration of optogenetic manipulations
 iseeg: int                                                                          # whether EEG recordings were performed
-injection: enum("None", "Saline", "DCZ", "Saline_problem", "DCZ_problem")           # whether injection was performed
+injection: varchar(40)                                                              # whether injection was performed
 %}
 classdef Trials < dj.Manual
 end
