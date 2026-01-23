@@ -74,7 +74,7 @@ for i = 1:Ntrials
     T(j).room               = getvalue(table2struct(explab(idx,:)), 'Room', 'Unknown');
     T(j).position           = getvalue(table2struct(explab(idx,:)), 'Position', 'Unknown');
     T(j).experiment         = getvalue(table2struct(explab(idx,:)), 'Experiment', 'Unknown');
-    T(j).bpod               = bpodstruct.Info.BpodName;
+    T(j).bpod               = getvalue(bpodstruct.Info, 'BpodName', 'Unknown');
     T(j).commit_id          = getvalue(settings, 'CommitID', 'Unknown');
     % ---------------------------------------------------------------------
     T(j).setting            = settings.Label;
