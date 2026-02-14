@@ -27,7 +27,7 @@ global explab badsegm;
 [expon, expoff, ratidx] = getonoff(explab,  ratname);
 
 % Loop over trials
-Ntrials = bpodstruct.nTrials;
+Ntrials = numel(bpodstruct.TrialSettings);
 T = struct;
 j = 1;
 for i = 1:Ntrials
