@@ -44,10 +44,14 @@ if strcmpi(data2push, 'missing')
     query = eval(sprintf('%s.Trials', lower(djtable)));
     keys = query.fetch;
     availablerats  = unique({keys.name})';
-    availabledates = unique(cellfun(@(x) erase(x(1:10), '-'), {keys.trial_inittime}, 'uni', 0))';
+    availabledates = containers.Map();
+    for r = 1:numel(availablerats)
+        rattrials = strcmpi({keys.name}, availablerats{r});
+        availabledates(availablerats{r}) = unique(cellfun(@(x) erase(x(1:10), '-'), {keys(rattrials).trial_inittime}, 'uni', 0))';
+    end
     fprintf('Done.\n');
 elseif strcmpi(data2push, 'all')
-    availablerats = {}; availabledates = {};
+    availablerats = {}; availabledates = containers.Map();
 end
 
 % Get rat list
@@ -95,8 +99,8 @@ for ir = 1:Nr
             
             % Determine whether data is already available on DataJoint
             fprintf('\n\t* Data from %s-%s... ', datelist{id}, hourlist{id});
-            isavailable = any(strcmpi(availablerats,  ratname) & ...
-                          any(strcmpi(availabledates, datelist{id})));
+            isavailable = isKey(availabledates, ratname) && ...
+                          any(strcmpi(availabledates(ratname), datelist{id}));
             
             % Always overwrite data from today in case new trials were added
             if strcmpi(char(datetime('today',     'Format', 'yyyyMMdd')), datelist{id}), isavailable = false; end
